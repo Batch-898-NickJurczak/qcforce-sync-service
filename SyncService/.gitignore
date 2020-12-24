@@ -30,6 +30,10 @@ build/
 ### VS Code ###
 .vscode/
 
+### Jacoco ###
+/report
+/jacoco.exec
+
 ### PRIVATE INFO###
 *.p12
 /Dockerfile

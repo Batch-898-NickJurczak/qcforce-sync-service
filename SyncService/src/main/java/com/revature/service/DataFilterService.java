@@ -2,7 +2,7 @@ package com.revature.service;
 
 import java.util.List;
 
-import com.revature.models.FormResponse;
+//import com.revature.models.FormResponse;
 
 /**
  * Filters raw data pulled from a data source and maps it to a readable format.
@@ -29,5 +29,5 @@ public interface DataFilterService {
 	 * Maps filtered row data to a list of form responses.
 	 * @return a list of form responses. 
 	 */
-	public List<FormResponse> mapFormResponses();
+	//public List<FormResponse> mapFormResponses();
 }
