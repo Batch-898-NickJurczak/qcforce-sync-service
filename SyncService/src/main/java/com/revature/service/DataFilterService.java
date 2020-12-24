@@ -29,5 +29,5 @@ public interface DataFilterService {
 	 * Maps filtered row data to a list of form responses.
 	 * @return a list of form responses. 
 	 */
-	//public List<FormResponse> mapFormResponses();
+	public List<FormResponse> mapFormResponses();
 }
