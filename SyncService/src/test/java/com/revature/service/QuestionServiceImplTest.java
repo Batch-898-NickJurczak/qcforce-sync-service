@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
+import com.revature.dto.SurveyQuestionDto;
 import com.revature.models.QuestionType;
 import com.revature.models.SurveyQuestion;
 import com.revature.repo.QuestionRepo;
@@ -40,6 +41,8 @@ class QuestionServiceImplTest {
 	private QuestionRepo repo;
 	
 	private SurveyQuestion surveyQuestion;
+	
+	private SurveyQuestionDto surveyQuestionDto;
 
 	/**
 	 * @throws java.lang.Exception
@@ -63,6 +66,7 @@ class QuestionServiceImplTest {
 		List<String> questions = new ArrayList<String>();
 		questions.add("How are you?");
 		surveyQuestion = new SurveyQuestion(1, LocalDateTime.now(), QuestionType.SHORT_ANSWER, 1, questions);
+		surveyQuestionDto = new SurveyQuestionDto(surveyQuestion);
 	}
 
 	/**
@@ -93,6 +97,32 @@ class QuestionServiceImplTest {
 		SurveyQuestion returned = service.getSurveyQuestion(surveyQuestion.getId());
 		
 		verify(repo).getOne(surveyQuestion.getId());
+		
+		assertEquals(null, returned, "Object returned does not match expected.");
+		
+	}
+	
+	@Test
+	void questionServiceImplTest_PostWithoutError() {
+		when(repo.save(surveyQuestion)).thenReturn(surveyQuestion);
+		
+		SurveyQuestion returned = service.createSurveyQuestion(surveyQuestionDto);
+		
+		verify(repo).save(returned);
+		
+		assertEquals(surveyQuestion, returned, "Object returned does not match expected.");
+		
+	}
+
+	
+	@Test
+	void questionServiceImplTest_PostInvalidInput() {
+		
+		when(repo.save(surveyQuestion)).thenThrow(NullPointerException.class);
+		
+		SurveyQuestion returned = service.createSurveyQuestion(surveyQuestionDto);
+		
+		verify(repo).save(surveyQuestion);
 		
 		assertEquals(null, returned, "Object returned does not match expected.");
 		
