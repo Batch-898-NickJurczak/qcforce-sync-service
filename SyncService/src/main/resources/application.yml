@@ -33,10 +33,9 @@ eureka:
       defaultZone: ${eureka_url:http://localhost:8761/eureka/}
 
   instance:
-    hostname: ${HOSTNAME:${spring.application.name}}
-    preferIpAddress: false
-    instanceId: ${spring.application.name}:${vcap.application.instance_id:${spring.application.instance_id:${random.value}}}:${server.port}
-
+    hostname: localhost # ${HOSTNAME:${spring.application.name}}
+    # preferIpAddress: false
+    # instanceId: ${spring.application.name}:${vcap.application.instance_id:${spring.application.instance_id:${random.value}}}:${server.port}
 
 sync-service:
   rabbitMQ-config:
@@ -46,3 +45,13 @@ sync-service:
     batchDataRoutingKey: ${sync_service_batchDataRoutingKey:BatchData-Key}
     formResponseExchange: ${sync_service_formResponseExchange:FormResponse-Exchange}
     batchDataExchange: ${sync_service_batchDataExchange:BatchData-Exchange}
+
+  sheets-service-config:
+    clientID: ${sheets_service_clientID}
+    scopes: ${sheets_service_scopes:https://spreadsheets.google.com/feeds}
+    credentialsFilePrefix: ${sheets_service_credentialsFilePrefix}
+    credentialsFileSuffix: ${sheets_service_credentialsFileSuffix:.p12}
+    spreadSheetID: ${sheets_service_spreadSheetID}
+
+  scheduler:
+    fixedDelay: ${scheduler_fixedDelay:86400000}

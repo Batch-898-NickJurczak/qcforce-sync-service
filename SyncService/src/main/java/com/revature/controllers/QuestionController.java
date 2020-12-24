@@ -16,13 +16,22 @@ import com.revature.models.SurveyQuestion;
 import reactor.core.publisher.Mono;
 
 /**
- * @author Work From Home
- *
+ * A REST controller that manages all SurveyQuestion related endpoints.
+ * @author Chris,
+ * @author Conner,
+ * @author Michael M,
+ * @author Michael Z,
+ * @author Prativa,
+ * @author Vincent
  */
 @RestController
 @CrossOrigin
 public class QuestionController {
 	
+	/**
+	 * Retrieve a {@link SurveyQuestion} that matches the given id.
+	 * @return A promise for a {@link SurveyQuestion} object.
+	 */
 	@GetMapping("/question/{id}")
 	private Mono<SurveyQuestion> getQuestion() {
 		
