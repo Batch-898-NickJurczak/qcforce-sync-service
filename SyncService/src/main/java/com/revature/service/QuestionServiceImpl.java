@@ -6,6 +6,7 @@ package com.revature.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.revature.dto.SurveyQuestionDto;
 import com.revature.models.SurveyQuestion;
 import com.revature.repo.QuestionRepo;
 
@@ -27,6 +28,12 @@ public class QuestionServiceImpl implements QuestionService {
 	public SurveyQuestion getSurveyQuestion(int id) {
 		
 		return questionRepo.getOne(id);
+	}
+
+	@Override
+	public SurveyQuestion createSurveyQuestion(SurveyQuestionDto surveyQuestionDto) {
+		
+		return null;
 	}
 
 
