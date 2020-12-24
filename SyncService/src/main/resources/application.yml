@@ -9,16 +9,16 @@ spring:
     name: ${application_name:SyncService}
 
   rabbitmq:
-    host: ${rabbitmq_host:localhost}
+    host: ${rabbitmq_host}
     port: ${rabbitmq_port:5672}
-    username: ${rabbitmq_username:guest}
-    password: ${rabbitmq_password:guest}
+    username: ${rabbitmq_username}
+    password: ${rabbitmq_password}
 
   datasource:
     driverClassName: ${datasource_driverClassName:org.postgresql.Driver}
-    url: ${datasource_url:jdbc:postgresql://localhost:5432/CookBook?}
-    username: ${datasource_username:postgres}
-    password: ${datasource_password:password}
+    url: ${datasource_url}
+    username: ${datasource_username}
+    password: ${datasource_password}
 
   jpa:
     properties:
@@ -33,9 +33,9 @@ eureka:
       defaultZone: ${eureka_url:http://localhost:8761/eureka/}
 
   instance:
-    hostname: localhost # ${HOSTNAME:${spring.application.name}}
-    # preferIpAddress: false
-    # instanceId: ${spring.application.name}:${vcap.application.instance_id:${spring.application.instance_id:${random.value}}}:${server.port}
+    hostname: ${HOSTNAME:${spring.application.name}}
+    preferIpAddress: false
+    instanceId: ${spring.application.name}:${vcap.application.instance_id:${spring.application.instance_id:${random.value}}}:${server.port}
 
 
 sync-service:
