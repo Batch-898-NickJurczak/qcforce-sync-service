@@ -1,0 +1,58 @@
+server:
+  port: ${custom_port:8085}
+
+spring:
+  codec:
+    max-in-memory-size: 10MB
+
+  application:
+    name: ${application_name:SyncService}
+
+  rabbitmq:
+    host: ${rabbitmq_host}
+    port: ${rabbitmq_port:5672}
+    username: ${rabbitmq_username}
+    password: ${rabbitmq_password}
+
+  datasource:
+    driverClassName: ${datasource_driverClassName:org.postgresql.Driver}
+    url: ${datasource_url}
+    username: ${datasource_username}
+    password: ${datasource_password}
+
+  jpa:
+    properties:
+      hibernate:
+        dialect: ${jap_properties_hibernate_dialect:org.hibernate.dialect.PostgreSQLDialect}
+
+eureka:
+  client:
+    registerWithEureka: true
+    fetchRegistry: true
+    service-url:
+      defaultZone: ${eureka_url:http://localhost:8761/eureka/}
+
+  instance:
+    hostname: ${HOSTNAME:${spring.application.name}}
+    preferIpAddress: false
+    instanceId: ${spring.application.name}:${vcap.application.instance_id:${spring.application.instance_id:${random.value}}}:${server.port}
+
+
+sync-service:
+  rabbitMQ-config:
+    formResponseQueue: ${sync_service_formResponseQueue:FormResponse-Queue}
+    batchDataQueue: ${sync_service_batchDataQueue:BatchData-Queue}
+    formResponseRoutingKey: ${sync_service_formResponseRoutingKey:FormResponse-Queue-Key}
+    batchDataRoutingKey: ${sync_service_batchDataRoutingKey:BatchData-Key}
+    formResponseExchange: ${sync_service_formResponseExchange:FormResponse-Exchange}
+    batchDataExchange: ${sync_service_batchDataExchange:BatchData-Exchange}
+
+  sheets-service-config:
+    clientID: ${sheets_service_clientID}
+    scopes: ${sheets_service_scopes:https://spreadsheets.google.com/feeds}
+    credentialsFilePrefix: ${sheets_service_credentialsFilePrefix}
+    credentialsFileSuffix: ${sheets_service_credentialsFileSuffix:.p12}
+    spreadSheetID: ${sheets_service_spreadSheetID}
+
+  scheduler:
+    fixedDelay: ${scheduler_fixedDelay:86400000}
