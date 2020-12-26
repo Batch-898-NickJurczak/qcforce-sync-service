@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.revature.dto;
 
 import java.time.LocalDateTime;
@@ -11,35 +8,68 @@ import com.revature.models.SurveyQuestion;
 
 
 /**
- * @author Work From Home
- *
+ * A data transfer object correlating to the {@link SurveyQuestion} pojo.
+ * @author Chris,
+ * @author Conner,
+ * @author Michael M,
+ * @author Michael Z,
+ * @author Prativa,
+ * @author Vincent
  */
 public class SurveyQuestionDto implements Dto<SurveyQuestion>{
 	
+	/**
+	 * The id of the SurveyQuestion object.
+	 */
 	private int id;
 	
+	/**
+	 * {@link LocalDateTime}
+	 * The date for when the SurveyQuestion was created.
+	 */
 	private LocalDateTime createdOn;
 	
+	/**
+	 * {@link String}
+	 * The type of question this SurveyQuestion relates to, will only contain:
+     * "MULTIPLE_CHOICE", "SHORT_ANSWER", or "PICK_FROM_RANGE"
+	 */
 	private String type;
 	
+	/**
+	 * The version number of the question. Starting at 1 and incrementing by 1.
+	 */
 	private int version;
 	
+	/**
+	 * {@link List} of type {@link String}
+	 * The actual content of the question. Position [0] will always contain the overarching question.
+     * The rest of the array list corresponds with additional details from the "MULTIPLE_CHOICE" and "PICK_FROM_RANGE" types.
+     * <b>Examples:</b>
+     * <ul><li><b>MULTIPLE_CHOICE: </b></li>
+	 * <li>[1] = "Answer choice #1"</li>
+	 * <li>[2] = "Answer choice #2", ect.</li></ul>
+	 * <br>
+     * <ul><li><b>PICK_FROM_RANGE: </b></li>
+	 * <li>[1] = "First item in range"</li>
+	 * <li>[2] = "Second item in range", ect.</li></ul>
+	 */
 	private List<String> question;
 
 	/**
-	 * 
+	 * No args constructor, defaults are empty.
 	 */
 	public SurveyQuestionDto() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	/**
-	 * @param id
-	 * @param createdOn
-	 * @param type
-	 * @param version
-	 * @param question
+	 * All args constructor.
+	 * @param id The id of the SurveyQuestion object.
+	 * @param createdOn The date for when the SurveyQuestion was created.
+	 * @param type The type of question this SurveyQuestion relates to, will only contain: "MULTIPLE_CHOICE", "SHORT_ANSWER", or "PICK_FROM_RANGE".
+	 * @param version The version number of the question. Starting at 1 and incrementing by 1.
+	 * @param question The actual content of the question. Position [0] will always contain the overarching question. The rest of the array list corresponds with additional details from the "MULTIPLE_CHOICE" and "PICK_FROM_RANGE" types.
 	 */
 	public SurveyQuestionDto(int id, LocalDateTime createdOn, String type, int version, List<String> question) {
 		super();
@@ -51,11 +81,8 @@ public class SurveyQuestionDto implements Dto<SurveyQuestion>{
 	}
 	
 	/**
-	 * @param id
-	 * @param createdOn
-	 * @param type
-	 * @param version
-	 * @param question
+	 * SurveyQuestion arg constructor. Takes in a SurveyQuestion object.
+	 * @param surveyQuestion The {@link SurveyQuestion} from which to originate this Dto object.
 	 */
 	public SurveyQuestionDto(SurveyQuestion surveyQuestion) {
 		super();
@@ -185,6 +212,10 @@ public class SurveyQuestionDto implements Dto<SurveyQuestion>{
 				+ ", question=" + question + "]";
 	}
 
+	/**
+	 * Converts this Dto object into a {@link SurveyQuestion} object.
+	 * @return {@link SurveyQuestion}
+	 */
 	@Override
 	public SurveyQuestion toPojo() {
 		return new SurveyQuestion(this.getId(), 

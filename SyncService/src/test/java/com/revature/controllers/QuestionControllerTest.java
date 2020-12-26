@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.revature.controllers;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -29,8 +26,13 @@ import com.revature.models.SurveyQuestion;
 import com.revature.service.QuestionService;
 
 /**
- * @author Work From Home
- *
+ * Tests the {@link QuestionController} and contained methods.
+ * @author Chris,
+ * @author Conner,
+ * @author Michael M,
+ * @author Michael Z,
+ * @author Prativa,
+ * @author Vincent
  */
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 class QuestionControllerTest {
@@ -81,36 +83,43 @@ class QuestionControllerTest {
 	void tearDown() throws Exception {
 	}
 
+	/**
+	 * Tests the getSurveyQuestion method of the {@link QuestionController}
+	 * Ensures that given a valid surveyQuestion id, returns the expected {@link SurveyQuestion} object.
+	 */
 	@Test
-	void questionControllerTest_WithoutError() {
+	void getSurveyQuestionTest_WithoutError() {
 		
 		Mockito.when(service.getSurveyQuestion(surveyQuestion.getId())).thenReturn(surveyQuestion);
 		
-		// expecting request
+		// Test actual method utilizing the webClient
 		try {			
 			this.webClient.get().uri("/question/" + surveyQuestion.getId()).accept(MediaType.APPLICATION_JSON).exchange()
 									.expectStatus().isOk()
 									.expectBody().json(surveyQuestionJson);
 			
 		} catch (Exception e) {
-			
-			fail("Exception thrown during call: " + e);
+			fail("Exception thrown during getSurveyQuestionTest_WithoutError: " + e);
 		}
 	}
 	
+	/**
+	 * Tests the getSurveyQuestion method of the {@link QuestionController}
+	 * Ensures that given a valid surveyQuestion id, if the service returns null, 
+	 * then the controller returns an empty Json object as well as a NotFound status code.
+	 */
 	@Test
-	void questionControllerTest_InvalidInput() {
+	void getSurveyQuestionTest_QuestionNotFound() {
 		
 		Mockito.when(service.getSurveyQuestion(surveyQuestion.getId())).thenReturn(null);
 		
 		try {					
 			this.webClient.get().uri("/question/" + surveyQuestion.getId()).accept(MediaType.APPLICATION_JSON).exchange()
-					.expectStatus().isBadRequest()
+					.expectStatus().isNotFound()
 					.expectBody().json("");
 			
 		} catch (Exception e) {
-			
-			fail("Exception thrown during call: " + e);
+			fail("Exception thrown during getSurveyQuestionTest_QuestionNotFound: " + e);
 		}
 	}
 }

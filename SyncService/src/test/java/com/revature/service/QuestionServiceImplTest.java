@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.revature.service;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -22,14 +19,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
-import com.revature.dto.SurveyQuestionDto;
 import com.revature.models.QuestionType;
 import com.revature.models.SurveyQuestion;
 import com.revature.repo.QuestionRepo;
 
 /**
- * @author Work From Home
- *
+ * Tests the {@link QuestionServiceImpl} and contained methods.
+ * @author Chris,
+ * @author Conner,
+ * @author Michael M,
+ * @author Michael Z,
+ * @author Prativa,
+ * @author Vincent
  */
 @SpringBootTest
 class QuestionServiceImplTest {
@@ -41,8 +42,6 @@ class QuestionServiceImplTest {
 	private QuestionRepo repo;
 	
 	private SurveyQuestion surveyQuestion;
-	
-	private SurveyQuestionDto surveyQuestionDto;
 
 	/**
 	 * @throws java.lang.Exception
@@ -66,7 +65,6 @@ class QuestionServiceImplTest {
 		List<String> questions = new ArrayList<String>();
 		questions.add("How are you?");
 		surveyQuestion = new SurveyQuestion(1, LocalDateTime.now(), QuestionType.SHORT_ANSWER, 1, questions);
-		surveyQuestionDto = new SurveyQuestionDto(surveyQuestion);
 	}
 
 	/**
@@ -76,8 +74,12 @@ class QuestionServiceImplTest {
 	void tearDown() throws Exception {
 	}
 
+	/**
+	 * Tests the getSurveyQuestion method of the {@link QuestionServiceImpl}
+	 * Ensures that given a valid surveyQuestion id, returns the expected {@link SurveyQuestion} object.
+	 */
 	@Test
-	void questionServiceImplTest_WithoutError() {
+	void getSurveyQuestionTest_WithoutError() {
 		
 		when(repo.getOne(surveyQuestion.getId())).thenReturn(surveyQuestion);
 		
@@ -85,12 +87,18 @@ class QuestionServiceImplTest {
 		
 		verify(repo).getOne(surveyQuestion.getId());
 		
-		assertEquals(surveyQuestion, returned, "Object returned does not match expected.");
-		
+		assertEquals(surveyQuestion, returned, "QuestionServiceImpl.getSurveyQuestion("+ surveyQuestion.getId() 
+												+") returned mismatched SurveyQuestion object in "
+												+"getSurveyQuestionTest_WithoutError");	
 	}
 	
+	/**
+	 * Tests the getSurveyQuestion method of the {@link QuestionServiceImpl}
+	 * Ensures that given a valid surveyQuestion id, if the repo throws an EntityNotFound Exception,
+	 * the service will return null.
+	 */
 	@Test
-	void questionServiceImplTest_InvalidInput() {
+	void getSurveyQuestionTest_QuestionNotFound() {
 		
 		when(repo.getOne(surveyQuestion.getId())).thenThrow(EntityNotFoundException.class);
 		
@@ -98,34 +106,8 @@ class QuestionServiceImplTest {
 		
 		verify(repo).getOne(surveyQuestion.getId());
 		
-		assertEquals(null, returned, "Object returned does not match expected.");
-		
+		assertEquals(null, returned, "QuestionServiceImpl.getSurveyQuestion("+ surveyQuestion.getId() 
+									+") did not return null when repo threw EntityNotFoundException in "
+									+"getSurveyQuestionTest_QuestionNotFound");	
 	}
-	
-	@Test
-	void questionServiceImplTest_PostWithoutError() {
-		when(repo.save(surveyQuestion)).thenReturn(surveyQuestion);
-		
-		SurveyQuestion returned = service.createSurveyQuestion(surveyQuestionDto);
-		
-		verify(repo).save(returned);
-		
-		assertEquals(surveyQuestion, returned, "Object returned does not match expected.");
-		
-	}
-
-	
-	@Test
-	void questionServiceImplTest_PostInvalidInput() {
-		
-		when(repo.save(surveyQuestion)).thenThrow(NullPointerException.class);
-		
-		SurveyQuestion returned = service.createSurveyQuestion(surveyQuestionDto);
-		
-		verify(repo).save(surveyQuestion);
-		
-		assertEquals(null, returned, "Object returned does not match expected.");
-		
-	}
-
 }

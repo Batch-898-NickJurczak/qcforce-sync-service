@@ -9,8 +9,13 @@ import org.springframework.stereotype.Repository;
 import com.revature.models.SurveyQuestion;
 
 /**
- * @author Work From Home
- *
+ * A JpaRepository implementation for interacting with {@link SurveyQuestion} objects stored in the database.
+ * @author Chris,
+ * @author Conner,
+ * @author Michael M,
+ * @author Michael Z,
+ * @author Prativa,
+ * @author Vincent
  */
 @Repository
 public interface QuestionRepo extends JpaRepository<SurveyQuestion, Integer>{
