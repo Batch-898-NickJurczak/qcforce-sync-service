@@ -3,6 +3,7 @@ package com.revature.controllers;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -30,7 +31,7 @@ public class QuestionController {
 	 * @return A promise for a {@link SurveyQuestion} object.
 	 */
 	@GetMapping("/question/{id}")
-	private Mono<SurveyQuestion> getQuestion() {
+	public Mono<SurveyQuestion> getQuestion(@PathVariable("id") int id) {
 		
 		return null;
 	}
@@ -42,7 +43,7 @@ public class QuestionController {
 	 * @return A promise for a newly created {@link SurveyQuestion} object.
 	 */
 	@PostMapping
-	private Mono<SurveyQuestion> createQuestion(@RequestBody SurveyQuestionDto surveyQuestionDto) {
+	public Mono<SurveyQuestion> createQuestion(@RequestBody SurveyQuestionDto surveyQuestionDto) {
 		return null;
 	}
 
