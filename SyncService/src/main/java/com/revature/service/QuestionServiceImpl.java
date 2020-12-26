@@ -3,6 +3,7 @@ package com.revature.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.revature.dto.SurveyQuestionDto;
 import com.revature.models.SurveyQuestion;
 import com.revature.repo.QuestionRepo;
 
@@ -42,5 +43,16 @@ public class QuestionServiceImpl implements QuestionService {
 	public SurveyQuestion getSurveyQuestion(int id) {
 		
 		return questionRepo.getOne(id);
+	}
+	
+	/**
+	 * Creates a {@link SurveyQuestion} object given a {@link SurveyQuestionDto} input from the user.
+	 * @param surveyQuestionDto The {@link SurveyQuestionDto} object that the user will input.
+	 * @return {@link SurveyQuestion}
+	 */
+	@Override
+	public SurveyQuestion createSurveyQuestion(SurveyQuestionDto surveyQuestionDto) {
+		SurveyQuestion surveyQuestion = surveyQuestionDto.toPojo();
+		return questionRepo.save(surveyQuestion);
 	}
 }

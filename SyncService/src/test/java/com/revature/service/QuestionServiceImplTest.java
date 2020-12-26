@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
+import com.revature.dto.SurveyQuestionDto;
 import com.revature.models.QuestionType;
 import com.revature.models.SurveyQuestion;
 import com.revature.repo.QuestionRepo;
@@ -42,6 +43,8 @@ class QuestionServiceImplTest {
 	private QuestionRepo repo;
 	
 	private SurveyQuestion surveyQuestion;
+	
+	private SurveyQuestionDto surveyQuestionDto;
 
 	/**
 	 * @throws java.lang.Exception
@@ -65,6 +68,7 @@ class QuestionServiceImplTest {
 		List<String> questions = new ArrayList<String>();
 		questions.add("How are you?");
 		surveyQuestion = new SurveyQuestion(1, LocalDateTime.now(), QuestionType.SHORT_ANSWER, 1, questions);
+		surveyQuestionDto = new SurveyQuestionDto(surveyQuestion);
 	}
 
 	/**
@@ -109,5 +113,44 @@ class QuestionServiceImplTest {
 		assertEquals(null, returned, "QuestionServiceImpl.getSurveyQuestion("+ surveyQuestion.getId() 
 									+") did not return null when repo threw EntityNotFoundException in "
 									+"getSurveyQuestionTest_QuestionNotFound");	
+	}
+	
+
+	/**
+	 * Tests the createSurveyQuestion method of the {@link QuestionServiceImpl}
+	 * Ensures that given a valid surveyQuestionDto input, creates and returns the expected {@link SurveyQuestion} object.
+	 */
+	@Test
+	void createSurveyQuestionTest_WithoutError() {
+		when(repo.save(surveyQuestion)).thenReturn(surveyQuestion);
+		
+		SurveyQuestion returned = service.createSurveyQuestion(surveyQuestionDto);
+		
+		verify(repo).save(returned);
+		
+		assertEquals(surveyQuestion, returned, "QuestionServiceImpl.createSurveyQuestion("+ surveyQuestionDto 
+											 +") returned mismatched SurveyQuestion object in "
+											 +"createSurveyQuestionTest_WithoutError");
+		
+	}
+
+	/**
+	 * Tests the createSurveyQuestion method of the {@link QuestionServiceImpl}
+	 * Ensures that given a valid surveyQuestionDto input, if the repo throws an NullPointer Exception,
+	 * the service will return null.
+	 */
+	@Test
+	void createSurveyQuestionTest_NullInput() {
+		
+		when(repo.save(surveyQuestion)).thenThrow(NullPointerException.class);
+		
+		SurveyQuestion returned = service.createSurveyQuestion(surveyQuestionDto);
+		
+		verify(repo).save(surveyQuestion);
+		
+		assertEquals(null, returned, "QuestionServiceImpl.createSurveyQuestion("+ surveyQuestionDto 
+									 +") did not return null when repo threw NullPointerException in "
+									 +"createSurveyQuestionTest_NullInput");	
+		
 	}
 }

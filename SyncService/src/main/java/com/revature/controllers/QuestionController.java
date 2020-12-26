@@ -3,8 +3,11 @@ package com.revature.controllers;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.revature.dto.SurveyQuestionDto;
 import com.revature.models.SurveyQuestion;
 
 import reactor.core.publisher.Mono;
@@ -30,5 +33,17 @@ public class QuestionController {
 	private Mono<SurveyQuestion> getQuestion() {
 		
 		return null;
-	}	
+	}
+	
+
+	/**
+	 * Create a {@link SurveyQuestion} that will be inserted into the database.
+	 * @param surveyQuestionDto The user input of {@link SurveyQuestionDto}
+	 * @return A promise for a newly created {@link SurveyQuestion} object.
+	 */
+	@PostMapping
+	private Mono<SurveyQuestion> createQuestion(@RequestBody SurveyQuestionDto surveyQuestionDto) {
+		return null;
+	}
+
 }
