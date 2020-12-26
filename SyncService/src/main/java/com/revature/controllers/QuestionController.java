@@ -2,7 +2,9 @@ package com.revature.controllers;
 
 
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.revature.models.SurveyQuestion;
@@ -25,10 +27,20 @@ public class QuestionController {
 	/**
 	 * Retrieve a {@link SurveyQuestion} that matches the given id.
 	 * @return A promise for a {@link SurveyQuestion} object.
+	 * @param id The id of the {@link SurveyQuestion} object to retrieve.
 	 */
 	@GetMapping("/question/{id}")
-	private Mono<SurveyQuestion> getQuestion() {
+	public Mono<SurveyQuestion> getQuestion(@PathVariable("id") int id) {
 		
 		return null;
-	}	
+	}
+	
+	/**
+	 * Delete a {@link SurveyQuestion} that matches the given id.
+	 * @param id The id of the {@link SurveyQuestion} object to delete.
+	 */
+	@DeleteMapping("/question/{id}")
+	public void deleteQuestion(@PathVariable("id") int id) {
+		// TODO: make this
+	}
 }

@@ -27,6 +27,7 @@ import com.revature.service.QuestionService;
 
 /**
  * Tests the {@link QuestionController} and contained methods.
+ * 
  * @author Chris,
  * @author Conner,
  * @author Michael M,
@@ -36,17 +37,17 @@ import com.revature.service.QuestionService;
  */
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 class QuestionControllerTest {
-	
-    @Autowired
-    private WebTestClient webClient;
-	
+
+	@Autowired
+	private WebTestClient webClient;
+
 	@MockBean
 	private QuestionService service;
-	
+
 	private SurveyQuestion surveyQuestion;
-	
+
 	private String surveyQuestionJson;
-	
+
 	/**
 	 * @throws java.lang.Exception
 	 */
@@ -66,13 +67,13 @@ class QuestionControllerTest {
 	 */
 	@BeforeEach
 	void setUp() throws Exception {
-		
+
 		List<String> questions = new ArrayList<String>();
 		questions.add("How are you?");
 		surveyQuestion = new SurveyQuestion(1, LocalDateTime.now(), QuestionType.SHORT_ANSWER, 1, questions);
-		
+
 		// writing value as a Json string
-		ObjectMapper om	= new ObjectMapper();
+		ObjectMapper om = new ObjectMapper();
 		surveyQuestionJson = om.writeValueAsString(new SurveyQuestionDto(surveyQuestion));
 	}
 
@@ -84,42 +85,78 @@ class QuestionControllerTest {
 	}
 
 	/**
-	 * Tests the getSurveyQuestion method of the {@link QuestionController}
-	 * Ensures that given a valid surveyQuestion id, returns the expected {@link SurveyQuestion} object.
+	 * Tests the getSurveyQuestion method of the {@link QuestionController} Ensures
+	 * that given a valid surveyQuestion id, returns the expected
+	 * {@link SurveyQuestion} object.
 	 */
 	@Test
 	void getSurveyQuestionTest_WithoutError() {
-		
+
 		Mockito.when(service.getSurveyQuestion(surveyQuestion.getId())).thenReturn(surveyQuestion);
-		
+
 		// Test actual method utilizing the webClient
-		try {			
-			this.webClient.get().uri("/question/" + surveyQuestion.getId()).accept(MediaType.APPLICATION_JSON).exchange()
-									.expectStatus().isOk()
-									.expectBody().json(surveyQuestionJson);
-			
+		try {
+			this.webClient.get().uri("/question/" + surveyQuestion.getId()).accept(MediaType.APPLICATION_JSON)
+					.exchange().expectStatus().isOk().expectBody().json(surveyQuestionJson);
+
 		} catch (Exception e) {
 			fail("Exception thrown during getSurveyQuestionTest_WithoutError: " + e);
 		}
 	}
-	
+
 	/**
-	 * Tests the getSurveyQuestion method of the {@link QuestionController}
-	 * Ensures that given a valid surveyQuestion id, if the service returns null, 
-	 * then the controller returns an empty Json object as well as a NotFound status code.
+	 * Tests the getSurveyQuestion method of the {@link QuestionController} Ensures
+	 * that given a valid surveyQuestion id, if the service returns null, then the
+	 * controller returns an empty Json object as well as a NotFound status code.
 	 */
 	@Test
 	void getSurveyQuestionTest_QuestionNotFound() {
-		
+
 		Mockito.when(service.getSurveyQuestion(surveyQuestion.getId())).thenReturn(null);
-		
-		try {					
-			this.webClient.get().uri("/question/" + surveyQuestion.getId()).accept(MediaType.APPLICATION_JSON).exchange()
-					.expectStatus().isNotFound()
-					.expectBody().json("");
-			
+
+		try {
+			this.webClient.get().uri("/question/" + surveyQuestion.getId()).accept(MediaType.APPLICATION_JSON)
+					.exchange().expectStatus().isNotFound().expectBody().json("");
+
 		} catch (Exception e) {
 			fail("Exception thrown during getSurveyQuestionTest_QuestionNotFound: " + e);
+		}
+	}
+
+	/**
+	 * Tests the deleteSurveyQuestion method of the {@link QuestionController}
+	 * Ensures that given a valid surveyQuestion id, returns true as expected.
+	 */
+	@Test
+	void deleteSurveyQuestionTest_WithoutError() {
+
+		Mockito.when(service.deleteSurveyQuestion(surveyQuestion.getId())).thenReturn(true);
+
+		// Test actual method utilizing the webClient
+		try {
+			this.webClient.get().uri("/question/" + surveyQuestion.getId()).exchange().expectStatus().isOk();
+
+		} catch (Exception e) {
+			fail("Exception thrown during deleteSurveyQuestionTest_WithoutError: " + e);
+		}
+	}
+
+	/**
+	 * Tests the deleteSurveyQuestion method of the {@link QuestionController}
+	 * Ensures that given a valid surveyQuestion id, if the service returns false,
+	 * then controller returns a 'not found' status code
+	 */
+	@Test
+	void deleteSurveyQuestionTest_QuestionNotFound() {
+
+		Mockito.when(service.deleteSurveyQuestion(surveyQuestion.getId())).thenReturn(false);
+
+		try {
+			this.webClient.get().uri("/question/" + surveyQuestion.getId())
+					.exchange().expectStatus().isNotFound();
+
+		} catch (Exception e) {
+			fail("Exception thrown during deleteSurveyQuestionTest_QuestionNotFound: " + e);
 		}
 	}
 }

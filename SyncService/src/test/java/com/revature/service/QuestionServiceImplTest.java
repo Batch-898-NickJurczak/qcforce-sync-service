@@ -1,6 +1,7 @@
 package com.revature.service;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -25,6 +26,7 @@ import com.revature.repo.QuestionRepo;
 
 /**
  * Tests the {@link QuestionServiceImpl} and contained methods.
+ * 
  * @author Chris,
  * @author Conner,
  * @author Michael M,
@@ -34,13 +36,13 @@ import com.revature.repo.QuestionRepo;
  */
 @SpringBootTest
 class QuestionServiceImplTest {
-	
+
 	@Autowired
 	private QuestionService service;
-	
+
 	@MockBean
 	private QuestionRepo repo;
-	
+
 	private SurveyQuestion surveyQuestion;
 
 	/**
@@ -75,39 +77,88 @@ class QuestionServiceImplTest {
 	}
 
 	/**
-	 * Tests the getSurveyQuestion method of the {@link QuestionServiceImpl}
-	 * Ensures that given a valid surveyQuestion id, returns the expected {@link SurveyQuestion} object.
+	 * Tests the getSurveyQuestion method of the {@link QuestionServiceImpl} Ensures
+	 * that given a valid surveyQuestion id, returns the expected
+	 * {@link SurveyQuestion} object.
 	 */
 	@Test
 	void getSurveyQuestionTest_WithoutError() {
-		
+
 		when(repo.getOne(surveyQuestion.getId())).thenReturn(surveyQuestion);
-		
+
 		SurveyQuestion returned = service.getSurveyQuestion(surveyQuestion.getId());
-		
+
 		verify(repo).getOne(surveyQuestion.getId());
-		
-		assertEquals(surveyQuestion, returned, "QuestionServiceImpl.getSurveyQuestion("+ surveyQuestion.getId() 
-												+") returned mismatched SurveyQuestion object in "
-												+"getSurveyQuestionTest_WithoutError");	
+
+		assertEquals(surveyQuestion, returned, "QuestionServiceImpl.getSurveyQuestion(" + surveyQuestion.getId()
+				+ ") returned mismatched SurveyQuestion object in " + "getSurveyQuestionTest_WithoutError");
 	}
-	
+
 	/**
-	 * Tests the getSurveyQuestion method of the {@link QuestionServiceImpl}
-	 * Ensures that given a valid surveyQuestion id, if the repo throws an EntityNotFound Exception,
-	 * the service will return null.
+	 * Tests the getSurveyQuestion method of the {@link QuestionServiceImpl} Ensures
+	 * that given a valid surveyQuestion id, if the repo throws an EntityNotFound
+	 * Exception, the service will return null.
 	 */
 	@Test
 	void getSurveyQuestionTest_QuestionNotFound() {
-		
+
 		when(repo.getOne(surveyQuestion.getId())).thenThrow(EntityNotFoundException.class);
-		
+
 		SurveyQuestion returned = service.getSurveyQuestion(surveyQuestion.getId());
-		
+
 		verify(repo).getOne(surveyQuestion.getId());
-		
-		assertEquals(null, returned, "QuestionServiceImpl.getSurveyQuestion("+ surveyQuestion.getId() 
-									+") did not return null when repo threw EntityNotFoundException in "
-									+"getSurveyQuestionTest_QuestionNotFound");	
+
+		assertEquals(null, returned,
+				"QuestionServiceImpl.getSurveyQuestion(" + surveyQuestion.getId()
+						+ ") did not return null when repo threw EntityNotFoundException in "
+						+ "getSurveyQuestionTest_QuestionNotFound");
+	}
+
+	/**
+	 * Tests the deleteSurveyQuestion method of the {@link QuestionServiceImpl}
+	 * Ensures that given a valid surveyQuestion id, method returns true.
+	 */
+	@Test
+	void deleteSurveyQuestionTest_WithoutError() {
+
+		try {
+			boolean returned = service.deleteSurveyQuestion(surveyQuestion.getId());
+
+			verify(repo).deleteById(surveyQuestion.getId());
+			assertTrue(returned, "QuestionServiceImpl.getSurveyQuestion(" + surveyQuestion.getId()
+					+ ") did not return true as expected.");
+
+		} catch (EntityNotFoundException e) {
+			fail("EntityNotFoundException not caught by QuestionServiceImpl in "
+					+ "deleteSurveyQuestionTest_WithoutError: " + e);
+		} catch (Exception e) {
+			fail("Exception thrown by QuestionServiceImpl in deleteSurveyQuestionTest_WithoutError: " + e);
+		}
+	}
+
+	/**
+	 * Tests the deleteSurveyQuestion method of the {@link QuestionServiceImpl}
+	 * Ensures that given a valid surveyQuestion id, if the repo throws an
+	 * EntityNotFound Exception, the service will return false.
+	 */
+	@Test
+	void deleteSurveyQuestionTest_QuestionNotFound() {
+
+		try {	
+			doThrow(EntityNotFoundException.class).when(repo).deleteById(surveyQuestion.getId());
+
+			boolean returned = service.deleteSurveyQuestion(surveyQuestion.getId());
+
+			verify(repo).deleteById(surveyQuestion.getId());
+
+			assertFalse(returned, "QuestionServiceImpl.getSurveyQuestion(" + surveyQuestion.getId()
+					+ ") did not return false as expected.");
+			
+		} catch (EntityNotFoundException e) {
+			fail("EntityNotFoundException not caught by QuestionServiceImpl in "
+					+ "deleteSurveyQuestionTest_QuestionNotFound: " + e);
+		} catch (Exception e) {
+			fail("Exception thrown by QuestionServiceImpl in deleteSurveyQuestionTest_QuestionNotFound: " + e);
+		}
 	}
 }

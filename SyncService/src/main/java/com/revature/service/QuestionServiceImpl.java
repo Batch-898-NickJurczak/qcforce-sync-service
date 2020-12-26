@@ -43,4 +43,15 @@ public class QuestionServiceImpl implements QuestionService {
 		
 		return questionRepo.getOne(id);
 	}
+
+	/**
+	 * Deletes a {@link SurveyQuestion} object that relates to given id.
+	 * @param id The id of the SurveyQuestion object.
+	 * @return true if successful
+	 */
+	@Override
+	public boolean deleteSurveyQuestion(int id) {
+		// TODO make this
+		return false;
+	}
 }
