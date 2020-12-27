@@ -22,6 +22,23 @@ public class SurveyQuestionResponse {
     private int version;
     
     private List<String> answer;
+    
+    
+
+	public SurveyQuestionResponse() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+	public SurveyQuestionResponse(SurveyQuestion surveyQuestion, LocalDateTime createdOn, QuestionType type,
+			int version, List<String> answer) {
+		super();
+		this.surveyQuestion = surveyQuestion;
+		this.createdOn = createdOn;
+		this.type = type;
+		this.version = version;
+		this.answer = answer;
+	}
 
 	public SurveyQuestion getSurveyQuestion() {
 		return surveyQuestion;
