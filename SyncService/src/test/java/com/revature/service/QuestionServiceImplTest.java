@@ -136,13 +136,13 @@ class QuestionServiceImplTest {
 
 	/**
 	 * Tests the createSurveyQuestion method of the {@link QuestionServiceImpl}
-	 * Ensures that given a valid surveyQuestionDto input, if the repo throws an NullPointer Exception,
+	 * Ensures that given a valid surveyQuestionDto input, if the repo throws an IllegalArgumentException Exception,
 	 * the service will return null.
 	 */
 	@Test
 	void createSurveyQuestionTest_NullInput() {
 		
-		when(repo.save(surveyQuestion)).thenThrow(NullPointerException.class);
+		when(repo.save(surveyQuestion)).thenThrow(IllegalArgumentException.class);
 		
 		SurveyQuestion returned = service.createSurveyQuestion(surveyQuestionDto);
 		
