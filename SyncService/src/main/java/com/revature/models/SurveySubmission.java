@@ -10,30 +10,86 @@ import com.revature.domain.Employee;
  * 
  * @author Hannah and Brett
  * 
- * This class represents a completed and submitted survey. It corresponds to a previously created survey (by an admin)
- * and contains a list of responses to questions on that survey. Each response in the response list contains the ID
- * of a question on the created Survey.
+ *         This class represents a completed and submitted survey. It
+ *         corresponds to a previously created survey (by an admin) and contains
+ *         a list of responses to questions on that survey. Each response in the
+ *         response list contains the ID of a question on the created Survey.
  */
 public class SurveySubmission {
 
 	private Survey survey;
-	
+
+	private int surveySubmissionId;
+
 	private Employee takenBy;
-	
+
 	private Batch batch;
-	
+
 	private LocalDateTime createdOn;
-	
+
 	private List<SurveyQuestionResponse> answers;
 
-	public SurveySubmission(Survey survey, Employee takenBy, Batch batch, LocalDateTime createdOn,
+	public SurveySubmission(Survey survey, int surveySubmissionId, Employee takenBy, Batch batch, LocalDateTime createdOn,
 			List<SurveyQuestionResponse> answers) {
 		super();
 		this.survey = survey;
+		this.surveySubmissionId = surveySubmissionId;
 		this.takenBy = takenBy;
 		this.batch = batch;
 		this.createdOn = createdOn;
 		this.answers = answers;
+	}
+
+	public SurveySubmission() {
+		// TODO Auto-generated constructor stub
+	}
+
+	public Survey getSurvey() {
+		return survey;
+	}
+
+	public void setSurvey(Survey survey) {
+		this.survey = survey;
+	}
+
+	public Employee getTakenBy() {
+		return takenBy;
+	}
+
+	public void setTakenBy(Employee takenBy) {
+		this.takenBy = takenBy;
+	}
+
+	public Batch getBatch() {
+		return batch;
+	}
+
+	public void setBatch(Batch batch) {
+		this.batch = batch;
+	}
+
+	public LocalDateTime getCreatedOn() {
+		return createdOn;
+	}
+
+	public void setCreatedOn(LocalDateTime createdOn) {
+		this.createdOn = createdOn;
+	}
+
+	public List<SurveyQuestionResponse> getAnswers() {
+		return answers;
+	}
+
+	public void setAnswers(List<SurveyQuestionResponse> answers) {
+		this.answers = answers;
+	}
+
+	public int getSurveySubmissionId() {
+		return surveySubmissionId;
+	}
+
+	public void setSurveySubmissionId(int surveySubmissionId) {
+		this.surveySubmissionId = surveySubmissionId;
 	}
 
 	@Override
@@ -44,6 +100,7 @@ public class SurveySubmission {
 		result = prime * result + ((batch == null) ? 0 : batch.hashCode());
 		result = prime * result + ((createdOn == null) ? 0 : createdOn.hashCode());
 		result = prime * result + ((survey == null) ? 0 : survey.hashCode());
+		result = prime * result + surveySubmissionId;
 		result = prime * result + ((takenBy == null) ? 0 : takenBy.hashCode());
 		return result;
 	}
@@ -77,6 +134,8 @@ public class SurveySubmission {
 				return false;
 		} else if (!survey.equals(other.survey))
 			return false;
+		if (surveySubmissionId != other.surveySubmissionId)
+			return false;
 		if (takenBy == null) {
 			if (other.takenBy != null)
 				return false;
@@ -87,9 +146,8 @@ public class SurveySubmission {
 
 	@Override
 	public String toString() {
-		return "SurveySubmission [survey=" + survey + ", takenBy=" + takenBy + ", batch=" + batch + ", createdOn="
-				+ createdOn + ", answers=" + answers + "]";
+		return "SurveySubmission [survey=" + survey + ", surveySubmission=" + surveySubmissionId + ", takenBy=" + takenBy
+				+ ", batch=" + batch + ", createdOn=" + createdOn + ", answers=" + answers + "]";
 	}
-	
-	
+
 }
