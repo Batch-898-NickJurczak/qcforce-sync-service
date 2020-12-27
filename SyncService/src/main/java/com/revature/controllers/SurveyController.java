@@ -13,6 +13,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import com.revature.models.Survey;
 import com.revature.service.SurveyService;
 
+/**
+ * Survey Controller
+ * Handles Get, Post, Put, and Delete requests coming from User Interface
+ * Communicates with Survey service to handle the requests
+ * @authors Brett and Hannah
+ *
+ */
 public class SurveyController {
 	
 	/**
@@ -50,7 +57,7 @@ public class SurveyController {
 	public void deleteSurvey(@PathParam("surveyId") int surveyId) {
 		Survey survey = new Survey();
 		survey.setId(surveyId);
-		surveyService.deleteSurvey(surveyId);
+		surveyService.deleteSurvey(survey);
 	}
 	
 	
@@ -59,7 +66,9 @@ public class SurveyController {
 	 */
 	@GetMapping("/survey/{id}")
 	public Survey getSurveyById(@PathVariable("surveyId") int surveyId) {
+		
 		return surveyService.getSurvey(surveyId);
+		
 	}
 }
 

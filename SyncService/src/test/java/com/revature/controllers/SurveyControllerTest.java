@@ -22,6 +22,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -38,7 +39,7 @@ import com.revature.service.SurveyService;
 class SurveyControllerTest {
 
 	@Autowired
-	private MockMvc mvc;
+	private WebTestClient webClient;
 
 	@MockBean
 	private SurveyService serviceSurvey;
@@ -94,19 +95,80 @@ class SurveyControllerTest {
 	void tearDown() throws Exception {
 	}
 
+	/**
+	 * Tests if the id passed in through the url does not exist in the database
+	 * @authors Alma and Yara
+	 */
 	@Test
-	void getSurveyByIdTest() {
+	void getSurveyById_SurveyDoesNotExist() {
 
 		Mockito.when(serviceSurvey.getSurvey(survey.getId())).thenReturn(null);
 
 		try {
 
-			this.mvc.perform(get("/survey/" + survey.getId())).andExpect(status().isBadRequest())
-					.andExpect(content().json(""));
+			this.mvc.perform(get("/survey/" + survey.getId())).andExpect(content().json(""));
 
 		} catch (Exception e) {
 			fail("Exception thrown during  get survey by id test " + e);
 		}
+		
+//		Mockito.when(service.getSurveyQuestion(surveyQuestion.getId())).thenReturn(null);
+//		
+//		try {					
+//			this.webClient.get().uri("/question/" + surveyQuestion.getId()).accept(MediaType.APPLICATION_JSON).exchange()
+//					.expectStatus().isNotFound()
+//					.expectBody().json("");
+//			
+//		} catch (Exception e) {
+//			fail("Exception thrown during getSurveyQuestionTest_QuestionNotFound: " + e);
+//		}
 
 	}
+	
+
+	
+	/**
+	 * Happy path test: ID passed through path param corresponds with an ID that exists in the database. Should return a
+	 * mocked "existing" survey
+	 * @authors Brett and Hannah
+	 */
+	@Test
+	void getSurveyById_WithoutErrors() {
+		Mockito.when(serviceSurvey.getSurvey(survey.getId())).thenReturn(survey);
+
+		try {
+
+			this.mvc.perform(get("/survey/" + survey.getId())).andExpect(status().isOk())
+					.andExpect(content().json(surveyJson));
+
+		} catch (Exception e) {
+			fail("Exception thrown during  get survey by id test " + e);
+		}
+//Mockito.when(service.getSurveyQuestion(surveyQuestion.getId())).thenReturn(surveyQuestion);
+//		
+//		// Test actual method utilizing the webClient
+//		try {			
+//			this.webClient.get().uri("/question/" + surveyQuestion.getId()).accept(MediaType.APPLICATION_JSON).exchange()
+//									.expectStatus().isOk()
+//									.expectBody().json(surveyQuestionJson);
+//			
+//		} catch (Exception e) {
+//			fail("Exception thrown during getSurveyQuestionTest_WithoutError: " + e);
+//		}
+
+	}
+	
+	/**
+	 * get request (controller)
+	(database / tested dao)
+	Compare id from the survey with the survey url sent on email
+	id is valid ; id number isnt 0
+
+	Example:
+	/survey/{id}
+	 */
+	
+	
+
+
 }
