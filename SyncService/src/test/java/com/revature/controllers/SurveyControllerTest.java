@@ -1,7 +1,19 @@
 package com.revature.controllers;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.revature.dto.SurveyFormDto;
+import com.revature.dto.SurveyQuestionDto;
+import com.revature.models.QuestionType;
 import com.revature.models.SurveyForm;
+import com.revature.models.SurveyQuestion;
 import com.revature.service.SurveyService;
+
+import static org.junit.jupiter.api.Assertions.fail;
+import static org.mockito.Mockito.when;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
@@ -12,6 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
 /**
@@ -24,7 +37,7 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 public class SurveyControllerTest {
     
-    @Autowired
+	@Autowired
     private WebTestClient webClient;
 	
 	@MockBean
@@ -32,7 +45,7 @@ public class SurveyControllerTest {
 	
 	private SurveyForm surveyForm;
 	
-	private String surveyFormJson;
+	private SurveyQuestion surveyQuestion;
 	
 	/**
 	 * @throws java.lang.Exception
@@ -53,6 +66,17 @@ public class SurveyControllerTest {
 	 */
 	@BeforeEach
 	void setUp() throws Exception {
+	
+		List<String> questions = new ArrayList<String>();
+        questions.add("How are you?");
+        surveyQuestion = new SurveyQuestion(1, LocalDateTime.now(), QuestionType.SHORT_ANSWER, 1, questions);
+
+        List<SurveyQuestion> surveyQuestions = new ArrayList<>(1);
+        surveyQuestions.add(surveyQuestion);
+        
+        surveyForm = new SurveyForm(1, "Wezley's Survey", "Wezley Singleton", 
+                                    LocalDateTime.now(), 1, surveyQuestions);
+	
 	}
 
 	/**
@@ -62,10 +86,41 @@ public class SurveyControllerTest {
 	void tearDown() throws Exception {
     }
     
-    /**
-     * Add comments to what this tests for each test
+	/**
+     * Tests the updateSurvey method of the {@link SurveyController}.
+     * Ensures that the given valid {@link SurveyFormDto}
+     * returns the expected ok status.
      */
     @Test
-	void methodYouAreTestingTest_WhatPathIsThisTestTaking() {
+	void updateSurveyTest_WithoutError() {
+    	when(service.updateSurveyForm(surveyForm, surveyForm.getId())).thenReturn(true);
+    	
+    	try {
+    		this.webClient.put().uri("/survey" + surveyForm.getId()).accept(MediaType.APPLICATION_JSON)
+    		.exchange()
+    		.expectStatus().isOk();
+    	}catch (Exception e) {
+    		
+    		fail("Exception thrown during createSurveyTest_WithoutError: " + e);
+    	}
+    }
+    
+    /**
+     * Tests the updateSurvey method of the {@link SurveyController}.
+     * Ensures that the given null input
+     * returns the expected bad request status.
+     */
+    @Test
+	void updateSurveyTest_NullInput() {
+    	when(service.updateSurveyForm(surveyForm, surveyForm.getId())).thenReturn(false);
+    	
+    	try {
+    		this.webClient.put().uri("/survey" + surveyForm.getId()).accept(MediaType.APPLICATION_JSON)
+    		.exchange()
+    		.expectStatus().isBadRequest();
+    	}catch (Exception e) {
+    		
+    		fail("Exception thrown during createSurveyTest_WithoutError: " + e);
+    	}
     }
 }
