@@ -39,7 +39,7 @@ import com.revature.service.SurveyService;
 class SurveyControllerTest {
 
 	@Autowired
-	private WebTestClient webClient;
+	private MockMvc mvc;
 
 	@MockBean
 	private SurveyService serviceSurvey;
@@ -112,17 +112,6 @@ class SurveyControllerTest {
 			fail("Exception thrown during  get survey by id test " + e);
 		}
 		
-//		Mockito.when(service.getSurveyQuestion(surveyQuestion.getId())).thenReturn(null);
-//		
-//		try {					
-//			this.webClient.get().uri("/question/" + surveyQuestion.getId()).accept(MediaType.APPLICATION_JSON).exchange()
-//					.expectStatus().isNotFound()
-//					.expectBody().json("");
-//			
-//		} catch (Exception e) {
-//			fail("Exception thrown during getSurveyQuestionTest_QuestionNotFound: " + e);
-//		}
-
 	}
 	
 
@@ -144,30 +133,11 @@ class SurveyControllerTest {
 		} catch (Exception e) {
 			fail("Exception thrown during  get survey by id test " + e);
 		}
-//Mockito.when(service.getSurveyQuestion(surveyQuestion.getId())).thenReturn(surveyQuestion);
-//		
-//		// Test actual method utilizing the webClient
-//		try {			
-//			this.webClient.get().uri("/question/" + surveyQuestion.getId()).accept(MediaType.APPLICATION_JSON).exchange()
-//									.expectStatus().isOk()
-//									.expectBody().json(surveyQuestionJson);
-//			
-//		} catch (Exception e) {
-//			fail("Exception thrown during getSurveyQuestionTest_WithoutError: " + e);
-//		}
+
 
 	}
 	
-	/**
-	 * get request (controller)
-	(database / tested dao)
-	Compare id from the survey with the survey url sent on email
-	id is valid ; id number isnt 0
 
-	Example:
-	/survey/{id}
-	 */
-	
 	
 
 
