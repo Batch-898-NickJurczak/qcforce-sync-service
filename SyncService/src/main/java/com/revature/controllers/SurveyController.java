@@ -27,7 +27,7 @@ public class SurveyController {
 	 * @param id The id of the {@link SurveyForm} object to retrieve.
 	 */
 	@GetMapping("/survey/{id}")
-	public Mono<SurveyForm> getQuestion(@PathVariable("id") int id) {
+	public Mono<SurveyForm> getSurvey(@PathVariable("id") int id) {
 		
 		return null;
 	}	
