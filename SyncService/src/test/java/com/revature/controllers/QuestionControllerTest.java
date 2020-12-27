@@ -45,7 +45,17 @@ class QuestionControllerTest {
 	
 	private SurveyQuestion surveyQuestion;
 	
+	private SurveyQuestionDto surveyQuestionDto;
+	
+	private List<SurveyQuestionDto> listOfSurveyQuestionsDto;
+	
+	private List<SurveyQuestion> listOfSurveyQuestions;
+	
+	private List<SurveyQuestion> emptyList;
+	
 	private String surveyQuestionJson;
+	
+	private String listOfSurveyQuestionsDtoJson;
 	
 	/**
 	 * @throws java.lang.Exception
@@ -70,10 +80,18 @@ class QuestionControllerTest {
 		List<String> questions = new ArrayList<String>();
 		questions.add("How are you?");
 		surveyQuestion = new SurveyQuestion(1, LocalDateTime.now(), QuestionType.SHORT_ANSWER, 1, questions);
+		listOfSurveyQuestions.add(surveyQuestion);
+		listOfSurveyQuestions.add(surveyQuestion);
+		surveyQuestionDto = new SurveyQuestionDto(surveyQuestion);
+		listOfSurveyQuestionsDto.add(surveyQuestionDto);
+		listOfSurveyQuestionsDto.add(surveyQuestionDto);
+		
 		
 		// writing value as a Json string
 		ObjectMapper om	= new ObjectMapper();
 		surveyQuestionJson = om.writeValueAsString(new SurveyQuestionDto(surveyQuestion));
+		listOfSurveyQuestionsDtoJson = om.writeValueAsString(listOfSurveyQuestionsDto);
+		
 	}
 
 	/**
@@ -120,6 +138,45 @@ class QuestionControllerTest {
 			
 		} catch (Exception e) {
 			fail("Exception thrown during getSurveyQuestionTest_QuestionNotFound: " + e);
+		}
+	}
+	
+	/**
+	 * Tests the getAllSurveyQuestions method of the {@link QuestionController}
+	 * Ensures that it returns the expected list of {@link SurveyQuestion} objects as a JSON.
+	 */
+	@Test
+	void getAllSurveyQuestionsTest_WithoutError() {
+		
+		Mockito.when(service.getAllSurveyQuestions()).thenReturn(listOfSurveyQuestions);
+		
+		// Test actual method utilizing the webClient
+		try {			
+			this.webClient.get().uri("/question").accept(MediaType.APPLICATION_JSON).exchange()
+									.expectStatus().isOk()
+									.expectBody().json(listOfSurveyQuestionsDtoJson);
+			
+		} catch (Exception e) {
+			fail("Exception thrown during getAllSurveyQuestionsTest_WithoutError: " + e);
+		}
+	}
+	
+	/**
+	 * Tests the getAllSurveyQuestions method of the {@link QuestionController}
+	 * Ensures that it returns an empty Json object, if the service returns an empty list.
+	 */
+	@Test
+	void getAllSurveyQuestionsTest_QuestionsNotFound() {
+		
+		Mockito.when(service.getAllSurveyQuestions()).thenReturn(emptyList);
+		
+		try {					
+			this.webClient.get().uri("/question").accept(MediaType.APPLICATION_JSON).exchange()
+					.expectStatus().isOk()
+					.expectBody().json("");
+			
+		} catch (Exception e) {
+			fail("Exception thrown during getAllSurveyQuestionsTest_QuestionsNotFound: " + e);
 		}
 	}
 }

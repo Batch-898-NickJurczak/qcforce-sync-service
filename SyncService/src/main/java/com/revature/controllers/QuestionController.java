@@ -1,10 +1,14 @@
 package com.revature.controllers;
 
 
+import java.util.List;
+
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.revature.dto.SurveyQuestionDto;
 import com.revature.models.SurveyQuestion;
 
 import reactor.core.publisher.Mono;
@@ -27,8 +31,17 @@ public class QuestionController {
 	 * @return A promise for a {@link SurveyQuestion} object.
 	 */
 	@GetMapping("/question/{id}")
-	private Mono<SurveyQuestion> getQuestion() {
+	public Mono<SurveyQuestion> getQuestion(@PathVariable("id") int id) {
 		
 		return null;
-	}	
+	}
+	
+	/**
+	 * Retrieve a list of {@link SurveyQuestion}.
+	 * @return A promise for a list of {@link SurveyQuestion} objects.
+	 */
+	@GetMapping("/question")
+	public Mono<List<SurveyQuestionDto>> getQuestions() {
+		return null;
+	}
 }

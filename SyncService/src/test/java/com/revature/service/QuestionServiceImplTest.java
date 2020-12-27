@@ -42,6 +42,8 @@ class QuestionServiceImplTest {
 	private QuestionRepo repo;
 	
 	private SurveyQuestion surveyQuestion;
+	private List<SurveyQuestion> listOfSurveyQuestions;
+	private List<SurveyQuestion> emptyList;
 
 	/**
 	 * @throws java.lang.Exception
@@ -65,6 +67,8 @@ class QuestionServiceImplTest {
 		List<String> questions = new ArrayList<String>();
 		questions.add("How are you?");
 		surveyQuestion = new SurveyQuestion(1, LocalDateTime.now(), QuestionType.SHORT_ANSWER, 1, questions);
+		listOfSurveyQuestions.add(surveyQuestion);
+		listOfSurveyQuestions.add(surveyQuestion);
 	}
 
 	/**
@@ -109,5 +113,41 @@ class QuestionServiceImplTest {
 		assertEquals(null, returned, "QuestionServiceImpl.getSurveyQuestion("+ surveyQuestion.getId() 
 									+") did not return null when repo threw EntityNotFoundException in "
 									+"getSurveyQuestionTest_QuestionNotFound");	
+	}
+	
+	/**
+	 * Tests the getAllSurveyQuestions method of the {@link QuestionServiceImpl}
+	 * Ensures that it returns the expected list of {@link SurveyQuestion} objects.
+	 */
+	@Test
+	void getAllSurveyQuestionsTest_WithoutError() {
+		
+		when(repo.findAll()).thenReturn(listOfSurveyQuestions);
+		
+		List<SurveyQuestion> returned = service.getAllSurveyQuestions();
+		
+		verify(repo).findAll();
+		
+		assertEquals(listOfSurveyQuestions, returned, "QuestionServiceImpl.getAllSurveyQuestions"
+												+ " returned mismatched SurveyQuestion object in "
+												+"getAllSurveyQuestionsTest_WithoutError");	
+	}
+	
+	/**
+	 * Tests the getAllSurveyQuestions method of the {@link QuestionServiceImpl}
+	 * Ensures that given an empty List of {@link SurveyQuestion}, the repo returns an empty list.
+	 * The service will return an empty list.
+	 */
+	@Test
+	void getAllSurveyQuestionsTest_QuestionsNotFound() {
+		
+		when(repo.findAll()).thenReturn(emptyList);
+		
+		List<SurveyQuestion> returned = service.getAllSurveyQuestions();
+		
+		verify(repo).findAll();
+		
+		assertEquals(emptyList, returned, "QuestionServiceImpl.getAllSurveyQuestions" 
+									+" did not return empty list in getSurveyQuestionTest_QuestionsNotFound");	
 	}
 }

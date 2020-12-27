@@ -1,5 +1,7 @@
 package com.revature.service;
 
+import java.util.List;
+
 import com.revature.models.SurveyQuestion;
 
 /**
@@ -19,5 +21,11 @@ public interface QuestionService {
 	 * @return {@link SurveyQuestion}
 	 */
 	public SurveyQuestion getSurveyQuestion(int id);
+	
+	/**
+	 * Retrieves a list of {@link SurveyQuestion} objects.
+	 * @return A list of {@link SurveyQuestion}.
+	 */
+	public List<SurveyQuestion> getAllSurveyQuestions();
 
 }

@@ -1,5 +1,7 @@
 package com.revature.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -42,5 +44,14 @@ public class QuestionServiceImpl implements QuestionService {
 	public SurveyQuestion getSurveyQuestion(int id) {
 		
 		return questionRepo.getOne(id);
+	}
+	
+	/**
+	 * Retrieves a list of {@link SurveyQuestion} objects.
+	 * @return A list of {@link SurveyQuestion}.
+	 */
+	@Override
+	public List<SurveyQuestion> getAllSurveyQuestions() {
+		return questionRepo.findAll();
 	}
 }
