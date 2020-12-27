@@ -134,7 +134,7 @@ class QuestionControllerTest {
 
 		// Test actual method utilizing the webClient
 		try {
-			this.webClient.get().uri("/question/" + surveyQuestion.getId()).exchange().expectStatus().isOk();
+			this.webClient.delete().uri("/question/" + surveyQuestion.getId()).exchange().expectStatus().isOk();
 
 		} catch (Exception e) {
 			fail("Exception thrown during deleteSurveyQuestionTest_WithoutError: " + e);
@@ -152,7 +152,7 @@ class QuestionControllerTest {
 		Mockito.when(service.deleteSurveyQuestion(surveyQuestion.getId())).thenReturn(false);
 
 		try {
-			this.webClient.get().uri("/question/" + surveyQuestion.getId())
+			this.webClient.delete().uri("/question/" + surveyQuestion.getId())
 					.exchange().expectStatus().isNotFound();
 
 		} catch (Exception e) {

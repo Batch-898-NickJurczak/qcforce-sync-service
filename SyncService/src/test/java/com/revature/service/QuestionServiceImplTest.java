@@ -125,7 +125,7 @@ class QuestionServiceImplTest {
 			boolean returned = service.deleteSurveyQuestion(surveyQuestion.getId());
 
 			verify(repo).deleteById(surveyQuestion.getId());
-			assertTrue(returned, "QuestionServiceImpl.getSurveyQuestion(" + surveyQuestion.getId()
+			assertTrue(returned, "QuestionServiceImpl.deleteSurveyQuestion(" + surveyQuestion.getId()
 					+ ") did not return true as expected.");
 
 		} catch (EntityNotFoundException e) {
@@ -151,7 +151,7 @@ class QuestionServiceImplTest {
 
 			verify(repo).deleteById(surveyQuestion.getId());
 
-			assertFalse(returned, "QuestionServiceImpl.getSurveyQuestion(" + surveyQuestion.getId()
+			assertFalse(returned, "QuestionServiceImpl.deleteSurveyQuestion(" + surveyQuestion.getId()
 					+ ") did not return false as expected.");
 			
 		} catch (EntityNotFoundException e) {
