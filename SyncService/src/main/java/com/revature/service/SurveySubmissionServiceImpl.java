@@ -14,6 +14,8 @@ public class SurveySubmissionServiceImpl implements SurveySubmissionService {
 
 	@Override
 	public SurveySubmission createSurveySubmission(SurveySubmission surveySubmission) {
+		//TODO call answersNotEmpty method here
+		//TODO call answersMatchQuestions method here
 		return submissionRepo.createSurveySubmission(surveySubmission);
 	}
 
@@ -26,5 +28,19 @@ public class SurveySubmissionServiceImpl implements SurveySubmissionService {
 	public int deleteSurveySubmission(SurveySubmission surveySubmission) {
 		return submissionRepo.deleteSurveySubmission(surveySubmission);
 	}
+
+	@Override
+	public boolean answersNotEmpty(SurveySubmission surveySubmission) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean answersMatchQuestions(SurveySubmission surveySubmission) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+	
+	
 	
 }

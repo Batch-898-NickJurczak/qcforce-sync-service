@@ -17,5 +17,8 @@ public interface SurveySubmissionService {
 	public SurveySubmission updateSurveySubmission(SurveySubmission surveySubmission);
 	
 	public int deleteSurveySubmission(SurveySubmission surveySubmission);
+	
+	public boolean answersNotEmpty(SurveySubmission surveySubmission);
 
+	public boolean answersMatchQuestions(SurveySubmission surveySubmission);
 }

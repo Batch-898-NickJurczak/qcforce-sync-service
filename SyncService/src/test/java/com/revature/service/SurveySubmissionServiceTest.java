@@ -1,12 +1,33 @@
 package com.revature.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.EntityNotFoundException;
+
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
+import com.revature.domain.Batch;
+import com.revature.domain.Employee;
 import com.revature.dto.SurveyQuestionDto;
+import com.revature.dto.SurveyQuestionResponseDto;
+import com.revature.models.QuestionType;
+import com.revature.models.Survey;
 import com.revature.models.SurveyQuestion;
 import com.revature.models.SurveyQuestionResponse;
+import com.revature.models.SurveySubmission;
 import com.revature.repo.SurveySubmissionRepo;
 
 /**
@@ -18,18 +39,26 @@ import com.revature.repo.SurveySubmissionRepo;
 class SurveySubmissionServiceTest {
 
 	@Autowired
-	private QuestionService service;
+	private SurveySubmissionService service;
 
 	@MockBean
 	private SurveySubmissionRepo repo;
 
+	private Survey survey;
+	
 	private SurveyQuestion surveyQuestion;
 
 	private SurveyQuestionDto surveyQuestionDto;
 	
+	private Batch batch;
+	
+	private Employee employee;
+	
 	private SurveyQuestionResponse response;
 	
 	private SurveyQuestionResponseDto responseDto;
+	
+	private SurveySubmission surveySubmission;
 
 	/**
 	 * @throws java.lang.Exception
@@ -54,6 +83,31 @@ class SurveySubmissionServiceTest {
 		questions.add("How are you?");
 		surveyQuestion = new SurveyQuestion(1, LocalDateTime.now(), QuestionType.SHORT_ANSWER, 1, questions);
 		surveyQuestionDto = new SurveyQuestionDto(surveyQuestion);
+		
+		List<SurveyQuestion> surveyQuestionList = new ArrayList<>();
+		
+		employee = new Employee();
+		
+		batch = new Batch();
+		
+		batch.setId(1);
+		
+		surveyQuestionList.add(surveyQuestion);
+		
+		List<String> answer = new ArrayList<String>();
+		answer.add("I am not doing so well");
+		
+		 response = new SurveyQuestionResponse(surveyQuestion, LocalDateTime.now(),
+				QuestionType.SHORT_ANSWER, 1, answer);
+		List<SurveyQuestionResponse> responseList = new ArrayList<>();
+		responseList.add(response);
+		
+		survey = new Survey(1, 1, "General inquiry", 2, LocalDateTime.now(), surveyQuestionList);
+		
+		surveySubmission = new SurveySubmission(survey, 1, employee, batch, LocalDateTime.now(),
+				responseList);
+		
+		
 	}
 
 	/**
@@ -64,77 +118,73 @@ class SurveySubmissionServiceTest {
 	}
 
 	/**
-	 * Tests the getSurveyQuestion method of the {@link QuestionServiceImpl} Ensures
-	 * that given a valid surveyQuestion id, returns the expected
-	 * {@link SurveyQuestion} object.
+	 * Tests the getSurveySubmission method of the {@link SurveySubmissionService} Ensures
+	 * that given a valid surveySubmission id, returns the expected
+	 * {@link SurveySubmission} object.
 	 */
 	@Test
-	void getSurveyQuestionTest_WithoutError() {
+	void getSurveySubmissionTest_WithoutError() {
 
-		when(repo.getOne(surveyQuestion.getId())).thenReturn(surveyQuestion);
+		when(repo.getSurveySubmission(surveySubmission.getSurveySubmissionId())).thenReturn(surveySubmission);
 
-		SurveyQuestion returned = service.getSurveyQuestion(surveyQuestion.getId());
+		SurveySubmission returned = service.getSurveySubmission((surveySubmission.getSurveySubmissionId()));
 
-		verify(repo).getOne(surveyQuestion.getId());
+		verify(repo).getSurveySubmission(surveySubmission.getSurveySubmissionId());
 
-		assertEquals(surveyQuestion, returned, "QuestionServiceImpl.getSurveyQuestion(" + surveyQuestion.getId()
-				+ ") returned mismatched SurveyQuestion object in " + "getSurveyQuestionTest_WithoutError");
+		assertEquals(surveySubmission, returned, "SurveySubmissionServiceImpl.getSurveySubmission(" + surveySubmission.getSurveySubmissionId()
+				+ ") returned mismatched SurveySubmission object in " + "getSurveySubmissionTest_WithoutError");
 	}
 
 	/**
-	 * Tests the getSurveyQuestion method of the {@link QuestionServiceImpl} Ensures
-	 * that given a valid surveyQuestion id, if the repo throws an EntityNotFound
+	 * Tests the getSurveySubmission method of the {@link SurveySubmissionService} Ensures
+	 * that given a valid SurveySubmission id, if the repo throws an EntityNotFound
 	 * Exception, the service will return null.
 	 */
 	@Test
-	void getSurveyQuestionTest_QuestionNotFound() {
+	void getSurveySubmission_SubmissionNotFound() {
 
-		when(repo.getOne(surveyQuestion.getId())).thenThrow(EntityNotFoundException.class);
+		when(repo.getSurveySubmission(surveySubmission.getSurveySubmissionId())).thenThrow(EntityNotFoundException.class);
 
-		SurveyQuestion returned = service.getSurveyQuestion(surveyQuestion.getId());
+		SurveySubmission returned = service.getSurveySubmission((surveySubmission.getSurveySubmissionId()));
 
-		verify(repo).getOne(surveyQuestion.getId());
+		verify(repo).getSurveySubmission(surveyQuestion.getId());
 
 		assertEquals(null, returned,
-				"QuestionServiceImpl.getSurveyQuestion(" + surveyQuestion.getId()
+				"SurveySubmissionService.getSurveySubmission(" + surveySubmission.getSurveySubmissionId()
 						+ ") did not return null when repo threw EntityNotFoundException in "
-						+ "getSurveyQuestionTest_QuestionNotFound");
+						+ "getSurveySubmission_SubmissionNotFound");
 	}
 
+	
+	
 	/**
-	 * Tests the createSurveyQuestion method of the {@link QuestionServiceImpl}
-	 * Ensures that given a valid surveyQuestionDto input, creates and returns the
-	 * expected {@link SurveyQuestion} object.
+	 * Tests the answersNotEmpty method of the {@link SurveySubmissionService} Ensures that a survey submission
+	 * will only be created if the answers to the submitted survey are not blank
 	 */
+	
 	@Test
-	void createSurveyQuestionTest_WithoutError() {
-		when(repo.save(surveyQuestion)).thenReturn(surveyQuestion);
-
-		SurveyQuestion returned = service.createSurveyQuestion(surveyQuestionDto);
-
-		verify(repo).save(returned);
-
-		assertEquals(surveyQuestion, returned, "QuestionServiceImpl.createSurveyQuestion(" + surveyQuestionDto
-				+ ") returned mismatched SurveyQuestion object in " + "createSurveyQuestionTest_WithoutError");
-
+	void answersNotEmpty_AnswersNotEmpty() {
+		
 	}
-
+	
+	@Test
+	void answersNotEmpty_AnswersAreEmpty() {
+		
+	}
+	
 	/**
-	 * Tests the createSurveyQuestion method of the {@link QuestionServiceImpl}
-	 * Ensures that given a valid surveyQuestionDto input, if the repo throws an IllegalArgumentException Exception,
-	 * the service will return null.
+	 * Tests the answersMatchQuestions method of the {@link SurveySubmissionService} Ensures that the survey
+	 * submission will only be created if the answer types also match their corresponding question types
 	 */
+	
 	@Test
-	void createSurveyQuestionTest_NullInput() {
-		
-		when(repo.save(surveyQuestion)).thenThrow(IllegalArgumentException.class);
-		
-		SurveyQuestion returned = service.createSurveyQuestion(surveyQuestionDto);
-		
-		verify(repo).save(surveyQuestion);
-		
-		assertEquals(null, returned, "QuestionServiceImpl.createSurveyQuestion("+ surveyQuestionDto 
-									 +") did not return null when repo threw NullPointerException in "
-									 +"createSurveyQuestionTest_NullInput");	
+	void answersMatchQuestions_AnswersMatch() {
 		
 	}
+	
+	@Test
+	void answersMatchQuestion_AnswersDontMatch() {
+		
+	}
+}
+
