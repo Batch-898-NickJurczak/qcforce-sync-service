@@ -42,7 +42,7 @@ public class QuestionController {
 	 * @param surveyQuestionDto The user input of {@link SurveyQuestionDto}
 	 * @return A promise for a newly created {@link SurveyQuestion} object.
 	 */
-	@PostMapping
+	@PostMapping("/question")
 	public Mono<SurveyQuestion> createQuestion(@RequestBody SurveyQuestionDto surveyQuestionDto) {
 		return null;
 	}
