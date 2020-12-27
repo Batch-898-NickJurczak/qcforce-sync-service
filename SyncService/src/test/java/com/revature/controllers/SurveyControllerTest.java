@@ -1,7 +1,15 @@
 package com.revature.controllers;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.revature.dto.SurveyFormDto;
+import com.revature.models.QuestionType;
 import com.revature.models.SurveyForm;
+import com.revature.models.SurveyQuestion;
 import com.revature.service.SurveyService;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
@@ -34,6 +42,8 @@ public class SurveyControllerTest {
 	
 	private String surveyFormJson;
 	
+	private SurveyQuestion surveyQuestion;
+	
 	/**
 	 * @throws java.lang.Exception
 	 */
@@ -52,8 +62,23 @@ public class SurveyControllerTest {
 	 * @throws java.lang.Exception
 	 */
 	@BeforeEach
-	void setUp() throws Exception {
-	}
+    void setUp() throws Exception {
+
+        List<String> questions = new ArrayList<String>();
+        questions.add("How are you?");
+        surveyQuestion = new SurveyQuestion(1, LocalDateTime.now(), QuestionType.SHORT_ANSWER, 1, questions);
+
+        List<SurveyQuestion> surveyQuestions = new ArrayList<>(1);
+        surveyQuestions.add(surveyQuestion);
+
+        surveyForm = new SurveyForm(1, "Wezley's Survey", "Wezley Singleton", 
+                                    LocalDateTime.now(), 1, surveyQuestions);
+
+        // writing value as a Json string
+        ObjectMapper om    = new ObjectMapper();
+        surveyFormJson = om.writeValueAsString(new SurveyFormDto(surveyForm));
+
+    }
 
 	/**
 	 * @throws java.lang.Exception
@@ -66,6 +91,7 @@ public class SurveyControllerTest {
      * Add comments to what this tests for each test
      */
     @Test
-	void methodYouAreTestingTest_WhatPathIsThisTestTaking() {
+	void createSurvey_WithoutErrors() {
+    	
     }
 }

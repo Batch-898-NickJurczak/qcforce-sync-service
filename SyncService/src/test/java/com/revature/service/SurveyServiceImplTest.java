@@ -1,7 +1,19 @@
 package com.revature.service;
 
+import com.revature.dto.SurveyFormDto;
+import com.revature.models.QuestionType;
 import com.revature.models.SurveyForm;
+import com.revature.models.SurveyQuestion;
+import com.revature.repo.QuestionRepo;
 import com.revature.repo.SurveyRepo;
+
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.*;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
@@ -30,6 +42,12 @@ public class SurveyServiceImplTest {
 	
 	private SurveyForm surveyForm;
 	
+	private SurveyFormDto surveyFormDto;
+	
+	private SurveyQuestion surveyQuestion;
+	
+	
+	
 	/**
 	 * @throws java.lang.Exception
 	 */
@@ -49,6 +67,15 @@ public class SurveyServiceImplTest {
 	 */
 	@BeforeEach
 	void setUp() throws Exception {
+		List<SurveyQuestion> listOfSurveyQuestions= new ArrayList<SurveyQuestion>();
+		List<String> questions = new ArrayList<String>();
+		questions.add("How are you?");
+		surveyQuestion = new SurveyQuestion(1, LocalDateTime.now(), QuestionType.SHORT_ANSWER, 1, questions);
+		listOfSurveyQuestions.add(surveyQuestion);
+		listOfSurveyQuestions.add(surveyQuestion);
+		surveyForm = new SurveyForm(1, "Title", "Creator", LocalDateTime.now(), 1, listOfSurveyQuestions);
+		surveyFormDto = new SurveyFormDto(surveyForm);
+		
 	}
 
 	/**
@@ -59,9 +86,37 @@ public class SurveyServiceImplTest {
     }
     
     /**
-     * Add comments to what this tests for each test
+     * Tests the createSurveyForm method of the {@link SurveyServiceImpl}
+     * Ensures that given a valid {@link surveyFormDto} input, creates and returns the expected {@link SurveyForm} object.
      */
     @Test
-	void methodYouAreTestingTest_WhatPathIsThisTestTaking() {
+	void createSurveyFormTest_WithoutError() {
+    	when(repo.save(surveyForm)).thenReturn(surveyForm);
+    	
+    	SurveyForm returned = service.createSurveyForm(surveyFormDto);
+    	
+    	verify(repo).save(returned);
+    	
+    	assertEquals(surveyForm, returned, "SurveyServiceImpl.createSurveyForm("+ surveyFormDto
+    									+") returned mismatched SurveyForm object in "
+    									+"createSurveyFormTest_WithoutError");
+    }
+    
+    /**
+     * Tests the createSurveyForm method of the {@link SurveyServiceImpl}
+     * Ensures that given a valid {@link surveyFormDto} input, if the repo throws NullPointer Exception,
+     * the service will return null.
+     */
+    @Test
+	void createSurveyFormTest_NullInput() {
+    	when(repo.save(surveyForm)).thenThrow(NullPointerException.class);
+    	
+    	SurveyForm returned = service.createSurveyForm(surveyFormDto);
+    	
+    	verify(repo).save(returned);
+    	
+    	assertEquals(null, returned, "SurveyServiceImpl.createSurveyForm("+ surveyFormDto
+    									+") did not return null when repo threw NullPointerException in "
+    									+"createSurveyFormTest_NullInput");
     }
 }

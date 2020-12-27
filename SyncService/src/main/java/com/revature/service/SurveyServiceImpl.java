@@ -1,7 +1,10 @@
 package com.revature.service;
 
+import com.revature.dto.SurveyFormDto;
 import com.revature.models.SurveyForm;
+import com.revature.repo.SurveyRepo;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -14,7 +17,35 @@ import org.springframework.stereotype.Service;
  * @author Prativa
  */
 @Service
-public class SurveyServiceImpl {
+public class SurveyServiceImpl implements SurveyService {
+	
+	/**
+	 * The repository object this service needs to interact with {@link SurveyForm}s stored in the database.
+	 */
+	private SurveyRepo surveyRepo;
+	
+	/**
+	 * Set the {@link SurveyRepo} contained within this object.
+	 * Normally the Spring framework will set this through Autowiring.
+	 * @param surveyRepo
+	 */
+	@Autowired
+	public void setSurveyRepo(SurveyRepo surveyRepo) {
+		this.surveyRepo = surveyRepo;
+	}
+
+	/**
+	 * Create a {@link SurveyForm} object given a {@link SurveyFortmDto} input from the user.
+	 * @param surveyFormDto The {@link SurveyFormDto} object that the user will input.
+	 * @return {@link SurveyForm}
+	 */
+	@Override
+	public SurveyForm createSurveyForm(SurveyFormDto surveyFormDto) {
+		SurveyForm surveyForm = surveyFormDto.toPojo();
+		return surveyRepo.save(surveyForm);
+	}
+
+	
 
     
 }
