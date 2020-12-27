@@ -40,8 +40,7 @@ public class SurveyServiceImpl implements SurveyService {
 	 * @return {@link SurveyForm}
 	 */
 	@Override
-	public SurveyForm createSurveyForm(SurveyFormDto surveyFormDto) {
-		SurveyForm surveyForm = surveyFormDto.toPojo();
+	public SurveyForm createSurveyForm(SurveyForm surveyForm) {
 		return surveyRepo.save(surveyForm);
 	}
 

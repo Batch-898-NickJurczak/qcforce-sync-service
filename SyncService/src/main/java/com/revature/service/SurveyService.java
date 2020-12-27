@@ -17,5 +17,5 @@ public interface SurveyService {
 	 * @param surveyFormDto The {@link SurveyFormDto} object that the user will input.
 	 * @return {@link SurveyForm}
 	 */
-	public SurveyForm createSurveyForm(SurveyFormDto surveyFormDto);
+	public SurveyForm createSurveyForm(SurveyForm surveyForm);
 }

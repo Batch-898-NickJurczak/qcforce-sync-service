@@ -45,8 +45,6 @@ public class SurveyControllerTest {
 	
 	private SurveyForm surveyForm;
 	
-	private SurveyFormDto surveyFormDto;
-	
 	private String surveyFormJson;
 	
 	private SurveyQuestion surveyQuestion;
@@ -81,7 +79,6 @@ public class SurveyControllerTest {
         surveyForm = new SurveyForm(1, "Wezley's Survey", "Wezley Singleton", 
                                     LocalDateTime.now(), 1, surveyQuestions);
 
-        surveyFormDto = new SurveyFormDto(surveyForm);
         
         // writing value as a Json string
         ObjectMapper om    = new ObjectMapper();
@@ -103,7 +100,7 @@ public class SurveyControllerTest {
      */
     @Test
 	void createSurvey_WithoutErrors() {
-    	when(service.createSurveyForm(surveyFormDto)).thenReturn(surveyForm);
+    	when(service.createSurveyForm(surveyForm)).thenReturn(surveyForm);
     	
     	try {
     		this.webClient.post().uri("/survey")
@@ -125,7 +122,7 @@ public class SurveyControllerTest {
      */
     @Test
 	void createSurvey_InputNull() {
-    	when(service.createSurveyForm(surveyFormDto)).thenReturn(null);
+    	when(service.createSurveyForm(surveyForm)).thenReturn(null);
     	
     	try {
     		this.webClient.post().uri("/survey")

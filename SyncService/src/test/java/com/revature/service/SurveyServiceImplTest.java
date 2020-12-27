@@ -42,8 +42,6 @@ public class SurveyServiceImplTest {
 	
 	private SurveyForm surveyForm;
 	
-	private SurveyFormDto surveyFormDto;
-	
 	private SurveyQuestion surveyQuestion;
 	
 	
@@ -74,7 +72,7 @@ public class SurveyServiceImplTest {
 		listOfSurveyQuestions.add(surveyQuestion);
 		listOfSurveyQuestions.add(surveyQuestion);
 		surveyForm = new SurveyForm(1, "Title", "Creator", LocalDateTime.now(), 1, listOfSurveyQuestions);
-		surveyFormDto = new SurveyFormDto(surveyForm);
+		
 		
 	}
 
@@ -93,11 +91,11 @@ public class SurveyServiceImplTest {
 	void createSurveyFormTest_WithoutError() {
     	when(repo.save(surveyForm)).thenReturn(surveyForm);
     	
-    	SurveyForm returned = service.createSurveyForm(surveyFormDto);
+    	SurveyForm returned = service.createSurveyForm(surveyForm);
     	
     	verify(repo).save(returned);
     	
-    	assertEquals(surveyForm, returned, "SurveyServiceImpl.createSurveyForm("+ surveyFormDto
+    	assertEquals(surveyForm, returned, "SurveyServiceImpl.createSurveyForm("+ surveyForm
     									+") returned mismatched SurveyForm object in "
     									+"createSurveyFormTest_WithoutError");
     }
@@ -111,11 +109,11 @@ public class SurveyServiceImplTest {
 	void createSurveyFormTest_NullInput() {
     	when(repo.save(surveyForm)).thenThrow(IllegalArgumentException.class);
     	
-    	SurveyForm returned = service.createSurveyForm(surveyFormDto);
+    	SurveyForm returned = service.createSurveyForm(surveyForm);
     	
     	verify(repo).save(returned);
     	
-    	assertEquals(null, returned, "SurveyServiceImpl.createSurveyForm("+ surveyFormDto
+    	assertEquals(null, returned, "SurveyServiceImpl.createSurveyForm("+ surveyForm
     									+") did not return null when repo threw IllegalArgument Exception in "
     									+"createSurveyFormTest_NullInput");
     }
