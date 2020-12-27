@@ -104,19 +104,19 @@ public class SurveyServiceImplTest {
     
     /**
      * Tests the createSurveyForm method of the {@link SurveyServiceImpl}
-     * Ensures that given a valid {@link surveyFormDto} input, if the repo throws NullPointer Exception,
+     * Ensures that given a valid {@link surveyFormDto} input, if the repo throws IllegalArguement Exception,
      * the service will return null.
      */
     @Test
 	void createSurveyFormTest_NullInput() {
-    	when(repo.save(surveyForm)).thenThrow(NullPointerException.class);
+    	when(repo.save(surveyForm)).thenThrow(IllegalArgumentException.class);
     	
     	SurveyForm returned = service.createSurveyForm(surveyFormDto);
     	
     	verify(repo).save(returned);
     	
     	assertEquals(null, returned, "SurveyServiceImpl.createSurveyForm("+ surveyFormDto
-    									+") did not return null when repo threw NullPointerException in "
+    									+") did not return null when repo threw IllegalArgument Exception in "
     									+"createSurveyFormTest_NullInput");
     }
 }
