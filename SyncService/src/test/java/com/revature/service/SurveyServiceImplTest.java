@@ -1,7 +1,20 @@
 package com.revature.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import com.revature.dto.SurveyFormDto;
+import com.revature.models.QuestionType;
 import com.revature.models.SurveyForm;
+import com.revature.models.SurveyQuestion;
 import com.revature.repo.SurveyRepo;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.EntityNotFoundException;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
@@ -28,7 +41,11 @@ public class SurveyServiceImplTest {
 	@MockBean
 	private SurveyRepo repo;
 	
+	private SurveyQuestion surveyQuestion;
+	
 	private SurveyForm surveyForm;
+	
+	private SurveyFormDto surveyFormDto;
 	
 	/**
 	 * @throws java.lang.Exception
@@ -49,6 +66,17 @@ public class SurveyServiceImplTest {
 	 */
 	@BeforeEach
 	void setUp() throws Exception {
+		
+		List<SurveyQuestion> listOfSurveyQuestions = new ArrayList<SurveyQuestion>();
+		List<String> questions = new ArrayList<String>();
+		
+		questions.add("How are you?");
+		surveyQuestion = new SurveyQuestion(1, LocalDateTime.now(), QuestionType.SHORT_ANSWER, 1, questions);
+		listOfSurveyQuestions.add(surveyQuestion);
+		listOfSurveyQuestions.add(surveyQuestion);
+		
+		surveyForm = new SurveyForm(1, "Title", "Creator", LocalDateTime.now(), 1, listOfSurveyQuestions);
+		surveyFormDto = new SurveyFormDto(surveyForm);
 	}
 
 	/**
@@ -58,10 +86,39 @@ public class SurveyServiceImplTest {
 	void tearDown() throws Exception {
     }
     
-    /**
-     * Add comments to what this tests for each test
-     */
+	/**
+	 * Tests the getSurveyForm method of the {@link SurveyServiceImpl}
+	 * Ensures that given a valid surveyForm id, returns the expected {@link SurveyForm} object.
+	 */
     @Test
-	void methodYouAreTestingTest_WhatPathIsThisTestTaking() {
+	void getSurveyFormTest_WithoutError() {
+    	
+    	when(repo.getOne(surveyForm.getId())).thenReturn(surveyForm);
+    	
+    	SurveyForm returned = service.getSurveyForm(surveyForm.getId());
+    	
+    	verify(repo).getOne(surveyForm.getId());
+    	
+    	assertEquals(surveyForm, returned, "SurveyServiceImpl.getSurveyForm("+ surveyForm.getId() 
+										+") returned mismatched SurveyForm object in "
+										+"getSurveyFormTest_WithoutError");	
+    }
+    
+    /**
+     * Tests the getSurveyForm method of the {@link SurveyServiceImpl}
+     * Ensures that given a valid surveyForm id, if the repo throws an EntityNotFound Exception,
+	 * the service will return null.
+     */
+    void getSurveyFormTest_SurveyNotFound() {
+    	
+    	when(repo.getOne(surveyForm.getId())).thenThrow(EntityNotFoundException.class);
+    	
+    	SurveyForm returned = service.getSurveyForm(surveyForm.getId());
+    	
+    	verify(repo).getOne(surveyForm.getId());
+    	
+    	assertEquals(null, returned, "SurveyServiceImpl.getSurveyForm("+ surveyForm.getId() 
+									+") did not return null when repo threw EntityNotFoundException in "
+									+"getSurveyFormTest_SurveyNotFound");	
     }
 }
