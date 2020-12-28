@@ -1,16 +1,27 @@
 package com.revature.controllers;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.revature.dto.SurveyQuestionDto;
 import com.revature.models.SurveyQuestion;
+import com.revature.service.QuestionService;
+import com.revature.service.QuestionServiceImpl;
 
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 /**
@@ -26,6 +37,16 @@ import reactor.core.publisher.Mono;
 @CrossOrigin
 public class QuestionController {
 	
+	private QuestionService questionService;
+	
+	/**
+	 * @param questionService the questionService to set
+	 */
+	@Autowired
+	public void setQuestionService(QuestionService questionService) {
+		this.questionService = questionService;
+	}
+
 	/**
 	 * Retrieve a {@link SurveyQuestion} that matches the given id.
 	 * @return A promise for a {@link SurveyQuestion} object.
@@ -41,7 +62,23 @@ public class QuestionController {
 	 * @return A promise for a list of {@link SurveyQuestion} objects.
 	 */
 	@GetMapping("/question")
-	public Mono<List<SurveyQuestionDto>> getQuestions() {
-		return null;
+	public Flux<SurveyQuestionDto> getQuestions(HttpServletResponse sr) {
+		
+		List<SurveyQuestion> questions = questionService.getAllSurveyQuestions();
+		List<SurveyQuestionDto> questionsDto = new ArrayList<>();
+		 
+
+		for (SurveyQuestion sq : questions) {
+			
+			questionsDto.add(new SurveyQuestionDto(sq));
+		} 
+	
+		sr.setStatus(200);
+			
+		// Fill Flux data with questionDto list content if it exists. 
+		Flux<SurveyQuestionDto> data = Flux.fromIterable(questionsDto);
+
+		return data;
+	
 	}
 }
