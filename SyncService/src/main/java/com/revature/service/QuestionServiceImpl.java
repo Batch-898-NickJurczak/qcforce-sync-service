@@ -30,6 +30,7 @@ public class QuestionServiceImpl implements QuestionService {
 	 */
 	@Autowired
 	public void setQuestionRepo(QuestionRepo questionRepo) {
+		
 		this.questionRepo = questionRepo;
 	}
 
