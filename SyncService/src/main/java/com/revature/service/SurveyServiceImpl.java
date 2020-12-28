@@ -39,7 +39,13 @@ public class SurveyServiceImpl implements SurveyService {
 	 * @return True if successful
 	 */
 	public boolean deleteSurveyForm(int id) {
-		// TODO: Make this
-		return false;
+		
+		try { 
+			surveyRepo.deleteById(id);
+			return true;
+
+		} catch (IllegalArgumentException e) {
+			return false;
+		}
 	}
 }
