@@ -15,7 +15,15 @@ import com.revature.models.SurveySubmission;
 import com.revature.service.SurveySubmissionService;
 import com.revature.service.SurveySubmissionServiceImpl;
 
+/**
+ * Rest Controller for all servey service endpoints
+ * 
+ * @author Brett and Hannah
+ */
+
+@RestController
 public class SurveySubmissionController {
+
 	/**
 	 * Creates an instance of {@link SurveySubmissionService} used to send data.
 	 */
@@ -44,7 +52,8 @@ public class SurveySubmissionController {
 	 * Sets up an end-point for updating an existing survey.
 	 */
 	@PutMapping("/surveysub/{id}")
-	public void updateSurvey(@PathParam("surveyId") int surveySubmissionId, @RequestBody SurveySubmission surveySubmission) {
+	public void updateSurvey(@PathParam("surveyId") int surveySubmissionId,
+			@RequestBody SurveySubmission surveySubmission) {
 		surveySubmissionService.updateSurveySubmission(surveySubmission);
 
 	}
