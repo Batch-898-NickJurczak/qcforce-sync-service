@@ -85,7 +85,7 @@ public class SurveyServiceImplTest {
 	void updateSurveyFormTest_WithoutError() {
     	when(repo.save(surveyForm)).thenReturn(surveyForm);
   
-    	boolean returned = service.updateSurveyForm(surveyForm, 1);
+    	boolean returned = service.updateSurveyForm(surveyForm);
     	
     	verify(repo).save(surveyForm);
     	
@@ -103,7 +103,7 @@ public class SurveyServiceImplTest {
 	void updateSurveyFormTest_NullInput() {
     	when(repo.save(surveyForm)).thenThrow(IllegalArgumentException.class);
     	
-    	boolean returned = service.updateSurveyForm(surveyForm, 1);
+    	boolean returned = service.updateSurveyForm(surveyForm);
     	
     	verify(repo).save(surveyForm);
     	

@@ -15,9 +15,8 @@ public interface SurveyService {
 	/**
 	 * Update a {@link SurveyForm} object given a {@link SurveyFormDto} and id to be updated.
 	 * @param surveyFormDto The updated {@link SurveyFormDto} object.
-	 * @param id The id of the {@link SurveyFormDto} object to be updated
 	 * @return boolean, true if successful
 	 */
-	public boolean updateSurveyForm(SurveyForm surveyForm, int id);
+	public boolean updateSurveyForm(SurveyForm surveyForm);
     
 }

@@ -4,8 +4,6 @@ import com.revature.dto.SurveyFormDto;
 import com.revature.models.SurveyForm;
 import com.revature.repo.SurveyRepo;
 
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -39,15 +37,17 @@ public class SurveyServiceImpl implements SurveyService {
 	/**
 	 * Update a {@link SurveyForm} object given a {@link SurveyFormDto} and id to be updated.
 	 * @param surveyFormDto The updated {@link SurveyFormDto} object.
-	 * @param id The id of the {@link SurveyFormDto} object to be updated
 	 * @return boolean, true if successful
 	 */
 	@Override
-	public boolean updateSurveyForm(SurveyForm surveyForm, int id) {
+	public boolean updateSurveyForm(SurveyForm surveyForm) {
 		
-		return true;
+		try{
+			surveyRepo.save(surveyForm);
+			return true;
 
-	}
-	
-	    
+		}catch(IllegalArgumentException e){
+			return false;
+		}
+	} 
 }

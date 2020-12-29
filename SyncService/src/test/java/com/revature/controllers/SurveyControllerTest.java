@@ -1,14 +1,13 @@
 package com.revature.controllers;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.revature.dto.SurveyFormDto;
-import com.revature.dto.SurveyQuestionDto;
 import com.revature.models.QuestionType;
 import com.revature.models.SurveyForm;
 import com.revature.models.SurveyQuestion;
 import com.revature.service.SurveyService;
 
 import static org.junit.jupiter.api.Assertions.fail;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDateTime;
@@ -24,8 +23,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.WebTestClient;
+
+import reactor.core.publisher.Mono;
 
 /**
  * Tests the {@link QuestionController} and contained methods.
@@ -44,8 +44,12 @@ public class SurveyControllerTest {
 	private SurveyService service;
 	
 	private SurveyForm surveyForm;
+
+	private SurveyFormDto surveyFormDto;
 	
 	private SurveyQuestion surveyQuestion;
+
+	private List<SurveyQuestion> surveyQuestions;
 	
 	/**
 	 * @throws java.lang.Exception
@@ -71,11 +75,13 @@ public class SurveyControllerTest {
         questions.add("How are you?");
         surveyQuestion = new SurveyQuestion(1, LocalDateTime.now(), QuestionType.SHORT_ANSWER, 1, questions);
 
-        List<SurveyQuestion> surveyQuestions = new ArrayList<>(1);
+        surveyQuestions = new ArrayList<>(1);
         surveyQuestions.add(surveyQuestion);
         
         surveyForm = new SurveyForm(1, "Wezley's Survey", "Wezley Singleton", 
-                                    LocalDateTime.now(), 1, surveyQuestions);
+									LocalDateTime.now(), 1, surveyQuestions);
+
+		surveyFormDto = new SurveyFormDto(surveyForm);
 	
 	}
 
@@ -93,16 +99,20 @@ public class SurveyControllerTest {
      */
     @Test
 	void updateSurveyTest_WithoutError() {
-    	when(service.updateSurveyForm(surveyForm, surveyForm.getId())).thenReturn(true);
+
+    	when(service.updateSurveyForm(surveyForm)).thenReturn(true);
     	
     	try {
-    		this.webClient.put().uri("/survey" + surveyForm.getId()).accept(MediaType.APPLICATION_JSON)
-    		.exchange()
-    		.expectStatus().isOk();
+			this.webClient.put().uri("/survey")
+			.body(Mono.just(surveyFormDto), SurveyFormDto.class)
+			.exchange()
+			.expectStatus().isOk();
+			
     	}catch (Exception e) {
-    		
-    		fail("Exception thrown during createSurveyTest_WithoutError: " + e);
-    	}
+			fail("Exception thrown during createSurveyTest_WithoutError: " + e);
+		}
+		
+		verify(service).updateSurveyForm(surveyForm);
     }
     
     /**
@@ -112,15 +122,18 @@ public class SurveyControllerTest {
      */
     @Test
 	void updateSurveyTest_NullInput() {
-    	when(service.updateSurveyForm(surveyForm, surveyForm.getId())).thenReturn(false);
+    	when(service.updateSurveyForm(surveyForm)).thenReturn(false);
     	
     	try {
-    		this.webClient.put().uri("/survey" + surveyForm.getId()).accept(MediaType.APPLICATION_JSON)
+			this.webClient.put().uri("/survey")
+			.body(Mono.just(surveyFormDto), SurveyFormDto.class)
     		.exchange()
-    		.expectStatus().isBadRequest();
+			.expectStatus().isNotFound();
+			
     	}catch (Exception e) {
-    		
     		fail("Exception thrown during createSurveyTest_WithoutError: " + e);
-    	}
+		}
+
+		verify(service).updateSurveyForm(surveyForm);
     }
 }
