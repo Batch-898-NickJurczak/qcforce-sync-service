@@ -3,6 +3,8 @@ package com.revature.service;
 import com.revature.models.SurveyForm;
 import com.revature.repo.SurveyRepo;
 
+import javax.persistence.EntityNotFoundException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -40,6 +42,19 @@ public class SurveyServiceImpl implements SurveyService {
 	@Override
 	public SurveyForm getSurveyForm(int id) {
 		
-		return surveyRepo.getOne(id);
+		SurveyForm returned = null;
+		
+		try {
+			
+			returned = surveyRepo.getOne(id);
+			
+		} catch (EntityNotFoundException e) {
+			
+			e.printStackTrace();
+			return null;
+			
+		}
+		
+		return returned;
 	}
 }
