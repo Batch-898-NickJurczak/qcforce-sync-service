@@ -9,7 +9,7 @@ spring:
     name: ${application_name:SyncService}
 
   rabbitmq:
-    host: ${rabbitmq_host}
+    host: ${rabbitmq_host:localhost}
     port: ${rabbitmq_port:5672}
     username: ${rabbitmq_username}
     password: ${rabbitmq_password}
@@ -33,9 +33,9 @@ eureka:
       defaultZone: ${eureka_url:http://localhost:8761/eureka/}
 
   instance:
-    hostname: ${HOSTNAME:${spring.application.name}}
-    preferIpAddress: false
-    instanceId: ${spring.application.name}:${vcap.application.instance_id:${spring.application.instance_id:${random.value}}}:${server.port}
+    hostname: localhost #${HOSTNAME:${spring.application.name}}
+    #preferIpAddress: false
+    #instanceId: ${spring.application.name}:${vcap.application.instance_id:${spring.application.instance_id:${random.value}}}:${server.port}
 
 sync-service:
   rabbitMQ-config:

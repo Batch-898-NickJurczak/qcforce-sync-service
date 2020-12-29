@@ -109,6 +109,7 @@ public class SurveyServiceImplTest {
      * Ensures that given a valid surveyForm id, if the repo throws an EntityNotFound Exception,
 	 * the service will return null.
      */
+    @Test
     void getSurveyFormTest_SurveyNotFound() {
     	
     	when(repo.getOne(surveyForm.getId())).thenThrow(EntityNotFoundException.class);

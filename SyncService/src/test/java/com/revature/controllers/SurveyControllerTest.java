@@ -7,6 +7,8 @@ import com.revature.models.SurveyForm;
 import com.revature.models.SurveyQuestion;
 import com.revature.service.SurveyService;
 
+import reactor.core.publisher.Mono;
+
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.time.LocalDateTime;
@@ -48,6 +50,8 @@ class SurveyControllerTest {
 	private SurveyForm surveyForm;
 
 	private String surveyFormJson;
+	
+	private Mono<String> monoJson;
 
 	/**
 	 * @throws java.lang.Exception
@@ -82,6 +86,7 @@ class SurveyControllerTest {
 		// writing value as a Json string
 		ObjectMapper om = new ObjectMapper();
 		surveyFormJson = om.writeValueAsString(new SurveyFormDto(surveyForm));
+		monoJson = Mono.just(surveyFormJson);
 	}
 
 	/**
@@ -104,7 +109,7 @@ class SurveyControllerTest {
 		try {
 			this.webClient.get().uri("/survey/" + surveyForm.getId()).accept(MediaType.APPLICATION_JSON)
 								.exchange().expectStatus().isOk()
-								.expectBody().json(surveyFormJson);
+								.expectBody().equals(monoJson);
 
 		} catch (Exception e) {
 			fail("Exception thrown during getSurveyFormTest_WithoutError: " + e);
@@ -125,7 +130,7 @@ class SurveyControllerTest {
 		try {
 			this.webClient.get().uri("/survey/" + surveyForm.getId()).accept(MediaType.APPLICATION_JSON)
 								.exchange().expectStatus().isNotFound()
-								.expectBody().json("");
+								.expectBody().equals(null);
 
 		} catch (Exception e) {
 			fail("Exception thrown during getSurveyFormTest_SurveyNotFound: " + e);
