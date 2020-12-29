@@ -50,7 +50,7 @@ public class QuestionServiceImpl implements QuestionService {
 			returned = questionRepo.getOne(id);
 			
 		} catch(EntityNotFoundException e) {
-			
+			e.printStackTrace();
 			return null;
 		}
 		

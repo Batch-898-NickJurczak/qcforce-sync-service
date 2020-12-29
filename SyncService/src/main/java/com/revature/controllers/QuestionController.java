@@ -45,9 +45,10 @@ public class QuestionController {
 	}
 
 	/**
-	 * Retrieve a {@link Mono}<{@link SurveyQuestionDto}> that matches the given id.
+	 * Retrieve a {@link SurveyQuestion} that matches the given id.
 	 * 
 	 * @return A promise for a {@link Mono}<{@link SurveyQuestionDto}> object.
+	 * @param id The id of the {@link SurveyQuestion} object.
 	 */
 	@GetMapping("/question/{id}")
 	public Mono<SurveyQuestionDto> getQuestion(@PathVariable("id") int id) {
