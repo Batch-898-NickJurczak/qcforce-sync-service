@@ -45,9 +45,9 @@ public class QuestionController {
 	}
 
 	/**
-	 * Retrieve a {@link Flux}<{@link SurveyQuestionDto}> that matches the given id.
+	 * Retrieve a {@link Mono}<{@link SurveyQuestionDto}> that matches the given id.
 	 * 
-	 * @return A promise for a {@link Flux}<{@link SurveyQuestionDto}> object.
+	 * @return A promise for a {@link Mono}<{@link SurveyQuestionDto}> object.
 	 */
 	@GetMapping("/question/{id}")
 	public Mono<SurveyQuestionDto> getQuestion(@PathVariable("id") int id) {
