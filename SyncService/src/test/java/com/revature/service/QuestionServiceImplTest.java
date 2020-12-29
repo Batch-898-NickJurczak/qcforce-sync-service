@@ -78,43 +78,6 @@ class QuestionServiceImplTest {
 	void tearDown() throws Exception {
 	}
 
-	/**
-	 * Tests the getSurveyQuestion method of the {@link QuestionServiceImpl}
-	 * Ensures that given a valid surveyQuestion id, returns the expected {@link SurveyQuestion} object.
-	 */
-	@Test
-	void getSurveyQuestionTest_WithoutError() {
-		
-		when(repo.getOne(surveyQuestion.getId())).thenReturn(surveyQuestion);
-		
-		SurveyQuestion returned = service.getSurveyQuestion(surveyQuestion.getId());
-		
-		verify(repo).getOne(surveyQuestion.getId());
-		
-		assertEquals(surveyQuestion, returned, "QuestionServiceImpl.getSurveyQuestion("+ surveyQuestion.getId() 
-												+") returned mismatched SurveyQuestion object in "
-												+"getSurveyQuestionTest_WithoutError");	
-	}
-	
-	/**
-	 * Tests the getSurveyQuestion method of the {@link QuestionServiceImpl}
-	 * Ensures that given a valid surveyQuestion id, if the repo throws an EntityNotFound Exception,
-	 * the service will return null.
-	 */
-	@Test
-	void getSurveyQuestionTest_QuestionNotFound() {
-		
-		when(repo.getOne(surveyQuestion.getId())).thenThrow(EntityNotFoundException.class);
-		
-		SurveyQuestion returned = service.getSurveyQuestion(surveyQuestion.getId());
-		
-		verify(repo).getOne(surveyQuestion.getId());
-		
-		assertEquals(null, returned, "QuestionServiceImpl.getSurveyQuestion("+ surveyQuestion.getId() 
-									+") did not return null when repo threw EntityNotFoundException in "
-									+"getSurveyQuestionTest_QuestionNotFound");	
-	}
-	
 
 	/**
 	 * Tests the createSurveyQuestion method of the {@link QuestionServiceImpl}
@@ -124,7 +87,7 @@ class QuestionServiceImplTest {
 	void createSurveyQuestionTest_WithoutError() {
 		when(repo.save(surveyQuestion)).thenReturn(surveyQuestion);
 		
-		SurveyQuestion returned = service.createSurveyQuestion(surveyQuestionDto);
+		SurveyQuestion returned = service.createSurveyQuestion(surveyQuestion);
 		
 		verify(repo).save(returned);
 		
@@ -142,14 +105,14 @@ class QuestionServiceImplTest {
 	@Test
 	void createSurveyQuestionTest_NullInput() {
 		
-		when(repo.save(surveyQuestion)).thenThrow(NullPointerException.class);
+		when(repo.save(surveyQuestion)).thenThrow(EntityNotFoundException.class);
 		
-		SurveyQuestion returned = service.createSurveyQuestion(surveyQuestionDto);
+		SurveyQuestion returned = service.createSurveyQuestion(surveyQuestion);
 		
 		verify(repo).save(surveyQuestion);
 		
 		assertEquals(null, returned, "QuestionServiceImpl.createSurveyQuestion("+ surveyQuestionDto 
-									 +") did not return null when repo threw NullPointerException in "
+									 +") did not return null when repo threw EntityNotFound Exception in "
 									 +"createSurveyQuestionTest_NullInput");	
 		
 	}

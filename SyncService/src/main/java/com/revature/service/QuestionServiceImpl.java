@@ -1,5 +1,7 @@
 package com.revature.service;
 
+import javax.persistence.EntityNotFoundException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -51,8 +53,19 @@ public class QuestionServiceImpl implements QuestionService {
 	 * @return {@link SurveyQuestion}
 	 */
 	@Override
-	public SurveyQuestion createSurveyQuestion(SurveyQuestionDto surveyQuestionDto) {
-		SurveyQuestion surveyQuestion = surveyQuestionDto.toPojo();
-		return questionRepo.save(surveyQuestion);
+	public SurveyQuestion createSurveyQuestion(SurveyQuestion surveyQuestion) {
+		SurveyQuestion returned = null;
+			
+		try {
+			
+			returned = questionRepo.save(surveyQuestion);
+			
+		}catch(EntityNotFoundException e) {
+			
+			return null;
+			
+		}
+		
+		return returned;
 	}
 }

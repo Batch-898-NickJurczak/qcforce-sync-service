@@ -20,6 +20,6 @@ public interface QuestionService {
 	 * @return {@link SurveyQuestion}
 	 */
 	public SurveyQuestion getSurveyQuestion(int id);
-	public SurveyQuestion createSurveyQuestion(SurveyQuestionDto surveyQuestionDto);
+	public SurveyQuestion createSurveyQuestion(SurveyQuestion surveyQuestion);
 
 }
