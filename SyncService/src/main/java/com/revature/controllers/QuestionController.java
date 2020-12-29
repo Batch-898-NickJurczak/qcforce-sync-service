@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -61,7 +62,8 @@ public class QuestionController {
 	 * @param surveyQuestionDto The user input of {@link SurveyQuestionDto}
 	 * @return A promise for a newly created {@link SurveyQuestion} object.
 	 */
-	@PostMapping
+	@PostMapping("/question")
+	@ResponseStatus(code = HttpStatus.CREATED)
 	public Mono<SurveyQuestion> createQuestion(@RequestBody SurveyQuestionDto surveyQuestionDto) {
 		SurveyQuestion surveyQuestion = questionService.createSurveyQuestion(surveyQuestionDto.toPojo());
 		

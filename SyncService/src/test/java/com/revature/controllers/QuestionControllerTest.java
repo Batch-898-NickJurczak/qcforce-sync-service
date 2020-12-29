@@ -1,6 +1,7 @@
 package com.revature.controllers;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDateTime;
@@ -103,8 +104,8 @@ class QuestionControllerTest {
         when(service.createSurveyQuestion(surveyQuestion)).thenReturn(surveyQuestion);
         
         try {            
-            this.webClient.post().uri("/question").body(surveyQuestionDto, SurveyQuestionDto.class)
-            .accept(MediaType.APPLICATION_JSON)
+            this.webClient.post().uri("/question")
+            .body(Mono.just(surveyQuestionDto), SurveyQuestionDto.class)
             .exchange()
             .expectStatus().isCreated()
             .expectHeader().valueEquals("Content-Type", "application/json")
@@ -113,6 +114,8 @@ class QuestionControllerTest {
         } catch (Exception e) {
             fail("Exception thrown during createSurveyQuestionTest_WithoutError: " + e);
         }
+        
+        verify(service).createSurveyQuestion(surveyQuestion);
     }
     
     /**
