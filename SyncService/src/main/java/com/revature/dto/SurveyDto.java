@@ -4,9 +4,10 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import com.revature.models.Survey;
+import com.revature.models.SurveyForm;
 import com.revature.models.SurveyQuestion;
 
-public class SurveyDto implements Dto<Survey> {
+public class SurveyDto implements Dto<SurveyForm> {
 
 	private int id;
 
@@ -126,7 +127,7 @@ public class SurveyDto implements Dto<Survey> {
 	 * @param createdOn
 	 * @param question
 	 */
-	public SurveyDto(Survey survey) {
+	public SurveyDto(SurveyForm survey) {
 		super();
 		this.id = survey.getId();
 		this.version = survey.getVersion();
@@ -138,8 +139,8 @@ public class SurveyDto implements Dto<Survey> {
 
 
 	@Override
-	public Survey toPojo() {
-		Survey survey = new Survey();
+	public SurveyForm toPojo() {
+		SurveyForm survey = new SurveyForm();
 		survey.setId(this.getId());
 		survey.setVersion(this.getVersion());
 		survey.setTitle(this.getTitle());

@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import com.revature.models.Survey;
+import com.revature.models.SurveyForm;
 import com.revature.service.SurveyService;
 
 /**
@@ -39,14 +40,14 @@ public class SurveyController {
 	 * sets up an end-point for creating a survey
 	 */
 	@PostMapping("/survey")
-	public Survey createSurvey(Survey survey) {
+	public SurveyForm createSurvey(SurveyForm survey) {
 		return surveyService.createSurvey(survey);
 	}
 	/**
 	 * Sets up an end-point for updating an existing survey.
 	 */
 	@PutMapping("/survey/{id}")
-	public void updateSurvey(@PathParam("surveyId") int surveyId, @RequestBody Survey survey) {
+	public void updateSurvey(@PathParam("surveyId") int surveyId, @RequestBody SurveyForm survey) {
 		surveyService.updateSurvey(survey);
 		
 	}

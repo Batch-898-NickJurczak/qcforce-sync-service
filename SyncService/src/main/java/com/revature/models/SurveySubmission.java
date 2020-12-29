@@ -17,7 +17,7 @@ import com.revature.domain.Employee;
  */
 public class SurveySubmission {
 
-	private Survey survey;
+	private SurveyForm survey;
 
 	private int surveySubmissionId;
 
@@ -29,7 +29,7 @@ public class SurveySubmission {
 
 	private List<SurveyQuestionResponse> answers;
 
-	public SurveySubmission(Survey survey, int surveySubmissionId, Employee takenBy, Batch batch, LocalDateTime createdOn,
+	public SurveySubmission(SurveyForm survey, int surveySubmissionId, Employee takenBy, Batch batch, LocalDateTime createdOn,
 			List<SurveyQuestionResponse> answers) {
 		super();
 		this.survey = survey;
@@ -44,11 +44,11 @@ public class SurveySubmission {
 		// TODO Auto-generated constructor stub
 	}
 
-	public Survey getSurvey() {
+	public SurveyForm getSurvey() {
 		return survey;
 	}
 
-	public void setSurvey(Survey survey) {
+	public void setSurvey(SurveyForm survey) {
 		this.survey = survey;
 	}
 

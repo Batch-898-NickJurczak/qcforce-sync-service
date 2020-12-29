@@ -24,7 +24,7 @@ import com.revature.domain.Employee;
 import com.revature.dto.SurveyQuestionDto;
 import com.revature.dto.SurveyQuestionResponseDto;
 import com.revature.models.QuestionType;
-import com.revature.models.Survey;
+import com.revature.models.SurveyForm;
 import com.revature.models.SurveyQuestion;
 import com.revature.models.SurveyQuestionResponse;
 import com.revature.models.SurveySubmission;
@@ -44,7 +44,7 @@ class SurveySubmissionServiceTest {
 	@MockBean
 	private SurveySubmissionRepo repo;
 
-	private Survey survey;
+	private SurveyForm survey;
 
 	private SurveyQuestion surveyQuestion;
 
@@ -99,8 +99,10 @@ class SurveySubmissionServiceTest {
 				                              answer);
 		List<SurveyQuestionResponse> responseList = new ArrayList<>();
 		responseList.add(response);
-		survey = new Survey(1, 1, "General inquiry", 2, LocalDateTime.now(), surveyQuestionList);
 		
+		survey = new SurveyForm(1, "Wezley's Survey", "Wezley Singleton", 
+                LocalDateTime.now(), 1, surveyQuestionList);
+
 		
 		surveySubmission = new SurveySubmission(survey, 1, employee, batch, LocalDateTime.now(), responseList);
 	}
