@@ -25,6 +25,8 @@ import com.revature.models.QuestionType;
 import com.revature.models.SurveyQuestion;
 import com.revature.service.QuestionService;
 
+import reactor.core.publisher.Mono;
+
 /**
  * Tests the {@link QuestionController} and contained methods.
  * @author Chris,
@@ -46,6 +48,8 @@ class QuestionControllerTest {
 	private SurveyQuestion surveyQuestion;
 	
 	private String surveyQuestionJson;
+	
+	private Mono<String> monoJson;
 	
 	/**
 	 * @throws java.lang.Exception
@@ -74,6 +78,7 @@ class QuestionControllerTest {
 		// writing value as a Json string
 		ObjectMapper om	= new ObjectMapper();
 		surveyQuestionJson = om.writeValueAsString(new SurveyQuestionDto(surveyQuestion));
+		monoJson = Mono.just(surveyQuestionJson);
 	}
 
 	/**
@@ -96,7 +101,7 @@ class QuestionControllerTest {
 		try {			
 			this.webClient.get().uri("/question/" + surveyQuestion.getId()).accept(MediaType.APPLICATION_JSON).exchange()
 									.expectStatus().isOk()
-									.expectBody().json(surveyQuestionJson);
+									.expectBody().equals(monoJson);
 			
 		} catch (Exception e) {
 			fail("Exception thrown during getSurveyQuestionTest_WithoutError: " + e);
@@ -116,7 +121,7 @@ class QuestionControllerTest {
 		try {					
 			this.webClient.get().uri("/question/" + surveyQuestion.getId()).accept(MediaType.APPLICATION_JSON).exchange()
 					.expectStatus().isNotFound()
-					.expectBody().json("");
+					.expectBody().equals(null);
 			
 		} catch (Exception e) {
 			fail("Exception thrown during getSurveyQuestionTest_QuestionNotFound: " + e);

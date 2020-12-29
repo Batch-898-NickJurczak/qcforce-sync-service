@@ -1,22 +1,19 @@
 package com.revature.controllers;
 
-import javax.servlet.http.HttpServletResponse;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.revature.dto.SurveyQuestionDto;
 import com.revature.models.SurveyQuestion;
-import com.revature.repo.QuestionRepo;
 import com.revature.service.QuestionService;
 
-import reactor.core.Disposable;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import reactor.util.context.Context;
 
 /**
  * A REST controller that manages all SurveyQuestion related endpoints.
@@ -48,19 +45,21 @@ public class QuestionController {
 	}
 
 	/**
-	 * Retrieve a {@link SurveyQuestion} that matches the given id.
+	 * Retrieve a {@link Flux}<{@link SurveyQuestionDto}> that matches the given id.
 	 * 
-	 * @return A promise for a {@link SurveyQuestion} object.
+	 * @return A promise for a {@link Flux}<{@link SurveyQuestionDto}> object.
 	 */
 	@GetMapping("/question/{id}")
-	public Flux<SurveyQuestionDto> getQuestion(@PathVariable("id") int id, HttpServletResponse response) {
+	public Mono<SurveyQuestionDto> getQuestion(@PathVariable("id") int id) {
 
 		SurveyQuestion question = questionService.getSurveyQuestion(id);
 
-		SurveyQuestionDto questionDto = new SurveyQuestionDto(question);
+		if(question == null) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+		}
 		
-		response.setStatus(200);
+		SurveyQuestionDto questionDto = new SurveyQuestionDto(question);
 
-		return Flux.just(questionDto);
+		return Mono.just(questionDto);
 	}
 }
