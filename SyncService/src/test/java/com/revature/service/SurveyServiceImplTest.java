@@ -117,7 +117,7 @@ public class SurveyServiceImplTest {
     void deleteSurveyFormTest_SurveyNotFound() {
     	
     	try {	
-			doThrow(EntityNotFoundException.class).when(repo).deleteById(surveyForm.getId());
+			doThrow(IllegalArgumentException.class).when(repo).deleteById(surveyForm.getId());
 
 			boolean returned = service.deleteSurveyForm(surveyForm.getId());
 
@@ -126,8 +126,8 @@ public class SurveyServiceImplTest {
 			assertFalse(returned, "SurveyServiceImpl.deleteSurveyForm(" + surveyForm.getId()
 					+ ") did not return false as expected.");
 			
-		} catch (EntityNotFoundException e) {
-			fail("EntityNotFoundException not caught by SurveyServiceImpl in "
+		} catch (IllegalArgumentException e) {
+			fail("IllegalArgumentException not caught by SurveyServiceImpl in "
 					+ "deleteSurveyFormTest_SurveyNotFound: " + e);
 		} catch (Exception e) {
 			fail("Exception thrown by SurveyServiceImpl in deleteSurveyFormTest_SurveyNotFound: " + e);
