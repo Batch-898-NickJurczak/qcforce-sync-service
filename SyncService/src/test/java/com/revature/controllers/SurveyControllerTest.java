@@ -7,6 +7,8 @@ import com.revature.models.SurveyForm;
 import com.revature.models.SurveyQuestion;
 import com.revature.service.SurveyService;
 
+import reactor.core.publisher.Mono;
+
 import static org.assertj.core.api.Assertions.fail;
 import static org.mockito.Mockito.when;
 
@@ -45,9 +47,13 @@ public class SurveyControllerTest {
 	
 	private SurveyForm surveyForm;
 	
+	private SurveyFormDto surveyFormDto;
+	
 	private String surveyFormJson;
 	
 	private SurveyQuestion surveyQuestion;
+	
+	private Mono<String> monoJson; 
 	
 	/**
 	 * @throws java.lang.Exception
@@ -78,11 +84,13 @@ public class SurveyControllerTest {
         
         surveyForm = new SurveyForm(1, "Wezley's Survey", "Wezley Singleton", 
                                     LocalDateTime.now(), 1, surveyQuestions);
-
+        
+        surveyFormDto = new SurveyFormDto(surveyForm);
         
         // writing value as a Json string
         ObjectMapper om    = new ObjectMapper();
         surveyFormJson = om.writeValueAsString(new SurveyFormDto(surveyForm));
+        monoJson = Mono.just(surveyFormJson);
 
     }
 
@@ -104,10 +112,11 @@ public class SurveyControllerTest {
     	
     	try {
     		this.webClient.post().uri("/survey")
+    		.body(Mono.just(surveyFormDto),SurveyFormDto.class)
     		.exchange()
     		.expectStatus().isCreated()
     		.expectHeader().valueEquals("Content-Type", "application/json")
-    		.expectBody().json(surveyFormJson);
+    		.expectBody().equals(monoJson);
     	}catch (Exception e) {
     		
     		fail("Exception thrown during createSurveyTest_WithoutError: " + e);
@@ -129,7 +138,7 @@ public class SurveyControllerTest {
     		.exchange()
     		.expectStatus().isBadRequest()
     		.expectHeader().valueEquals("Content-Type", "application/json")
-    		.expectBody().json("");
+    		.expectBody().equals(null);
     	}catch (Exception e) {
     		
     		fail("Exception thrown during createSurveyTest_NullInput: " + e);

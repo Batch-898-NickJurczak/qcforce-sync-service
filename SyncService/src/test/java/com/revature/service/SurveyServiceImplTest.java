@@ -15,6 +15,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.EntityNotFoundException;
+
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -107,14 +109,14 @@ public class SurveyServiceImplTest {
      */
     @Test
 	void createSurveyFormTest_NullInput() {
-    	when(repo.save(surveyForm)).thenThrow(IllegalArgumentException.class);
+    	when(repo.save(surveyForm)).thenThrow(EntityNotFoundException.class);
     	
     	SurveyForm returned = service.createSurveyForm(surveyForm);
     	
-    	verify(repo).save(returned);
+    	verify(repo).save(surveyForm);
     	
     	assertEquals(null, returned, "SurveyServiceImpl.createSurveyForm("+ surveyForm
-    									+") did not return null when repo threw IllegalArgument Exception in "
+    									+") did not return null when repo threw EntityNotFound Exception in "
     									+"createSurveyFormTest_NullInput");
     }
 }
