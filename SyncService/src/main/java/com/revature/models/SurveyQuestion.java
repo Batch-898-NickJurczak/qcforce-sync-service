@@ -166,6 +166,46 @@ public class SurveyQuestion {
 	 */
 	public void setQuestion(List<String> question) {
 		this.question = question;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((createdOn == null) ? 0 : createdOn.hashCode());
+		result = prime * result + id;
+		result = prime * result + ((question == null) ? 0 : question.hashCode());
+		result = prime * result + ((type == null) ? 0 : type.hashCode());
+		result = prime * result + version;
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		SurveyQuestion other = (SurveyQuestion) obj;
+		if (createdOn == null) {
+			if (other.createdOn != null)
+				return false;
+		} else if (!createdOn.equals(other.createdOn))
+			return false;
+		if (id != other.id)
+			return false;
+		if (question == null) {
+			if (other.question != null)
+				return false;
+		} else if (!question.equals(other.question))
+			return false;
+		if (type != other.type)
+			return false;
+		if (version != other.version)
+			return false;
+		return true;
 	}	
 	
 	
