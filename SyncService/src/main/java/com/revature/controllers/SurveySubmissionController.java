@@ -11,7 +11,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.revature.models.SurveyForm;
 import com.revature.models.SurveySubmission;
+import com.revature.service.SurveyServiceImpl;
 import com.revature.service.SurveySubmissionService;
 import com.revature.service.SurveySubmissionServiceImpl;
 
@@ -28,6 +30,7 @@ public class SurveySubmissionController {
 	 * Creates an instance of {@link SurveySubmissionService} used to send data.
 	 */
 	private SurveySubmissionServiceImpl surveySubmissionService;
+	private SurveyServiceImpl surveyService;
 
 	/**
 	 * Initializes all services.
@@ -44,7 +47,13 @@ public class SurveySubmissionController {
 	 * sets up an end-point for creating a survey
 	 */
 	@PostMapping("/surveysub")
-	public SurveySubmission createSurvey(SurveySubmission surveySubmission) {
+	public SurveySubmission createSurvey(int surveyId, int associateId) {
+		SurveySubmission surveySubmission = new SurveySubmission();
+
+		SurveyForm survey = surveyService.getSurveyForm(surveyId);
+
+		surveySubmission.setSurvey(survey);
+
 		return surveySubmissionService.createSurveySubmission(surveySubmission);
 	}
 

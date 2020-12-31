@@ -14,13 +14,13 @@ public class SurveySubmissionServiceImpl implements SurveySubmissionService {
 
 	@Override
 	public SurveySubmission createSurveySubmission(SurveySubmission surveySubmission) {
-		//TODO call answersNotEmpty method here
-		//TODO call answersMatchQuestions method here
 		return submissionRepo.createSurveySubmission(surveySubmission);
 	}
 
 	@Override
 	public SurveySubmission updateSurveySubmission(SurveySubmission surveySubmission) {
+		//TODO call answersNotEmpty method here
+		//TODO call answersMatchQuestions method here
 		return submissionRepo.updateSurveySubmission(surveySubmission);
 	}
 

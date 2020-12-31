@@ -1,3 +1,5 @@
+package com.revature.dto;
+
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -9,8 +11,8 @@ import com.revature.models.SurveyQuestionResponse;
 import com.revature.models.SurveySubmission;
 import com.revature.repo.BatchRepo;
 import com.revature.repo.EmployeeRepo;
-import com.revature.repo.SurveyFormRepo;
 import com.revature.repo.SurveyQuestionResponseRepo;
+import com.revature.repo.SurveyRepo;
 
 /**
  * 
@@ -25,7 +27,7 @@ public class SurveySubmissionDto implements Dto<SurveySubmission> {
 
 	BatchRepo batchRepo;
 
-	SurveyFormRepo surveyRepo;
+	SurveyRepo surveyRepo;
 
 	EmployeeRepo employeeRepo;
 
@@ -51,7 +53,7 @@ public class SurveySubmissionDto implements Dto<SurveySubmission> {
 
 		Batch batch = batchRepo.findByBatchId(this.batchId);
 
-		SurveyForm survey = surveyRepo.getSurveyForm(this.surveyId);
+		SurveyForm survey = surveyRepo.getOne(this.surveyId);
 
 		Employee takenBy = employeeRepo.findEmployeeById(this.takenBy);
 		

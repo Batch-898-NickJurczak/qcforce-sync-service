@@ -62,10 +62,9 @@ public class SurveySubmission {
 		// TODO Auto-generated constructor stub
 	}
 
-	public SurveySubmission(int surveySubmissionId, SurveyForm survey, Employee takenBy, Batch batch,
+	public SurveySubmission(SurveyForm survey, Employee takenBy, Batch batch,
 			LocalDateTime createdOn, List<SurveyQuestionResponse> answers, boolean taken) {
 		super();
-		this.surveySubmissionId = surveySubmissionId;
 		this.survey = survey;
 		this.takenBy = takenBy;
 		this.batch = batch;

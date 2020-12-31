@@ -1,30 +1,24 @@
 package com.revature.service;
 
-import com.revature.models.Survey;
+import com.revature.models.SurveyForm;
 
 /**
- * 
- * @author 
- * Hannah
- * Brett
- * Alma
- * Yarashlee
- *
+ * An interface for handling all the business code related to {@link SurveyForm} objects.
+ * @author Conner,
+ * @author Michael M,
+ * @author Michael Z,
+ * @author Prativa
  */
-
 public interface SurveyService {
-
+    
 	/**
-	 * Get SurveyView 
-	 * @return 
+	 * Create a {@link SurveyForm} object given a {@link SurveyFortmDto} input from the user.
+	 * @param surveyFormDto The {@link SurveyFormDto} object that the user will input.
+	 * @return {@link SurveyForm}
 	 */
-	
-	public Survey getSurvey(int id);
-	
-	public Survey createSurvey(Survey survey);
-	
-	public Survey updateSurvey(Survey survey);
-	
-	public int deleteSurvey(Survey survey);
+	public SurveyForm createSurveyForm(SurveyForm surveyForm);
 
+	boolean updateSurveyForm(SurveyForm surveyForm);
+
+	SurveyForm getSurveyForm(int id);
 }

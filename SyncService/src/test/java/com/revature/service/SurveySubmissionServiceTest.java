@@ -79,32 +79,35 @@ class SurveySubmissionServiceTest {
 	 */
 	@BeforeEach
 	void setUp() throws Exception {
-		//The following block of code sets up a survey with instantiated list of questions
+		// The following block of code sets up a survey with instantiated list of
+		// questions
 		List<String> questions = new ArrayList<String>();
 		questions.add("How are you?");
 		surveyQuestion = new SurveyQuestion(1, LocalDateTime.now(), QuestionType.SHORT_ANSWER, 1, questions);
 		surveyQuestionDto = new SurveyQuestionDto(surveyQuestion);
 		List<SurveyQuestion> surveyQuestionList = new ArrayList<>();
 		surveyQuestionList.add(surveyQuestion);
-		
-		//The following block of code sets up a survey submission with an instantiated list of answers 
-		//to the questions contained in the initial survey. It is also necessary to instantiate
-		//employee and batch objects as they are contained in the survey submission object
+
+		// The following block of code sets up a survey submission with an instantiated
+		// list of answers
+		// to the questions contained in the initial survey. It is also necessary to
+		// instantiate
+		// employee and batch objects as they are contained in the survey submission
+		// object
 		employee = new Employee();
 		batch = new Batch();
 		batch.setId(1);
 		List<String> answer = new ArrayList<String>();
 		answer.add("I am not doing so well");
-		response = new SurveyQuestionResponse(surveyQuestion, LocalDateTime.now(), QuestionType.SHORT_ANSWER, 1,
-				                              answer);
+		response = new SurveyQuestionResponse(surveyQuestion, surveySubmission, LocalDateTime.now(),
+				QuestionType.SHORT_ANSWER, 1, answer);
 		List<SurveyQuestionResponse> responseList = new ArrayList<>();
 		responseList.add(response);
-		
-		survey = new SurveyForm(1, "Wezley's Survey", "Wezley Singleton", 
-                LocalDateTime.now(), 1, surveyQuestionList);
 
-		
-		surveySubmission = new SurveySubmission(survey, 1, employee, batch, LocalDateTime.now(), responseList);
+		survey = new SurveyForm(1, "Wezley's Survey", "Wezley Singleton", LocalDateTime.now(), 1, surveyQuestionList);
+
+		surveySubmission = new SurveySubmission(survey, employee, batch, LocalDateTime.now(), responseList, false);
+
 	}
 
 	/**
@@ -128,9 +131,9 @@ class SurveySubmissionServiceTest {
 
 		verify(repo).getSurveySubmission(surveySubmission.getSurveySubmissionId());
 
-		assertEquals(surveySubmission, returned, "SurveySubmissionServiceImpl.getSurveySubmission(" + surveySubmission.getSurveySubmissionId()
-						                                                                            + ") returned mismatched SurveySubmission object in " 
-				                                                                                    + "getSurveySubmissionTest_WithoutError");
+		assertEquals(surveySubmission, returned,
+				"SurveySubmissionServiceImpl.getSurveySubmission(" + surveySubmission.getSurveySubmissionId()
+						+ ") returned mismatched SurveySubmission object in " + "getSurveySubmissionTest_WithoutError");
 	}
 
 	/**
@@ -147,9 +150,10 @@ class SurveySubmissionServiceTest {
 
 		verify(repo).getSurveySubmission(surveySubmission.getSurveySubmissionId());
 
-		assertEquals(null, returned, "SurveySubmissionService.getSurveySubmission(" + surveySubmission.getSurveySubmissionId()
-					                                                               	+ ") did not return null when repo threw EntityNotFoundException in "
-						                                                            + "getSurveySubmission_SubmissionNotFound");
+		assertEquals(null, returned,
+				"SurveySubmissionService.getSurveySubmission(" + surveySubmission.getSurveySubmissionId()
+						+ ") did not return null when repo threw EntityNotFoundException in "
+						+ "getSurveySubmission_SubmissionNotFound");
 	}
 
 	/**
@@ -162,9 +166,9 @@ class SurveySubmissionServiceTest {
 	void answersNotEmpty_AnswersNotEmpty() {
 		boolean test = service.answersNotEmpty(surveySubmission);
 		assertEquals(true, test, "Should have returned true for test answersNotEmptyTest but returned false");
-	
+
 	}
-	
+
 	/**
 	 * Tests the answersMatchQuestions method of the {@link SurveySubmissionService}
 	 * Ensures that the survey submission will only be created if the answer types
@@ -175,14 +179,14 @@ class SurveySubmissionServiceTest {
 	void answersMatchQuestions_AnswersMatch() {
 		boolean test = service.answersMatchQuestions(surveySubmission);
 		assertEquals(true, test, "Should have returned true for test answersMatchQuestions but returned false");
-		
 
 	}
 
 	/**
-	 * Tests that the function answersNotEmpty returns false if the answers are empty.
+	 * Tests that the function answersNotEmpty returns false if the answers are
+	 * empty.
 	 */
-	
+
 	@Test
 	void answersNotEmpty_AnswersAreEmpty() {
 		surveySubmission.getAnswers().clear();
@@ -192,19 +196,20 @@ class SurveySubmissionServiceTest {
 	}
 
 	/**
-	 * Test that the function answersMatchQuestion returns false if the answers types do not match the questions
+	 * Test that the function answersMatchQuestion returns false if the answers
+	 * types do not match the questions
 	 */
 
 	@Test
 	void answersMatchQuestion_AnswersDontMatch() {
 		List<String> answer = new ArrayList<String>();
 		answer.add("I am not doing so well");
-		response = new SurveyQuestionResponse(surveyQuestion, LocalDateTime.now(), QuestionType.MULTIPLE_CHOICE, 1,
-				                              answer);
+		response = new SurveyQuestionResponse(surveyQuestion, surveySubmission, LocalDateTime.now(),
+				QuestionType.MULTIPLE_CHOICE, 1, answer);
 		List<SurveyQuestionResponse> responseList = new ArrayList<>();
 		responseList.add(response);
 		surveySubmission.setAnswers(responseList);
-		
+
 		boolean test = service.answersMatchQuestions(surveySubmission);
 		assertEquals(false, test, "Should have returned false for test answersMatchQuestion but returned true");
 	}
