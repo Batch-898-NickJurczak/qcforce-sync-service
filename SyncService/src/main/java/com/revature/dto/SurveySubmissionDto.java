@@ -48,6 +48,12 @@ public class SurveySubmissionDto implements Dto<SurveySubmission> {
 	private boolean taken;
 	
 	/**
+	 * @authors
+	 * Hannah Novack,
+	 * Brett Addicott,
+	 * Yara Cruz,
+	 * Alma Alva
+	 * 
 	 * Survey Submission to Pojo will convert our submission object we receive from the controller into a pojo which will be 
 	 * saved in our database. 
 	 */
@@ -55,6 +61,10 @@ public class SurveySubmissionDto implements Dto<SurveySubmission> {
 	@Override
 	public SurveySubmission toPojo() {
 		SurveySubmission surveySubmission = new SurveySubmission();
+		
+		//Currently, the only values passed into the create survey submission method in the controller are
+		//the survey ID and the employee ID of the taker. The rest of the values will be null, but it might
+		//be necessary in the future to have all of the setters.
 
 		List<SurveyQuestionResponse> answers = questionResponseRepo.getResponsesBySubmission(this.surveySubmissionId);
 
