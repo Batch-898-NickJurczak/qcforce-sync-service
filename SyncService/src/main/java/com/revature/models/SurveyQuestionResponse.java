@@ -57,6 +57,10 @@ public class SurveyQuestionResponse {
 		this.version = version;
 		this.answer = answer;
 	}
+	
+	public SurveyQuestionResponse() {
+		
+	}
 
 	@Override
 	public int hashCode() {

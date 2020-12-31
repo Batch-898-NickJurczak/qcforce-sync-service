@@ -1,6 +1,5 @@
 package com.revature.dto;
 
-
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -16,8 +15,11 @@ import com.revature.repo.SurveyRepo;
 
 /**
  * 
- * @author Hannah and Brett This class represents the Data Transfer Object for
- *         the survey submission object
+ * @author Hannah Novak, Brett Addicott, Alma Alva, Yarashlee Cruz
+ * 
+ * 
+ *         This class represents the Data Transfer Object for the survey
+ *         submission object
  * 
  *
  */
@@ -44,6 +46,11 @@ public class SurveySubmissionDto implements Dto<SurveySubmission> {
 	private List<Integer> answers;
 
 	private boolean taken;
+	
+	/**
+	 * Survey Submission to Pojo will convert our submission object we receive from the controller into a pojo which will be 
+	 * saved in our database. 
+	 */
 
 	@Override
 	public SurveySubmission toPojo() {
@@ -56,7 +63,7 @@ public class SurveySubmissionDto implements Dto<SurveySubmission> {
 		SurveyForm survey = surveyRepo.getOne(this.surveyId);
 
 		Employee takenBy = employeeRepo.findEmployeeById(this.takenBy);
-		
+
 		surveySubmission.setSurveySubmissionId(this.surveySubmissionId);
 		surveySubmission.setTakenBy(takenBy);
 		surveySubmission.setTaken(this.taken);
@@ -68,6 +75,10 @@ public class SurveySubmissionDto implements Dto<SurveySubmission> {
 		return surveySubmission;
 
 	}
+	
+	/**
+	 * Survey Submission Dto constructor which will set our submitted fields and create a new dto object. 
+	 */
 
 	public SurveySubmissionDto(int surveySubmissionId, int surveyId, int takenBy, int batchId, LocalDateTime createdOn,
 			List<Integer> answers, boolean taken) {
@@ -84,6 +95,10 @@ public class SurveySubmissionDto implements Dto<SurveySubmission> {
 	public SurveySubmissionDto() {
 		// TODO Auto-generated constructor stub
 	}
+	
+	/**
+	 * This class converts our dto object into a string object
+	 */
 
 	@Override
 	public String toString() {

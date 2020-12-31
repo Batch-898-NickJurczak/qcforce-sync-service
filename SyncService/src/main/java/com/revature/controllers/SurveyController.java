@@ -18,7 +18,9 @@ import com.revature.service.SurveyService;
  * Survey Controller
  * Handles Get, Post, Put, and Delete requests coming from User Interface
  * Communicates with Survey service to handle the requests
- * @authors Brett and Hannah
+ * 
+ * 
+ * @authors Brett Addicott, Hannah Novack, Yarashlee Cruz, Alma Alva
  *
  */
 public class SurveyController {
@@ -41,14 +43,14 @@ public class SurveyController {
 	 */
 	@PostMapping("/survey")
 	public SurveyForm createSurvey(SurveyForm survey) {
-		return surveyService.createSurvey(survey);
+		return surveyService.createSurveyForm(survey);
 	}
 	/**
 	 * Sets up an end-point for updating an existing survey.
 	 */
 	@PutMapping("/survey/{id}")
 	public void updateSurvey(@PathParam("surveyId") int surveyId, @RequestBody SurveyForm survey) {
-		surveyService.updateSurvey(survey);
+		surveyService.updateSurveyForm(survey);
 		
 	}
 	/**
@@ -56,7 +58,7 @@ public class SurveyController {
 	 */
 	@DeleteMapping("/survey/{id}")
 	public void deleteSurvey(@PathParam("surveyId") int surveyId) {
-		Survey survey = new Survey();
+		SurveyForm survey = new SurveyForm();
 		survey.setId(surveyId);
 		surveyService.deleteSurvey(survey);
 	}
@@ -66,9 +68,9 @@ public class SurveyController {
 	 * Sets up an end-point for getting a survey with the provided ID.
 	 */
 	@GetMapping("/survey/{id}")
-	public Survey getSurveyById(@PathVariable("surveyId") int surveyId) {
+	public SurveyForm getSurveyById(@PathVariable("surveyId") int surveyId) {
 		
-		return surveyService.getSurvey(surveyId);
+		return surveyService.getSurveyForm(surveyId);
 		
 	}
 }
