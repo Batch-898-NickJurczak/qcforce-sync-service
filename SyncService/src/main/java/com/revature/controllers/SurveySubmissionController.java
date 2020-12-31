@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.revature.dto.SurveySubmissionDto;
 import com.revature.models.SurveyForm;
 import com.revature.models.SurveySubmission;
 import com.revature.service.SurveyServiceImpl;
@@ -20,7 +21,7 @@ import com.revature.service.SurveySubmissionServiceImpl;
 /**
  * Rest Controller for all servey service endpoints
  * 
- * @author Brett and Hannah
+ * @author Brett Addicott Alma Alva Yara Cruz Hannah Novack
  */
 
 @RestController
@@ -44,21 +45,34 @@ public class SurveySubmissionController {
 	}
 
 	/**
-	 * sets up an end-point for creating a survey
+	 * Initializes all services.
+	 *
+	 * @param SurveySubmissionService sets from bean of type
+	 *                                {@link SurveySubmissionService}.
+	 */
+	@Autowired
+	public void setSurveyService(SurveyServiceImpl surveyService) {
+		this.surveyService = surveyService;
+	}
+
+	/**
+	 * sets up an end-point for creating a survey submission
 	 */
 	@PostMapping("/surveysub")
-	public SurveySubmission createSurvey(int surveyId, int associateId) {
-		SurveySubmission surveySubmission = new SurveySubmission();
+	public SurveySubmission createSurveySubmission(int surveyId, int associateId) {
 
-		SurveyForm survey = surveyService.getSurveyForm(surveyId);
-
-		surveySubmission.setSurvey(survey);
+		SurveySubmissionDto submissionDto = new SurveySubmissionDto();
+		
+		submissionDto.setSurveyId(surveyId);
+		submissionDto.setTakenBy(associateId);
+		
+		SurveySubmission surveySubmission = submissionDto.toPojo();
 
 		return surveySubmissionService.createSurveySubmission(surveySubmission);
 	}
 
 	/**
-	 * Sets up an end-point for updating an existing survey.
+	 * Sets up an end-point for updating an existing survey submission
 	 */
 	@PutMapping("/surveysub/{id}")
 	public void updateSurvey(@PathParam("surveyId") int surveySubmissionId,
@@ -78,10 +92,10 @@ public class SurveySubmissionController {
 	}
 
 	/**
-	 * Sets up an end-point for getting a survey with the provided ID.
+	 * Sets up an end-point for getting a survey submission with the provided ID.
 	 */
-	@GetMapping("/survey/{id}")
-	public SurveySubmission getSurveSubmissionyById(@PathVariable("surveySubId") int surveySubId) {
+	@GetMapping("/surveysub/{id}")
+	public SurveySubmission getSurveySubmissionyById(@PathVariable("surveySubId") int surveySubId) {
 
 		return surveySubmissionService.getSurveySubmission(surveySubId);
 

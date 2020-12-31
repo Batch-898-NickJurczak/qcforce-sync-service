@@ -81,6 +81,10 @@ public class SurveySubmissionDto implements Dto<SurveySubmission> {
 		this.taken = taken;
 	}
 
+	public SurveySubmissionDto() {
+		// TODO Auto-generated constructor stub
+	}
+
 	@Override
 	public String toString() {
 		return "SurveySubmissionDto [surveySubmissionId=" + surveySubmissionId + ", surveyId=" + surveyId + ", takenBy="
