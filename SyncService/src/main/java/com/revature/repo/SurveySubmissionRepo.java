@@ -1,25 +1,19 @@
 package com.revature.repo;
 
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import com.revature.domain.Employee;
 import com.revature.models.SurveySubmission;
 
 @Repository
-public class SurveySubmissionRepo {
+public interface SurveySubmissionRepo extends JpaRepository<Employee, Integer>{
 
-	public SurveySubmission getSurveySubmission(int id) {
-		return null;
-	}
+	public SurveySubmission getSurveySubmission(int id);
 	
-	public SurveySubmission createSurveySubmission(SurveySubmission surveySubmission) {
-		return null;
-	}
+	public SurveySubmission createSurveySubmission(SurveySubmission surveySubmission);
 	
-	public SurveySubmission updateSurveySubmission(SurveySubmission surveySubmission) {
-		return null;
-	}
+	public SurveySubmission updateSurveySubmission(SurveySubmission surveySubmission);
 	
-	public int deleteSurveySubmission(SurveySubmission surveySubmission) {
-		return 0;
-	}
+	public int deleteSurveySubmission(SurveySubmission surveySubmission);
 }

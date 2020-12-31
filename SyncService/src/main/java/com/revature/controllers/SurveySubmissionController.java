@@ -3,12 +3,14 @@ package com.revature.controllers;
 import javax.ws.rs.PathParam;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.revature.dto.SurveySubmissionDto;
@@ -17,6 +19,8 @@ import com.revature.models.SurveySubmission;
 import com.revature.service.SurveyServiceImpl;
 import com.revature.service.SurveySubmissionService;
 import com.revature.service.SurveySubmissionServiceImpl;
+
+import reactor.core.publisher.Mono;
 
 /**
  * Rest Controller for all servey service endpoints
@@ -59,7 +63,8 @@ public class SurveySubmissionController {
 	 * sets up an end-point for creating a survey submission
 	 */
 	@PostMapping("/surveysub")
-	public SurveySubmission createSurveySubmission(int surveyId, int associateId) {
+	@ResponseStatus(code = HttpStatus.CREATED)
+    public Mono<SurveySubmission> createSurveySubmission(int surveyId, int associateId) {
 
 		SurveySubmissionDto submissionDto = new SurveySubmissionDto();
 		
@@ -68,14 +73,14 @@ public class SurveySubmissionController {
 		
 		SurveySubmission surveySubmission = submissionDto.toPojo();
 
-		return surveySubmissionService.createSurveySubmission(surveySubmission);
+		return Mono.just(surveySubmissionService.createSurveySubmission(surveySubmission));
 	}
 
 	/**
 	 * Sets up an end-point for updating an existing survey submission
 	 */
 	@PutMapping("/surveysub/{id}")
-	public void updateSurvey(@PathParam("surveyId") int surveySubmissionId,
+	public void updateSurveySubmission(@PathParam("surveyId") int surveySubmissionId,
 			@RequestBody SurveySubmission surveySubmission) {
 		surveySubmissionService.updateSurveySubmission(surveySubmission);
 

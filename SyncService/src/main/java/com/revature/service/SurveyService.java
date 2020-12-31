@@ -1,5 +1,7 @@
 package com.revature.service;
 
+import java.util.List;
+
 import com.revature.models.SurveyForm;
 
 /**
@@ -21,4 +23,8 @@ public interface SurveyService {
 	boolean updateSurveyForm(SurveyForm surveyForm);
 
 	SurveyForm getSurveyForm(int id);
+
+	public List<SurveyForm> getAllSurveyForms();
+
+	public void deleteSurvey(SurveyForm survey);
 }

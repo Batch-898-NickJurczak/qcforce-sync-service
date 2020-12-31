@@ -1,5 +1,9 @@
 package com.revature.controllers;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.PathParam;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,9 +14,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import com.revature.models.Survey;
+import com.revature.dto.SurveyFormDto;
 import com.revature.models.SurveyForm;
 import com.revature.service.SurveyService;
+
+import reactor.core.publisher.Flux;
 
 /**
  * Survey Controller
@@ -73,5 +79,23 @@ public class SurveyController {
 		return surveyService.getSurveyForm(surveyId);
 		
 	}
+	
+	@GetMapping("survey")
+	public Flux<SurveyFormDto> getAllSurveyForms(HttpServletResponse sr){
+		
+		List<SurveyForm> surveyForms = surveyService.getAllSurveyForms();
+		List<SurveyFormDto> surveyFormsDto = new ArrayList<>();
+		
+		for (SurveyForm sf : surveyForms) {
+			surveyFormsDto.add(new SurveyFormDto(sf));
+		}
+		
+		sr.setStatus(200);
+		
+		// Fill Flux data with surveyFormsDto list content if it exists.
+		Flux<SurveyFormDto> data = Flux.fromIterable(surveyFormsDto);
+		
+		return data;
+	};
 }
 

@@ -16,5 +16,6 @@ public enum QuestionType {
 	
 	@Column
 	PICK_FROM_RANGE
+	
 
 }

@@ -11,7 +11,11 @@ import com.revature.repo.SurveySubmissionRepo;
  * A standard implementation of the {@link SurveySumbissionService} interface for handling
  * all the business code related to {@link SurveySubmission} objects.
  * 
- * @author Hannah Novak, Brett Addicott, Yarashlee cruz, Alma Alva
+ * @author 
+ * Hannah Novack
+ * Brett Addicott
+ * Yarashlee cruz
+ * Alma Alva
  */
 @Service
 public class SurveySubmissionServiceImpl implements SurveySubmissionService {
@@ -65,8 +69,9 @@ public class SurveySubmissionServiceImpl implements SurveySubmissionService {
 
 	
 	/**
-	 * Methods we were going to use to validate that the answers were not empty
-	 * and that the answer types match the question type.
+	 * @param SurveySubmission object
+	 * @return boolean
+	 * returns false if the answers contained in the object are not empty
 	 */
 	@Override
 	public boolean answersNotEmpty(SurveySubmission surveySubmission) {
@@ -74,6 +79,11 @@ public class SurveySubmissionServiceImpl implements SurveySubmissionService {
 		return false;
 	}
 
+	/**
+	 * @param SurveySubmission object
+	 * @return boolean
+	 * returns false if the answer types contained in the object do not match the corresponding question types
+	 */
 	@Override
 	public boolean answersMatchQuestions(SurveySubmission surveySubmission) {
 		// TODO Auto-generated method stub
