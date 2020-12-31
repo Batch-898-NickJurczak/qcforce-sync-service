@@ -1,7 +1,10 @@
 package com.revature.repo;
 
+import org.springframework.stereotype.Repository;
+
 import com.revature.models.SurveySubmission;
 
+@Repository
 public class SurveySubmissionRepo {
 
 	public SurveySubmission getSurveySubmission(int id) {

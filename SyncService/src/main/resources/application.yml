@@ -1,43 +1,34 @@
 server:
   port: ${custom_port:8085}
-
 spring:
   codec:
     max-in-memory-size: 10MB
-
   application:
     name: ${application_name:SyncService}
-
   rabbitmq:
-    host: ${rabbitmq_host}
+    host: ${rabbitmq_host:localhost}
     port: ${rabbitmq_port:5672}
-    username: ${rabbitmq_username}
-    password: ${rabbitmq_password}
-
+    username: ${rabbitmq_username:guest}
+    password: ${rabbitmq_password:guest}
   datasource:
     driverClassName: ${datasource_driverClassName:org.postgresql.Driver}
-    url: ${datasource_url}
-    username: ${datasource_username}
-    password: ${datasource_password}
-
+    url: ${datasource_url:jdbc:postgresql://localhost:5432/postgres?qcforce_training=qcforce_training}
+    username: ${datasource_username:postgres}
+    password: ${datasource_password:password}
   jpa:
     properties:
       hibernate:
         dialect: ${jap_properties_hibernate_dialect:org.hibernate.dialect.PostgreSQLDialect}
-
 eureka:
   client:
     registerWithEureka: true
     fetchRegistry: true
     service-url:
       defaultZone: ${eureka_url:http://localhost:8761/eureka/}
-
   instance:
-    hostname: ${HOSTNAME:${spring.application.name}}
-    preferIpAddress: false
-    instanceId: ${spring.application.name}:${vcap.application.instance_id:${spring.application.instance_id:${random.value}}}:${server.port}
-
-
+   hostname: localhost #${HOSTNAME:${spring.application.name}}
+    #preferIpAddress: false
+    #instanceId: ${spring.application.name}:${vcap.application.instance_id:${spring.application.instance_id:${random.value}}}:${server.port}plication.instance_id:${random.value}}}:${server.port}
 sync-service:
   rabbitMQ-config:
     formResponseQueue: ${sync_service_formResponseQueue:FormResponse-Queue}
@@ -46,13 +37,12 @@ sync-service:
     batchDataRoutingKey: ${sync_service_batchDataRoutingKey:BatchData-Key}
     formResponseExchange: ${sync_service_formResponseExchange:FormResponse-Exchange}
     batchDataExchange: ${sync_service_batchDataExchange:BatchData-Exchange}
-
   sheets-service-config:
-    clientID: ${sheets_service_clientID}
+    clientID: ${sheets_service_clientID:108041203033746567112}
     scopes: ${sheets_service_scopes:https://spreadsheets.google.com/feeds}
-    credentialsFilePrefix: ${sheets_service_credentialsFilePrefix}
+    credentialsFilePrefix: ${sheets_service_credentialsFilePrefix:qcforce2-1609258796124-00c68d52e257}
     credentialsFileSuffix: ${sheets_service_credentialsFileSuffix:.p12}
-    spreadSheetID: ${sheets_service_spreadSheetID}
-
+    spreadSheetID: ${sheets_service_spreadSheetID:1SWenq3SvME0Xhla_XbO4jA8wTjT36gqNSrwZLAVCPuc}
+    #Get rid of all the .java related to sheet services (services, references)
   scheduler:
-    fixedDelay: ${scheduler_fixedDelay:86400000}
+      fixedDelay: ${scheduler_fixedDelay:86400000}
