@@ -95,7 +95,7 @@ public class SurveySubmissionControllerTest {
 		batch.setId(1);
 		List<String> answer = new ArrayList<String>();
 		answer.add("I am not doing so well");
-		response = new SurveyQuestionResponse(surveyQuestion, LocalDateTime.now(), QuestionType.SHORT_ANSWER, 1,
+		response = new SurveyQuestionResponse(surveyQuestion, surveySubmission, LocalDateTime.now(), QuestionType.SHORT_ANSWER, 1,
 				                              answer);
 		List<SurveyQuestionResponse> responseList = new ArrayList<>();
 		responseList.add(response);
@@ -104,7 +104,7 @@ public class SurveySubmissionControllerTest {
                 LocalDateTime.now(), 1, surveyQuestionList);
 
 		
-		surveySubmission = new SurveySubmission(survey, 1, employee, batch, LocalDateTime.now(), responseList);
+		surveySubmission = new SurveySubmission(survey, employee, batch, LocalDateTime.now(), responseList, false);
 	}
 
 	/**
