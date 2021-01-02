@@ -20,8 +20,8 @@ public class AssociateSurveySessionService {
 	 * @param batchId
 	 * @return associateSurveySessionId
 	 */
-	public int createAssociateSurveySession(int associateId, int surveyId, int batchId) {
-		return -1;
+	public AssociateSurveySession createAssociateSurveySession(int associateId, int surveyId, int batchId) {
+		return null;
 	}
 
 	/**
