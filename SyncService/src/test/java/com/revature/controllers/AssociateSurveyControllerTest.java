@@ -10,8 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.revature.models.AssociateSurveySession;
 import com.revature.service.AssociateSurveySessionService;
 
@@ -19,57 +21,95 @@ import com.revature.service.AssociateSurveySessionService;
 public class AssociateSurveyControllerTest {
 
 	@Autowired
-	WebTestClient webClient;
+	private WebTestClient webClient;
 
 	@MockBean
-	AssociateSurveySessionService service;
+	private AssociateSurveySessionService service;
 
-	AssociateSurveySession associateSurveySession;
+	private AssociateSurveySession associateSurveySession;
+
+	private String associateSurveySessionJson;
 
 	@BeforeEach
 	void setUp() throws Exception {
-		
+
 		MockitoAnnotations.initMocks(this);
 
 		associateSurveySession = new AssociateSurveySession(0, 1, 2, "2010", false);
+
+		ObjectMapper om = new ObjectMapper();
+		associateSurveySessionJson = om.writeValueAsString(associateSurveySession);
 
 	}
 
 	@Test
 	void createAssociateSurveySession_withoutErrors() {
 		when(service.createAssociateSurveySession(1, 2, "2010")).thenReturn(associateSurveySession);
-		
+
 		try {
-    		this.webClient.post().uri(uriBuilder ->
-	            uriBuilder.path("/ass")
-	            .queryParam("surveyId", 1)
-	            .queryParam("associateId", 2)
-	            .queryParam("batchId", "2010")
-	            .build())
-    		.exchange()
-    		.expectStatus().isCreated()
-    		.expectHeader().valueEquals("Content-Type", "application/json")
-    		.expectBody().json(String.valueOf(associateSurveySession.getAssociateSurveySessionId()));
-    	}catch (Exception e) {
-    		
-    		fail("Exception thrown during createSurveyTest_WithoutError: " + e);
-    	}
-		
+			this.webClient.post()
+					.uri(uriBuilder -> uriBuilder.path("/ass").queryParam("surveyId", 1).queryParam("associateId", 2)
+							.queryParam("batchId", "2010").build())
+					.exchange().expectStatus().isCreated().expectHeader()
+					.valueEquals("Content-Type", "application/json").expectBody()
+					.json(String.valueOf(associateSurveySession.getAssociateSurveySessionId()));
+		} catch (Exception e) {
+
+			fail("Exception thrown during createAssociateSurveySession_WithoutError: " + e);
+		}
 	}
-	
+
 	@Test
 	void createAssociateSurveySession_InputNull() {
+
+		try {
+			this.webClient.post().uri("/ass").exchange().expectStatus().isBadRequest().expectHeader()
+					.valueEquals("Content-Type", "application/json").expectBody().returnResult();
+		} catch (Exception e) {
+
+			fail("Exception thrown during createAssociateSurveySession_InputNull: " + e);
+		}
+	}
+
+	@Test
+	void readAssociateSurveySession_withoutErrors() {
+		when(service.readAssociateSurveySession(0)).thenReturn(associateSurveySession);
+
+		try {
+			this.webClient.get().uri("/ass/" + associateSurveySession.getAssociateSurveySessionId())
+					.accept(MediaType.APPLICATION_JSON).exchange().expectStatus().isOk().expectBody()
+					.json(associateSurveySessionJson);
+
+		} catch (Exception e) {
+			fail("Exception thrown during readAssociateSurveySession_WithoutError: " + e);
+		}
+	}
+
+	@Test
+	void readAssociateSurveySession_notFound() {
+		when(service.readAssociateSurveySession(0)).thenReturn(null);
+
+		try {
+			this.webClient.get().uri("/ass/" + associateSurveySession.getAssociateSurveySessionId())
+					.accept(MediaType.APPLICATION_JSON).exchange().expectStatus().isNotFound().expectBody().json("");
+
+		} catch (Exception e) {
+			fail("Exception thrown during readAssociateSurveySession_notFound: " + e);
+		}
+	}
+
+	@Test
+	void readAssociateSureySession_nullInput() {
+		when(service.readAssociateSurveySession(0)).thenReturn(null);
 		
 		try {
-    		this.webClient.post().uri("/ass")
-    		.exchange()
-    		.expectStatus().isBadRequest()
-    		.expectHeader().valueEquals("Content-Type", "application/json")
-    		.expectBody().returnResult();
-    	}catch (Exception e) {
-    		
-    		fail("Exception thrown during createSurveyTest_InputNull: " + e);
-    	}
+			this.webClient.get().uri("/ass/" + associateSurveySession.getAssociateSurveySessionId()).accept(MediaType.APPLICATION_JSON)
+								.exchange().expectStatus().isBadRequest()
+								.expectBody().json("");
+
+		} catch (Exception e) {
+			fail("Exception thrown during readAssociateSurveySession_nullInput: " + e);
+		}
 	}
 
 }

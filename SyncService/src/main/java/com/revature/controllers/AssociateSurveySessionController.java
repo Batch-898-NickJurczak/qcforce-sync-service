@@ -27,7 +27,7 @@ public class AssociateSurveySessionController {
 	 * @param surveyId
 	 * @param associateId
 	 * @param batchId
-	 * @return
+	 * @return ResponseEntity<Integer>
 	 */
 	@PostMapping("/ass")
 	public ResponseEntity<Integer> createAssociateSurveySession(@RequestParam int surveyId, @RequestParam int associateId, @RequestParam String batchId) {
@@ -38,7 +38,7 @@ public class AssociateSurveySessionController {
 	 * This method handles the endpoint for reading {@link AssociateSurveySession}
 	 * 
 	 * @param associateSurveySessionId
-	 * @return
+	 * @return ResponseEntity<AssociateSurveySession>
 	 */
 	@GetMapping("/ass/{assId}")
 	public ResponseEntity<AssociateSurveySession> readAssociateSurveySession(@PathVariable("assId") int associateSurveySessionId) {
@@ -49,7 +49,7 @@ public class AssociateSurveySessionController {
 	 * This method handles the endpoint for updating {@link AssociateSurveySession}
 	 * 
 	 * @param associateSurveySession
-	 * @return
+	 * @return ResponseEntity<AssociateSurveySession>
 	 */
 	@PutMapping("/ass")
 	public ResponseEntity<AssociateSurveySession> updateAssociateSurveySession(@RequestBody AssociateSurveySession associateSurveySession) {
