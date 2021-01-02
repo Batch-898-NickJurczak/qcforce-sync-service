@@ -63,7 +63,7 @@ class SurveyControllerTest {
 
 	private SurveyForm survey;
 	
-	private HashMap<String, Object> claim = new HashMap<>();
+	private Map<String, Object> claim = new HashMap<>();
 	
 	private ArrayList<Object> list = new ArrayList<>();
 	
@@ -129,8 +129,6 @@ class SurveyControllerTest {
 	void getSurveyTest_Success() throws JsonProcessingException {
 		when(auth.decodeJWT("jwt")).thenReturn(claim);
 		when(service.getSurvey((int)claim.get("surveyId"))).thenReturn(survey);
-		list.add("success");
-		list.add(new SurveyFormDto(survey));
 		ObjectMapper im = new ObjectMapper();
         surveyListJson = im.writeValueAsString(list);
         

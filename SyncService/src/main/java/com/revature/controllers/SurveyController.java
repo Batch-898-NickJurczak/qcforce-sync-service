@@ -3,8 +3,10 @@ package com.revature.controllers;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
 
 import javax.ws.rs.PathParam;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -55,7 +57,25 @@ public class SurveyController {
 	 */
 	@GetMapping("/survey/{token}")
 	public Flux<ArrayList<Object>> getSurveyById(@PathVariable("token") String token) {
-		return null;
+		Map<String, Object> claim = authService.decodeJWT(token);
+		ArrayList<Object> object = new ArrayList<Object>();
+		Date date = new Date(System.currentTimeMillis());
+		
+		if(date.compareTo((Date)claim.get("exp")) == 1) {
+			object.add("expired");
+			object.add(null);
+		} else if(claim.get("iat") == null) {
+			object.add("failure");
+			object.add(null);
+		} else if (claim.get("surveySubId") != null) {
+			object.add("completed");
+			object.add(null);
+		} else {
+			object.add("success");
+			object.add(new SurveyFormDto(surveyService.getSurvey((int)claim.get("surveyId"))));
+		}
+		
+		return Flux.just(object);
 	}
 }
 
