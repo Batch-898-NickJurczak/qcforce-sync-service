@@ -5,6 +5,8 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import javax.persistence.EntityNotFoundException;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -66,5 +68,27 @@ class AssociateSurveySessionServiceTest {
 		verify(repo, times(2)).findByAssociateIdAndSurveyIdAndBatchId(1, 2, "2010");
 
 		assertEquals(returnedFirst, returnedSecond);
+	}
+	
+	@Test
+	void readAssociateSurveySession_withoutError() {
+		when(repo.getOne(associateSurveySession.getAssociateSurveySessionId())).thenReturn(associateSurveySession);
+		
+		AssociateSurveySession returned = service.readAssociateSurveySession(associateSurveySession.getAssociateSurveySessionId());
+		
+		verify(repo).getOne(associateSurveySession.getAssociateSurveySessionId());
+		
+		assertEquals(associateSurveySession, returned);
+	}
+	
+	@Test
+	void readAssociateSurveySession_notFound() {
+		when(repo.getOne(associateSurveySession.getAssociateSurveySessionId())).thenThrow(EntityNotFoundException.class);
+		
+		AssociateSurveySession returned = service.readAssociateSurveySession(associateSurveySession.getAssociateSurveySessionId());
+		
+		verify(repo).getOne(associateSurveySession.getAssociateSurveySessionId());
+		
+		assertEquals(null, returned);
 	}
 }
