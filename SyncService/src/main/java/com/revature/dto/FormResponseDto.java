@@ -1,34 +1,26 @@
-package com.revature.models;
+package com.revature.dto;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- *Standard template of a QC survey form that will be sent through a message queue.
- *@author Wei Wu, Andres Mateo Toledo Albarracin, Jose Canela
- */
-public class FormResponse implements Serializable {
+import com.revature.models.FormResponse;
 
-	/**
-	 * Serializable version UID
-	 */
-	private static final long serialVersionUID = 9136762341724971453L;
+public class FormResponseDto implements Dto<FormResponse> {
 
 	/**
 	 * variable of type {@link Integer} that represents the id linked to a form response. 
 	 */
-	private int formId;
+	private int formResponseId;
 
 	/**
-	 * variable of type {@link String} that represents the time the response was submited. 
+	 * variable of type {@link String} that represents the time the response was submitted. 
 	 */
 	private String timestamp;
 
 	/**
-	 * variable of type {@link String} that represents the time the response was submited. 
+	 * variable of type {@link Integer} that represents the id of the survey submitted. 
 	 */
-	private String sourceId;
+	private int surveyId;
 
 	/**
 	 * variable of type {@link List}{@link String} that represents the questions of the response. 
@@ -39,11 +31,11 @@ public class FormResponse implements Serializable {
 	 * variable of type {@link List}{@link String} that represents the answers to the questions of the response. 
 	 */
 	private List<String> answers;
-
+	
 	/**
 	 * initializes the questions and answers arrays.
 	 */
-	public FormResponse() {
+	public FormResponseDto() {
 		super();
 		this.questions = new ArrayList<String>();
 		this.answers = new ArrayList<String>();
@@ -53,24 +45,24 @@ public class FormResponse implements Serializable {
 	 * Gets the form id.
 	 * @return form id.
 	 */
-	public int getFormId() {
-		return formId;
+	public int getFormResponseId() {
+		return this.formResponseId;
 	}
 
 	/**
 	 * Sets the form id.
 	 * @param formId new form id.
 	 */
-	public void setFormId(int formId) {
-		this.formId = formId;
+	public void setFormResponseId(int formResponseId) {
+		this.formResponseId = formResponseId;
 	}
 
 	/**
 	 * Gets the time stamp for the form.
-	 * @return time stamp time stamp
+	 * @return form time stamp
 	 */
 	public String getTimestamp() {
-		return timestamp;
+		return this.timestamp;
 	}
 
 	/**
@@ -86,7 +78,7 @@ public class FormResponse implements Serializable {
 	 * @return {@link List}{@link String} questions.
 	 */
 	public List<String> getQuestions() {
-		return questions;
+		return this.questions;
 	}
 
 	/** Sets the form questions.
@@ -101,7 +93,7 @@ public class FormResponse implements Serializable {
 	 * @return list of answers.
 	 */
 	public List<String> getAnswers() {
-		return answers;
+		return this.answers;
 	}
 
 	/** Sets the form answers.
@@ -113,29 +105,42 @@ public class FormResponse implements Serializable {
 
 	
 	/**
-	 * Gets the form source
-	 * @return form source
+	 * Gets the surveyId
+	 * @return surveyId
 	 */
-	public String getSourceId() {
-		return sourceId;
+	public int getSurveyId() {
+		return this.surveyId;
 	}
 
 	
 	/**
-	 * Sets form Source
+	 * Sets surveyId 
 	 * @param formSource new form source
 	 */
-	public void setSourceId(String sourceId) {
-		this.sourceId = sourceId;
+	public void setSurveyId(int surveyId) {
+		this.surveyId = surveyId;
 	}
 
 	@Override
 	public String toString() {
-		return "FormResponse [getFormId()=" + getFormId() + ", getTimestamp()=" + getTimestamp() + ", getQuestions()="
-				+ getQuestions() + ", getAnswers()=" + getAnswers() + ", getFormSource()=" + getSourceId() + "]";
+		return "FormResponse [getFormResponseId()=" + getFormResponseId() + ", getTimestamp()=" + getTimestamp() + ", getQuestions()="
+				+ getQuestions() + ", getAnswers()=" + getAnswers() + ", getSurveyId()=" + getSurveyId() + "]";
 	}
-
 	
-
+	
+	/**
+	 * Converts current FormResponseDto instance to FormResponse instance.
+	 * @return FormResponse
+	 */
+	@Override
+	public FormResponse toPojo() {
+		FormResponse formResponse = new FormResponse();
+		formResponse.setFormId(this.getFormResponseId());
+		formResponse.setTimestamp(this.getTimestamp());
+		formResponse.setSourceId(String.valueOf(this.getSurveyId()));
+		formResponse.setQuestions(this.getQuestions());
+		formResponse.setAnswers(this.getAnswers());
+		return formResponse;
+	}
 
 }
