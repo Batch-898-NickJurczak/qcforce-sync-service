@@ -1,6 +1,9 @@
 package com.revature.service;
 
-import com.revature.models.Survey;
+import java.util.List;
+
+
+import com.revature.models.SurveyForm;
 
 /**
  * 
@@ -19,12 +22,6 @@ public interface SurveyService {
 	 * @return 
 	 */
 	
-	public Survey getSurvey(int id);
+	public SurveyForm getSurvey(int id);
 	
-	public Survey createSurvey(Survey survey);
-	
-	public Survey updateSurvey(Survey survey);
-	
-	public Survey deleteSurvey(int id);
-
 }

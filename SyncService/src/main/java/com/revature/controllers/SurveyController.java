@@ -1,5 +1,9 @@
 package com.revature.controllers;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+
 import javax.ws.rs.PathParam;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,8 +14,15 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import com.revature.models.Survey;
+
+import com.revature.service.AuthServiceImpl;
 import com.revature.service.SurveyService;
+import com.revature.dto.SurveyFormDto;
+
+import antlr.collections.List;
+import io.jsonwebtoken.Claims;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 public class SurveyController {
 	
@@ -19,6 +30,9 @@ public class SurveyController {
 	 * Creates an instance of {@link SurveyService} used to send data.
 	 */
 	private SurveyService surveyService;
+	
+	private AuthServiceImpl authService;
+	
 	/**
 	 * Initializes all services.
 	 *
@@ -28,38 +42,20 @@ public class SurveyController {
 	public void setSurveyService(SurveyService surveyService) {
 		this.surveyService = surveyService;
 	}
-	/**
-	 * sets up an end-point for creating a survey
-	 */
-	@PostMapping("/survey")
-	public Survey createSurvey(Survey survey) {
-		return surveyService.createSurvey(survey);
-	}
-	/**
-	 * Sets up an end-point for updating an existing survey.
-	 */
-	@PutMapping("/survey/{id}")
-	public void updateSurvey(@PathParam("surveyId") int surveyId, @RequestBody Survey survey) {
-		surveyService.updateSurvey(survey);
-		
-	}
-	/**
-	 * Sets up an end-point for deleting a survey with the provided ID.
-	 */
-	@DeleteMapping("/survey/{id}")
-	public void deleteSurvey(@PathParam("surveyId") int surveyId) {
-		Survey survey = new Survey();
-		survey.setId(surveyId);
-		surveyService.deleteSurvey(surveyId);
-	}
 	
+	@Autowired
+	public void setAuthService(AuthServiceImpl authService) {
+		this.authService = authService;
+	}
+
 	
 	/**
 	 * Sets up an end-point for getting a survey with the provided ID.
+	 * @return 
 	 */
-	@GetMapping("/survey/{id}")
-	public Survey getSurveyById(@PathVariable("surveyId") int surveyId) {
-		return surveyService.getSurvey(surveyId);
+	@GetMapping("/survey/{token}")
+	public Flux<ArrayList<Object>> getSurveyById(@PathVariable("token") String token) {
+		return null;
 	}
 }
 
