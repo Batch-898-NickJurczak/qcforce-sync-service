@@ -12,6 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.WebTestClient;
+import org.springframework.web.reactive.function.BodyInserters;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.revature.models.AssociateSurveySession;
@@ -99,7 +100,7 @@ public class AssociateSurveyControllerTest {
 	}
 
 	@Test
-	void readAssociateSureySession_nullInput() {
+	void readAssociateSurveySession_nullInput() {
 		when(service.readAssociateSurveySession(0)).thenReturn(null);
 		
 		try {
@@ -109,6 +110,34 @@ public class AssociateSurveyControllerTest {
 
 		} catch (Exception e) {
 			fail("Exception thrown during readAssociateSurveySession_nullInput: " + e);
+		}
+	}
+	
+	@Test
+	void updateAssociateSurveySession_withoutErrors() {
+		when(service.updateAssociateSurveySession(associateSurveySession)).thenReturn(associateSurveySession);
+		
+		try {
+			this.webClient.put().uri("/ass").body(BodyInserters.fromValue(associateSurveySession))
+					.accept(MediaType.APPLICATION_JSON).exchange().expectStatus().isOk().expectBody()
+					.json(associateSurveySessionJson);
+
+		} catch (Exception e) {
+			fail("Exception thrown during updateAssociateSurveySession_WithoutError: " + e);
+		}
+	}
+	
+	@Test
+	void updateAssociateSurveySession_nullInput() {
+		when(service.updateAssociateSurveySession(associateSurveySession)).thenReturn(null);
+		
+		try {
+			this.webClient.put().uri("/ass")
+					.accept(MediaType.APPLICATION_JSON).exchange().expectStatus().isBadRequest().expectBody()
+					.returnResult();
+
+		} catch (Exception e) {
+			fail("Exception thrown during updateAssociateSurveySession_nullInput: " + e);
 		}
 	}
 
