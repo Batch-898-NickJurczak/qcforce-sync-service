@@ -30,7 +30,7 @@ public class AssociateSurveySessionController {
 	 * @return
 	 */
 	@PostMapping("/ass")
-	public ResponseEntity<Integer> createAssociateSurveySession(@RequestParam int surveyId, @RequestParam int associateId, @RequestParam int batchId) {
+	public ResponseEntity<Integer> createAssociateSurveySession(@RequestParam int surveyId, @RequestParam int associateId, @RequestParam String batchId) {
 		return null;
 	}
 	

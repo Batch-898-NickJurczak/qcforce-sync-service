@@ -12,5 +12,7 @@ import com.revature.models.AssociateSurveySession;
  */
 @Repository
 public interface AssociateSurveySessionRepo extends JpaRepository<AssociateSurveySession, Integer> {
+	
+	public AssociateSurveySession findByAssociateIdAndSurveyIdAndBatchId(int associateId, int surveyId, String batchId);
 
 }

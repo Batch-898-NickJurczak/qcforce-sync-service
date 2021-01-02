@@ -8,8 +8,9 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 /**
- * This is a model used to keep track of whether an associate has already completed a given survey.
- * It serves as a link between the associate and the survey.  
+ * This is a model used to keep track of whether an associate has already
+ * completed a given survey. It serves as a link between the associate and the
+ * survey.
  */
 @Entity
 @Table(name = "associate_survey_session")
@@ -36,13 +37,14 @@ public class AssociateSurveySession {
 	private int surveyId;
 
 	/**
-	 * Integer for the id of the batch 
+	 * String for the id of the batch
 	 */
 	@Column(name = "batch_id")
-	private int batchId;
+	private String batchId;
 
 	/**
-	 * Boolean representing whether the associate with id associateId has taken the survey with id surveyId
+	 * Boolean representing whether the associate with id associateId has taken the
+	 * survey with id surveyId
 	 */
 	@Column(name = "is_taken")
 	private boolean isTaken;
@@ -54,7 +56,7 @@ public class AssociateSurveySession {
 	 * @param batchId
 	 * @param isTaken
 	 */
-	public AssociateSurveySession(int associateSurveySessionId, int associateId, int surveyId, int batchId,
+	public AssociateSurveySession(int associateSurveySessionId, int associateId, int surveyId, String batchId,
 			boolean isTaken) {
 		super();
 		this.associateSurveySessionId = associateSurveySessionId;
@@ -109,14 +111,14 @@ public class AssociateSurveySession {
 	/**
 	 * @return the batchId
 	 */
-	public int getBatchId() {
+	public String getBatchId() {
 		return batchId;
 	}
 
 	/**
 	 * @param batchId the batchId to set
 	 */
-	public void setBatchId(int batchId) {
+	public void setBatchId(String batchId) {
 		this.batchId = batchId;
 	}
 
@@ -146,7 +148,7 @@ public class AssociateSurveySession {
 		int result = 1;
 		result = prime * result + associateId;
 		result = prime * result + associateSurveySessionId;
-		result = prime * result + batchId;
+		result = prime * result + ((batchId == null) ? 0 : batchId.hashCode());
 		result = prime * result + (isTaken ? 1231 : 1237);
 		result = prime * result + surveyId;
 		return result;
@@ -165,7 +167,10 @@ public class AssociateSurveySession {
 			return false;
 		if (associateSurveySessionId != other.associateSurveySessionId)
 			return false;
-		if (batchId != other.batchId)
+		if (batchId == null) {
+			if (other.batchId != null)
+				return false;
+		} else if (!batchId.equals(other.batchId))
 			return false;
 		if (isTaken != other.isTaken)
 			return false;
@@ -173,9 +178,5 @@ public class AssociateSurveySession {
 			return false;
 		return true;
 	}
-
-	
-
-	
 
 }

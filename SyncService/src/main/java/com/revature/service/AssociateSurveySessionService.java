@@ -1,16 +1,8 @@
 package com.revature.service;
 
-import org.springframework.stereotype.Service;
-
 import com.revature.models.AssociateSurveySession;
 
-/**
- * 
- * Service class for interacting with {@link AssociateSurveySession}
- *
- */
-@Service
-public class AssociateSurveySessionService {
+public interface AssociateSurveySessionService {
 
 	/**
 	 * Method for creating {@link AssociateSurveySession}
@@ -20,9 +12,7 @@ public class AssociateSurveySessionService {
 	 * @param batchId
 	 * @return associateSurveySessionId
 	 */
-	public AssociateSurveySession createAssociateSurveySession(int associateId, int surveyId, int batchId) {
-		return null;
-	}
+	AssociateSurveySession createAssociateSurveySession(int associateId, int surveyId, String batchId);
 
 	/**
 	 * Method for reading {@link AssociateSurveySession}
@@ -30,9 +20,7 @@ public class AssociateSurveySessionService {
 	 * @param associateSurveySessionId
 	 * @return {@link AssociateSurveySession}
 	 */
-	public AssociateSurveySession readAssociateSurveySession(int associateSurveySessionId) {
-		return null;
-	}
+	AssociateSurveySession readAssociateSurveySession(int associateSurveySessionId);
 
 	/**
 	 * Method for updating {@link AssociateSurveySession}
@@ -40,8 +28,6 @@ public class AssociateSurveySessionService {
 	 * @param associateSurveySession
 	 * @return {@link AssociateSurveySession}
 	 */
-	public AssociateSurveySession updateAssociateSurveySession(AssociateSurveySession associateSurveySession) {
-		return null;
-	}
+	AssociateSurveySession updateAssociateSurveySession(AssociateSurveySession associateSurveySession);
 
 }

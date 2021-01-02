@@ -31,19 +31,19 @@ public class AssociateSurveyControllerTest {
 		
 		MockitoAnnotations.initMocks(this);
 
-		associateSurveySession = new AssociateSurveySession(0, 1, 2, 2010, false);
+		associateSurveySession = new AssociateSurveySession(0, 1, 2, "2010", false);
 
 	}
 
 	@Test
 	void createAssociateSurveySession_withoutErrors() {
-		when(service.createAssociateSurveySession(1, 2, 2010)).thenReturn(associateSurveySession);
+		when(service.createAssociateSurveySession(1, 2, "2010")).thenReturn(associateSurveySession);
 		
 		try {
     		this.webClient.post().uri(uriBuilder ->
 	            uriBuilder.path("/ass")
-	            .queryParam("surveyId", "1")
-	            .queryParam("associateId", "2")
+	            .queryParam("surveyId", 1)
+	            .queryParam("associateId", 2)
 	            .queryParam("batchId", "2010")
 	            .build())
     		.exchange()
