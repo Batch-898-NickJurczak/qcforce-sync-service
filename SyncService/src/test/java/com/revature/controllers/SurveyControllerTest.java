@@ -145,4 +145,80 @@ class SurveyControllerTest {
 			fail();
 		}
 	}
+	@Test
+	void getSurveyTest_Failure() throws JsonProcessingException {
+		claim.put("surveyId", 1);
+		claim.put("batchId", "1");
+		claim.put("surveySubId", null);
+		when(auth.decodeJWT("jwt")).thenReturn(claim);
+		when(service.getSurvey((int)claim.get("surveyId"))).thenReturn(survey);
+		list.add("failure");
+		list.add(null);
+		ObjectMapper im = new ObjectMapper();
+        surveyListJson = im.writeValueAsString(list);
+        
+        
+		try {
+			this.webClient.get().uri("/survey/jwt")
+			.accept(MediaType.APPLICATION_JSON)
+			.exchange()
+			.expectStatus().isOk()
+			.expectBody().json(surveyListJson);
+			
+		}catch(NullPointerException e) {
+			fail();
+			}
+		}
+		
+		@Test
+		void getSurveyTest_Completed() throws JsonProcessingException {
+			claim.put("iat", new Date(System.currentTimeMillis()));
+			claim.put("exp", new Date(System.currentTimeMillis() + (1000 * 60 *15)));
+			claim.put("surveyId", 1);
+			claim.put("batchId", "1");
+			claim.put("surveySubId", 1);
+			when(auth.decodeJWT("jwt")).thenReturn(claim);
+			when(service.getSurvey((int)claim.get("surveyId"))).thenReturn(survey);
+			list.add("completed");
+			ObjectMapper im = new ObjectMapper();
+	        surveyListJson = im.writeValueAsString(list);
+	        
+	        
+			try {
+				this.webClient.get().uri("/survey/jwt")
+				.accept(MediaType.APPLICATION_JSON)
+				.exchange()
+				.expectStatus().isOk()
+				.expectBody().json(surveyListJson);
+				
+			}catch(Exception e) {
+				fail();
+			}
+	}
+		@Test
+		void getSurveyTest_Expired() throws JsonProcessingException {
+			claim.put("iat", new Date(System.currentTimeMillis()));
+			claim.put("exp", new Date(System.currentTimeMillis() - 1));
+			claim.put("surveyId", 1);
+			claim.put("batchId", "1");
+			claim.put("surveySubId", null);
+			when(auth.decodeJWT("jwt")).thenReturn(claim);
+			when(service.getSurvey((int)claim.get("surveyId"))).thenReturn(survey);
+			list.add("expired");
+			list.add(new SurveyFormDto(survey));
+			ObjectMapper im = new ObjectMapper();
+	        surveyListJson = im.writeValueAsString(list);
+	        
+	        
+			try {
+				this.webClient.get().uri("/survey/jwt")
+				.accept(MediaType.APPLICATION_JSON)
+				.exchange()
+				.expectStatus().isOk()
+				.expectBody().json(surveyListJson);
+				
+			}catch(Exception e) {
+				fail();
+			}
+		}
 }
