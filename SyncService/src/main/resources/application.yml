@@ -9,16 +9,17 @@ spring:
     name: ${application_name:SyncService}
 
   rabbitmq:
-    host: ${rabbitmq_host}
+    host: ${rabbitmq_host:localhost}
     port: ${rabbitmq_port:5672}
-    username: ${rabbitmq_username}
-    password: ${rabbitmq_password}
+    username: ${rabbitmq_username:guest}
+    password: ${rabbitmq_password:guest}
 
   datasource:
     driverClassName: ${datasource_driverClassName:org.postgresql.Driver}
-    url: ${datasource_url}
-    username: ${datasource_username}
-    password: ${datasource_password}
+    url: ${datasource_url:jdbc:postgresql://localhost:5432/postgres?}
+    username: ${datasource_username:postgres}
+    password: ${datasource_password:password}
+    
 
   jpa:
     properties:
@@ -48,11 +49,11 @@ sync-service:
     batchDataExchange: ${sync_service_batchDataExchange:BatchData-Exchange}
 
   sheets-service-config:
-    clientID: ${sheets_service_clientID}
+    clientID: ${sheets_service_clientID:108041203033746567112}
     scopes: ${sheets_service_scopes:https://spreadsheets.google.com/feeds}
-    credentialsFilePrefix: ${sheets_service_credentialsFilePrefix}
+    credentialsFilePrefix: ${sheets_service_credentialsFilePrefix:qcforce2-1609258796124-00c68d52e257}
     credentialsFileSuffix: ${sheets_service_credentialsFileSuffix:.p12}
-    spreadSheetID: ${sheets_service_spreadSheetID}
+    spreadSheetID: ${sheets_service_spreadSheetID:1SWenq3SvME0Xhla_XbO4jA8wTjT36gqNSrwZLAVCPuc}
 
   scheduler:
     fixedDelay: ${scheduler_fixedDelay:86400000}
