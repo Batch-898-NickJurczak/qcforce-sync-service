@@ -29,7 +29,7 @@ public class AssociateSurveySessionController {
 	 * @param batchId
 	 * @return ResponseEntity<Integer>
 	 */
-	@PostMapping("/ass")
+	@PostMapping("/session")
 	public ResponseEntity<Integer> createAssociateSurveySession(@RequestParam int surveyId, @RequestParam int associateId, @RequestParam String batchId) {
 		return null;
 	}
@@ -40,8 +40,8 @@ public class AssociateSurveySessionController {
 	 * @param associateSurveySessionId
 	 * @return ResponseEntity<AssociateSurveySession>
 	 */
-	@GetMapping("/ass/{assId}")
-	public ResponseEntity<AssociateSurveySession> readAssociateSurveySession(@PathVariable("assId") int associateSurveySessionId) {
+	@GetMapping("/session/{sessionId}")
+	public ResponseEntity<AssociateSurveySession> readAssociateSurveySession(@PathVariable("sessionId") int associateSurveySessionId) {
 		return null;
 	}
 	
@@ -51,7 +51,7 @@ public class AssociateSurveySessionController {
 	 * @param associateSurveySession
 	 * @return ResponseEntity<AssociateSurveySession>
 	 */
-	@PutMapping("/ass")
+	@PutMapping("/session")
 	public ResponseEntity<AssociateSurveySession> updateAssociateSurveySession(@RequestBody AssociateSurveySession associateSurveySession) {
 		return null;
 	}

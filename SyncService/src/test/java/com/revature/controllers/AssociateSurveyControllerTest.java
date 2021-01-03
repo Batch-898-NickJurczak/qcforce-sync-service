@@ -49,7 +49,7 @@ public class AssociateSurveyControllerTest {
 
 		try {
 			this.webClient.post()
-					.uri(uriBuilder -> uriBuilder.path("/ass").queryParam("surveyId", 1).queryParam("associateId", 2)
+					.uri(uriBuilder -> uriBuilder.path("/session").queryParam("surveyId", 1).queryParam("associateId", 2)
 							.queryParam("batchId", "2010").build())
 					.exchange().expectStatus().isCreated().expectHeader()
 					.valueEquals("Content-Type", "application/json").expectBody()
@@ -64,7 +64,7 @@ public class AssociateSurveyControllerTest {
 	void createAssociateSurveySession_InputNull() {
 
 		try {
-			this.webClient.post().uri("/ass").exchange().expectStatus().isBadRequest().expectHeader()
+			this.webClient.post().uri("/session").exchange().expectStatus().isBadRequest().expectHeader()
 					.valueEquals("Content-Type", "application/json").expectBody().returnResult();
 		} catch (Exception e) {
 
@@ -77,7 +77,7 @@ public class AssociateSurveyControllerTest {
 		when(service.readAssociateSurveySession(0)).thenReturn(associateSurveySession);
 
 		try {
-			this.webClient.get().uri("/ass/" + associateSurveySession.getAssociateSurveySessionId())
+			this.webClient.get().uri("/session/" + associateSurveySession.getAssociateSurveySessionId())
 					.accept(MediaType.APPLICATION_JSON).exchange().expectStatus().isOk().expectBody()
 					.json(associateSurveySessionJson);
 
@@ -91,7 +91,7 @@ public class AssociateSurveyControllerTest {
 		when(service.readAssociateSurveySession(0)).thenReturn(null);
 
 		try {
-			this.webClient.get().uri("/ass/" + associateSurveySession.getAssociateSurveySessionId())
+			this.webClient.get().uri("/session/" + associateSurveySession.getAssociateSurveySessionId())
 					.accept(MediaType.APPLICATION_JSON).exchange().expectStatus().isNotFound().expectBody().json("");
 
 		} catch (Exception e) {
@@ -104,7 +104,7 @@ public class AssociateSurveyControllerTest {
 		when(service.readAssociateSurveySession(0)).thenReturn(null);
 		
 		try {
-			this.webClient.get().uri("/ass/" + associateSurveySession.getAssociateSurveySessionId()).accept(MediaType.APPLICATION_JSON)
+			this.webClient.get().uri("/session/" + associateSurveySession.getAssociateSurveySessionId()).accept(MediaType.APPLICATION_JSON)
 								.exchange().expectStatus().isBadRequest()
 								.expectBody().json("");
 
@@ -118,7 +118,7 @@ public class AssociateSurveyControllerTest {
 		when(service.updateAssociateSurveySession(associateSurveySession)).thenReturn(associateSurveySession);
 		
 		try {
-			this.webClient.put().uri("/ass").body(BodyInserters.fromValue(associateSurveySession))
+			this.webClient.put().uri("/session").body(BodyInserters.fromValue(associateSurveySession))
 					.accept(MediaType.APPLICATION_JSON).exchange().expectStatus().isOk().expectBody()
 					.json(associateSurveySessionJson);
 
@@ -132,7 +132,7 @@ public class AssociateSurveyControllerTest {
 		when(service.updateAssociateSurveySession(associateSurveySession)).thenReturn(null);
 		
 		try {
-			this.webClient.put().uri("/ass")
+			this.webClient.put().uri("/session")
 					.accept(MediaType.APPLICATION_JSON).exchange().expectStatus().isBadRequest().expectBody()
 					.returnResult();
 
