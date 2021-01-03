@@ -37,13 +37,12 @@ public class AssociateSurveySessionServiceImpl implements AssociateSurveySession
 	@Override
 	public AssociateSurveySession createAssociateSurveySession(int associateId, int surveyId, String batchId) {
 
-		try {
-			AssociateSurveySession existingAssociateSurveySession = repo
-					.findByAssociateIdAndSurveyIdAndBatchId(associateId, surveyId, batchId);
-			return existingAssociateSurveySession;
-		} catch (EntityNotFoundException e) {
+		AssociateSurveySession existingAssociateSurveySession = repo.findByAssociateIdAndSurveyIdAndBatchId(associateId,
+				surveyId, batchId);
+		if (existingAssociateSurveySession == null) {
 			return repo.save(new AssociateSurveySession(0, associateId, surveyId, batchId, false));
 		}
+		return existingAssociateSurveySession;
 
 	}
 
