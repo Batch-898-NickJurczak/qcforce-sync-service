@@ -27,8 +27,13 @@ import com.revature.dto.AssociateSurveySessionDto;
 import com.revature.models.AssociateSurveySession;
 import com.revature.service.AssociateSurveySessionService;
 
+/**
+ * 
+ * These are tests for the {@link AssociateSurveySessionController}.
+ *
+ */
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-public class AssociateSurveyControllerTest {
+public class AssociateSurveySessionControllerTest {
 
 	@Autowired
 	private WebTestClient webClient;
@@ -58,6 +63,13 @@ public class AssociateSurveyControllerTest {
 		associateSurveySessionDtoJson = om.writeValueAsString(associateSurveySessionDto);
 	}
 
+	/**
+	 * This tests the createAssociateSurveySession method in
+	 * {@link AssociateSurveySessionController}. Ensures that if valid parameters
+	 * are given, the controller will return the expected ResponseEntity.
+	 * 
+	 * @throws JsonProcessingException
+	 */
 	@Test
 	void createAssociateSurveySession_withoutErrors() throws JsonProcessingException {
 		when(service.createAssociateSurveySession(Mockito.anyInt(), Mockito.anyInt(), Mockito.anyString()))
@@ -65,8 +77,8 @@ public class AssociateSurveyControllerTest {
 
 		try {
 			this.webClient.post().uri("/session").contentType(MediaType.APPLICATION_JSON)
-					.body(BodyInserters.fromValue(associateSurveySessionDtoJson))
-					.accept(MediaType.APPLICATION_JSON).exchange().expectStatus().isCreated().expectHeader()
+					.body(BodyInserters.fromValue(associateSurveySessionDtoJson)).accept(MediaType.APPLICATION_JSON)
+					.exchange().expectStatus().isCreated().expectHeader()
 					.valueEquals("Content-Type", "application/json").expectBody()
 					.json(String.valueOf(associateSurveySession.getAssociateSurveySessionId()));
 		} catch (Exception e) {
@@ -75,6 +87,12 @@ public class AssociateSurveyControllerTest {
 		}
 	}
 
+	/**
+	 * This tests the createAssociateSurveySession method in
+	 * {@link AssociateSurveySessionController}. Ensures that if a null input is
+	 * given, the controller will return a ResponseEntity with a Bad Request (400)
+	 * status code.
+	 */
 	@Test
 	void createAssociateSurveySession_InputNull() {
 
@@ -87,6 +105,12 @@ public class AssociateSurveyControllerTest {
 		}
 	}
 
+	/**
+	 * This tests the readAssociateSurveySession method in
+	 * {@link AssociateSurveySessionController}. Ensures that if a valid parameter
+	 * is given, the controller will return a ResponseEntity with the expected
+	 * {@link AssociateSurveySession} object.
+	 */
 	@Test
 	void readAssociateSurveySession_withoutErrors() {
 		when(service.readAssociateSurveySession(associateSurveySession.getAssociateSurveySessionId()))
@@ -102,6 +126,12 @@ public class AssociateSurveyControllerTest {
 		}
 	}
 
+	/**
+	 * This tests the readAssociateSurveySession method in
+	 * {@link AssociateSurveySessionController}. Ensures that if a parameter not
+	 * matching any persisted {@link AssociateSurveySession} entity is given, the
+	 * controller will return a ResponseEntity with a Not Found (404) status code.
+	 */
 	@Test
 	void readAssociateSurveySession_notFound() {
 		when(service.readAssociateSurveySession(0)).thenReturn(null);
@@ -115,6 +145,12 @@ public class AssociateSurveyControllerTest {
 		}
 	}
 
+	/**
+	 * This tests the readAssociateSurveySession method in
+	 * {@link AssociateSurveySessionController}. Ensures that if a null input is
+	 * given, the controller will return a ResponseEntity with a Bad Request (400)
+	 * status code.
+	 */
 	@Test
 	void readAssociateSurveySession_nullInput() {
 		when(service.readAssociateSurveySession(0)).thenReturn(null);
@@ -128,6 +164,12 @@ public class AssociateSurveyControllerTest {
 		}
 	}
 
+	/**
+	 * This tests the updateAssociateSurveySession method in
+	 * {@link AssociateSurveySessionController}. Ensures that if a valid parameter
+	 * is given, the controller will return a ResponseEntity with the expected
+	 * updated {@link AssociateSurveySession} object.
+	 */
 	@Test
 	void updateAssociateSurveySession_withoutErrors() {
 		when(service.updateAssociateSurveySession(associateSurveySession)).thenReturn(associateSurveySession);
@@ -142,6 +184,12 @@ public class AssociateSurveyControllerTest {
 		}
 	}
 
+	/**
+	 * This tests the updateAssociateSurveySession method in
+	 * {@link AssociateSurveySessionController}. Ensures that if a null input is
+	 * given, the controller will return a ResponseEntity with a Bad Request (400)
+	 * status code.
+	 */
 	@Test
 	void updateAssociateSurveySession_nullInput() {
 		when(service.updateAssociateSurveySession(associateSurveySession)).thenReturn(null);
@@ -152,6 +200,27 @@ public class AssociateSurveyControllerTest {
 
 		} catch (Exception e) {
 			fail("Exception thrown during updateAssociateSurveySession_nullInput: " + e);
+		}
+	}
+
+	/**
+	 * This tests the updateAssociateSurveySession method in
+	 * {@link AssociateSurveySessionController}. Ensures that if a parameter not
+	 * matching any persisted {@link AssociateSurveySession} entity is given, the
+	 * controller will return a ResponseEntity with a Bad Request (400) status code.
+	 */
+	@Test
+	void updateAssociateSurveySession_notFound() {
+
+		AssociateSurveySession nonPersistedAssociateSurveySession = new AssociateSurveySession(-1, 0, 0, null, false);
+		when(service.updateAssociateSurveySession(nonPersistedAssociateSurveySession)).thenReturn(null);
+		try {
+			this.webClient.put().uri("/session").body(BodyInserters.fromValue(associateSurveySession))
+					.accept(MediaType.APPLICATION_JSON).exchange().expectStatus().isBadRequest().expectBody()
+					.returnResult();
+
+		} catch (Exception e) {
+			fail("Exception thrown during updateAssociateSurveySession_WithoutError: " + e);
 		}
 	}
 
