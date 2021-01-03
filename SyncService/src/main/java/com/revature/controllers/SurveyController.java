@@ -78,8 +78,9 @@ public class SurveyController {
 			SurveyForm survey = (surveyService.getSurvey((int)claim.get("surveyId")));
 			response.add(new SurveyFormDto(survey));
 		}
-		
+		System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++" + response);
 		Flux<Object> data = Flux.fromIterable(response);
+		System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++" + data);
 		
 		return data;
 	}

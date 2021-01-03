@@ -23,10 +23,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -141,8 +143,9 @@ class SurveyControllerTest {
 			this.webClient.get().uri("/survey/jwt")
 			.accept(MediaType.APPLICATION_JSON)
 			.exchange()
-			.expectStatus().isOk()
-			.expectBody().json(surveyListJson);
+			.expectBody(Object.class)
+			.equals(list);
+			
 			
 		}catch(Exception e) {
 			fail();
@@ -166,8 +169,8 @@ class SurveyControllerTest {
 			this.webClient.get().uri("/survey/jwt")
 			.accept(MediaType.APPLICATION_JSON)
 			.exchange()
-			.expectStatus().isOk()
-			.expectBody().json(surveyListJson);
+			.expectBody(Object.class)
+			.equals(list);
 			
 		}catch(NullPointerException e) {
 			fail();
@@ -192,8 +195,8 @@ class SurveyControllerTest {
 				this.webClient.get().uri("/survey/jwt")
 				.accept(MediaType.APPLICATION_JSON)
 				.exchange()
-				.expectStatus().isOk()
-				.expectBody().json(surveyListJson);
+				.expectBody(Object.class)
+				.equals(list);
 				
 			}catch(Exception e) {
 				fail();
@@ -218,8 +221,8 @@ class SurveyControllerTest {
 				this.webClient.get().uri("/survey/jwt")
 				.accept(MediaType.APPLICATION_JSON)
 				.exchange()
-				.expectStatus().isOk()
-				.expectBody().json(surveyListJson);
+				.expectBody(Object.class)
+				.equals(list);
 				
 			}catch(Exception e) {
 				fail();
