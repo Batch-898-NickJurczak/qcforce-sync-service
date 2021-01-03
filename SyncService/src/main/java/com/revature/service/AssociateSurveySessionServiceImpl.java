@@ -1,5 +1,7 @@
 package com.revature.service;
 
+import javax.persistence.EntityNotFoundException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,7 +15,7 @@ import com.revature.repo.AssociateSurveySessionRepo;
  */
 @Service
 public class AssociateSurveySessionServiceImpl implements AssociateSurveySessionService {
-	
+
 	private AssociateSurveySessionRepo repo;
 
 	/**
@@ -34,8 +36,15 @@ public class AssociateSurveySessionServiceImpl implements AssociateSurveySession
 	 */
 	@Override
 	public AssociateSurveySession createAssociateSurveySession(int associateId, int surveyId, String batchId) {
-		//call custom read in repo based on 3 field, if exists, return assID.
-		return null;
+
+		try {
+			AssociateSurveySession existingAssociateSurveySession = repo
+					.findByAssociateIdAndSurveyIdAndBatchId(associateId, surveyId, batchId);
+			return existingAssociateSurveySession;
+		} catch (EntityNotFoundException e) {
+			return repo.save(new AssociateSurveySession(0, associateId, surveyId, batchId, false));
+		}
+
 	}
 
 	/**
@@ -46,7 +55,11 @@ public class AssociateSurveySessionServiceImpl implements AssociateSurveySession
 	 */
 	@Override
 	public AssociateSurveySession readAssociateSurveySession(int associateSurveySessionId) {
-		return null;
+		try {
+			return repo.getOne(associateSurveySessionId);
+		} catch (EntityNotFoundException e) {
+			return null;
+		}
 	}
 
 	/**
@@ -57,7 +70,13 @@ public class AssociateSurveySessionServiceImpl implements AssociateSurveySession
 	 */
 	@Override
 	public AssociateSurveySession updateAssociateSurveySession(AssociateSurveySession associateSurveySession) {
-		return null;
+
+		try {
+			repo.getOne(associateSurveySession.getAssociateSurveySessionId());
+			return repo.save(associateSurveySession);
+		} catch (EntityNotFoundException e) {
+			return null;
+		}
 	}
 
 }
