@@ -36,7 +36,7 @@ class AssociateSurveySessionServiceTest {
 		associateSurveySession = new AssociateSurveySession(0, 1, 2, "2010", false);
 	}
 
-	//@Test
+	@Test
 	void createAssociateSurveySession_withoutError() {
 		when(repo.save(associateSurveySession)).thenReturn(associateSurveySession);
 
