@@ -1,5 +1,7 @@
 package com.revature.service;
 
+import javax.persistence.EntityNotFoundException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,7 +15,7 @@ import com.revature.repo.AssociateSurveySessionRepo;
  */
 @Service
 public class AssociateSurveySessionServiceImpl implements AssociateSurveySessionService {
-	
+
 	private AssociateSurveySessionRepo repo;
 
 	/**
@@ -34,8 +36,9 @@ public class AssociateSurveySessionServiceImpl implements AssociateSurveySession
 	 */
 	@Override
 	public AssociateSurveySession createAssociateSurveySession(int associateId, int surveyId, String batchId) {
-		//call custom read in repo based on 3 field, if exists, return assID.
+
 		return null;
+
 	}
 
 	/**
@@ -46,6 +49,7 @@ public class AssociateSurveySessionServiceImpl implements AssociateSurveySession
 	 */
 	@Override
 	public AssociateSurveySession readAssociateSurveySession(int associateSurveySessionId) {
+
 		return null;
 	}
 
@@ -57,6 +61,7 @@ public class AssociateSurveySessionServiceImpl implements AssociateSurveySession
 	 */
 	@Override
 	public AssociateSurveySession updateAssociateSurveySession(AssociateSurveySession associateSurveySession) {
+
 		return null;
 	}
 

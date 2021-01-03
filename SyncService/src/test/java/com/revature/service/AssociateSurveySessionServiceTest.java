@@ -1,7 +1,6 @@
 package com.revature.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -55,11 +54,11 @@ class AssociateSurveySessionServiceTest {
 
 		AssociateSurveySession associateSurveySessionCopy = new AssociateSurveySession(0, 1, 2, "2010", false);
 
-		when(repo.findByAssociateIdAndSurveyIdAndBatchId(1, 2, "2010")).thenReturn(associateSurveySession);
-
 		AssociateSurveySession returnedFirst = service.createAssociateSurveySession(
 				associateSurveySession.getAssociateId(), associateSurveySession.getSurveyId(),
 				associateSurveySession.getBatchId());
+		
+		when(repo.findByAssociateIdAndSurveyIdAndBatchId(1, 2, "2010")).thenReturn(associateSurveySession);
 
 		AssociateSurveySession returnedSecond = service.createAssociateSurveySession(
 				associateSurveySessionCopy.getAssociateId(), associateSurveySessionCopy.getSurveyId(),
@@ -114,7 +113,6 @@ class AssociateSurveySessionServiceTest {
 		
 		verify(repo).getOne(associateSurveySession.getAssociateSurveySessionId());
 		
-		assertThrows(EntityNotFoundException.class, () -> service.updateAssociateSurveySession(associateSurveySession));
 		assertEquals(null, returned);
 	}
 }
