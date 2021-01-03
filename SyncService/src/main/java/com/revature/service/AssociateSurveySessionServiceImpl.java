@@ -55,6 +55,7 @@ public class AssociateSurveySessionServiceImpl implements AssociateSurveySession
 	 */
 	@Override
 	public AssociateSurveySession readAssociateSurveySession(int associateSurveySessionId) {
+
 		try {
 			return repo.getOne(associateSurveySessionId);
 		} catch (EntityNotFoundException e) {
