@@ -1,6 +1,7 @@
 package com.revature.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -89,6 +90,31 @@ class AssociateSurveySessionServiceTest {
 		
 		verify(repo).getOne(associateSurveySession.getAssociateSurveySessionId());
 		
+		assertEquals(null, returned);
+	}
+	
+	@Test
+	void updateAssociateSurveySession_withoutError() {
+		when(repo.save(associateSurveySession)).thenReturn(associateSurveySession);
+		when(repo.getOne(associateSurveySession.getAssociateSurveySessionId())).thenReturn(associateSurveySession);
+		
+		AssociateSurveySession returned = service.updateAssociateSurveySession(associateSurveySession);
+		
+		verify(repo).getOne(associateSurveySession.getAssociateSurveySessionId());
+		verify(repo).save(associateSurveySession);
+		
+		assertEquals(returned, associateSurveySession);
+	}
+	
+	@Test
+	void upateAssociateSurveySession_notFound() {
+		when(repo.getOne(associateSurveySession.getAssociateSurveySessionId())).thenThrow(EntityNotFoundException.class);
+		
+		AssociateSurveySession returned = service.updateAssociateSurveySession(associateSurveySession);
+		
+		verify(repo).getOne(associateSurveySession.getAssociateSurveySessionId());
+		
+		assertThrows(EntityNotFoundException.class, () -> service.updateAssociateSurveySession(associateSurveySession));
 		assertEquals(null, returned);
 	}
 }
