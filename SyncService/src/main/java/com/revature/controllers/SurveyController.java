@@ -7,7 +7,6 @@ import java.util.Map;
 
 import javax.ws.rs.PathParam;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -29,17 +28,18 @@ import antlr.collections.List;
 import io.jsonwebtoken.Claims;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
 @RestController
 @CrossOrigin
 public class SurveyController {
-	
+
 	/**
 	 * Creates an instance of {@link SurveyService} used to send data.
 	 */
 	private SurveyService surveyService;
-	
+
 	private AuthServiceImpl authService;
-	
+
 	/**
 	 * Initializes all services.
 	 *
@@ -49,40 +49,40 @@ public class SurveyController {
 	public void setSurveyService(SurveyService surveyService) {
 		this.surveyService = surveyService;
 	}
-	
+
 	@Autowired
 	public void setAuthService(AuthServiceImpl authService) {
 		this.authService = authService;
 	}
 
-	
 	/**
-	 * Sets up an end-point for getting a survey with the provided ID.
-	 * @return 
+	 * Sets up an end-point for getting a survey with the provided Token.
+	 * Verifies if the token recieved is authenticated then checks for conditions to add a 
+	 * string and a survey object to be sent to the front end.
+	 * 
+	 * @return Flux<Object>
 	 */
 	@GetMapping("/survey/{token}")
 	@ResponseStatus(code = HttpStatus.OK)
-	public Flux<Object> getSurveyById(@PathVariable("token") String token) {
-		Map<String, Object> claim = authService.decodeJWT(token);
+	public Flux<Object> getSurveyByToken(@PathVariable("token") String token) {
 		ArrayList<Object> response = new ArrayList<Object>();
 		Date date = new Date(System.currentTimeMillis());
-		
-		if(date.compareTo((Date)claim.get("exp")) == 1) {
-			response.add("expired");
-		} else if(claim.get("iat") == null) {
-			response.add("failure");
-		} else if (claim.get("surveySubId") != null) {
-			response.add("completed");
+		if (authService.verifyJWT(token)) {
+			Map<String, Object> claim = authService.getClaim();
+			if (date.compareTo((Date) claim.get("exp")) == 1) {
+				response.add("expired");
+			} else if (claim.get("surveySubId") != null) {
+				response.add("completed");
+			} else {
+				response.add("success");
+				SurveyForm survey = (surveyService.getSurvey((int) claim.get("surveyId")));
+				response.add(new SurveyFormDto(survey));
+			}
+
 		} else {
-			response.add("success");
-			SurveyForm survey = (surveyService.getSurvey((int)claim.get("surveyId")));
-			response.add(new SurveyFormDto(survey));
+			response.add("failure");
 		}
-		System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++" + response);
 		Flux<Object> data = Flux.fromIterable(response);
-		System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++" + data);
-		
 		return data;
 	}
 }
-

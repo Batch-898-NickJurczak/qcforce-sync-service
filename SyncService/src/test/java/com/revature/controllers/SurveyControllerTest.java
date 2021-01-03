@@ -124,6 +124,10 @@ class SurveyControllerTest {
 		claim.clear();
 	}
 
+	/*
+	 * Tests getSurveybyToken in {@link SurveyController}
+	 * Check if the returned list of Objects contains a string of "success" along with the {@link SurveyForm} object in the list.
+	 */
 	@Test
 	void getSurveyTest_Success() throws JsonProcessingException {
 		claim.put("iat", new Date(System.currentTimeMillis()));
@@ -131,7 +135,8 @@ class SurveyControllerTest {
 		claim.put("surveyId", 1);
 		claim.put("batchId", "1");
 		claim.put("surveySubId", null);
-		when(auth.decodeJWT("jwt")).thenReturn(claim);
+		when(auth.verifyJWT("jwt")).thenReturn(true);
+		when(auth.getClaim()).thenReturn(claim);
 		when(service.getSurvey((int)claim.get("surveyId"))).thenReturn(survey);
 		list.add("success");
 		list.add(new SurveyFormDto(survey));
@@ -152,12 +157,16 @@ class SurveyControllerTest {
 		}
 	}
 	
+	/*
+	 * Tests getSurveybyToken in {@link SurveyController}
+	 * Check if the returned list of Objects contains a string of "failure" along with the null object in the list given that the user is not authenticated.
+	 */
 	@Test
 	void getSurveyTest_Failure() throws JsonProcessingException {
 		claim.put("surveyId", 1);
 		claim.put("batchId", "1");
 		claim.put("surveySubId", null);
-		when(auth.decodeJWT("jwt")).thenReturn(claim);
+		when(auth.verifyJWT("jwt")).thenReturn(false);
 		when(service.getSurvey((int)claim.get("surveyId"))).thenReturn(survey);
 		list.add("failure");
 		list.add(null);
@@ -177,6 +186,11 @@ class SurveyControllerTest {
 			}
 		}
 		
+	/*
+	 * Tests getSurveybyToken in {@link SurveyController}
+	 * Check if the returned list of Objects contains a string of "completed" along with the null object in the list given 
+	 * that the user has already taken the survey before.
+	 */
 		@Test
 		void getSurveyTest_Completed() throws JsonProcessingException {
 			claim.put("iat", new Date(System.currentTimeMillis()));
@@ -184,7 +198,8 @@ class SurveyControllerTest {
 			claim.put("surveyId", 1);
 			claim.put("batchId", "1");
 			claim.put("surveySubId", 1);
-			when(auth.decodeJWT("jwt")).thenReturn(claim);
+			when(auth.verifyJWT("jwt")).thenReturn(true);
+			when(auth.getClaim()).thenReturn(claim);
 			when(service.getSurvey((int)claim.get("surveyId"))).thenReturn(survey);
 			list.add("completed");
 			ObjectMapper im = new ObjectMapper();
@@ -202,6 +217,12 @@ class SurveyControllerTest {
 				fail();
 			}
 	}
+		
+		/*
+		 * Tests getSurveybyToken in {@link SurveyController}
+		 * Check if the returned list of Objects contains a string of "expired" along with the null object in the list given 
+		 * that the user clicked on the expired token.
+		 */
 		@Test
 		void getSurveyTest_Expired() throws JsonProcessingException {
 			claim.put("iat", new Date(System.currentTimeMillis()));
@@ -209,7 +230,8 @@ class SurveyControllerTest {
 			claim.put("surveyId", 1);
 			claim.put("batchId", "1");
 			claim.put("surveySubId", null);
-			when(auth.decodeJWT("jwt")).thenReturn(claim);
+			when(auth.verifyJWT("jwt")).thenReturn(true);
+			when(auth.getClaim()).thenReturn(claim);
 			when(service.getSurvey((int)claim.get("surveyId"))).thenReturn(survey);
 			list.add("expired");
 			list.add(new SurveyFormDto(survey));
