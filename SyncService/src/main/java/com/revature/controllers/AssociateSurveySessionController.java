@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.revature.dto.AssociateSurveySessionDto;
 import com.revature.models.AssociateSurveySession;
 import com.revature.service.AssociateSurveySessionService;
 
@@ -44,11 +45,13 @@ public class AssociateSurveySessionController {
 	 * @return ResponseEntity<Integer>
 	 */
 	@PostMapping("/session")
-	public ResponseEntity<Integer> createAssociateSurveySession(@RequestParam int surveyId,
-			@RequestParam int associateId, @RequestParam String batchId) {
+	public ResponseEntity<Integer> createAssociateSurveySession(
+			@RequestBody AssociateSurveySessionDto associateSurveySessionDto) {
 
 		Integer associateSurveySessionId = associateSurveySessionService
-				.createAssociateSurveySession(associateId, surveyId, batchId).getAssociateSurveySessionId();
+				.createAssociateSurveySession(associateSurveySessionDto.getAssociateId(),
+						associateSurveySessionDto.getSurveyId(), associateSurveySessionDto.getBatchId())
+				.getAssociateSurveySessionId();
 
 		ResponseEntity<Integer> re = new ResponseEntity<Integer>(associateSurveySessionId,
 				associateSurveySessionId > 0 ? HttpStatus.CREATED : HttpStatus.BAD_REQUEST);
