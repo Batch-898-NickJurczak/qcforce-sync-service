@@ -1,5 +1,7 @@
 package com.revature.controllers;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,15 +13,27 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.revature.models.AssociateSurveySession;
+import com.revature.service.AssociateSurveySessionService;
 
 /**
  * 
- * This controller handles endpoints for the CRUD operations of {@link AssociateSurveySession}
+ * This controller handles endpoints for the CRUD operations of
+ * {@link AssociateSurveySession}
  *
  */
 @RestController
 @CrossOrigin
 public class AssociateSurveySessionController {
+
+	AssociateSurveySessionService associateSurveySessionService;
+
+	/**
+	 * @param associateSurveySessionService
+	 */
+	@Autowired
+	public void setAssociateSurveySessionService(AssociateSurveySessionService associateSurveySessionService) {
+		this.associateSurveySessionService = associateSurveySessionService;
+	}
 
 	/**
 	 * This method handles the endpoint for creating {@link AssociateSurveySession}
@@ -30,10 +44,19 @@ public class AssociateSurveySessionController {
 	 * @return ResponseEntity<Integer>
 	 */
 	@PostMapping("/session")
-	public ResponseEntity<Integer> createAssociateSurveySession(@RequestParam int surveyId, @RequestParam int associateId, @RequestParam String batchId) {
-		return null;
+	public ResponseEntity<Integer> createAssociateSurveySession(@RequestParam int surveyId,
+			@RequestParam int associateId, @RequestParam String batchId) {
+
+		Integer associateSurveySessionId = associateSurveySessionService
+				.createAssociateSurveySession(associateId, surveyId, batchId).getAssociateSurveySessionId();
+
+		ResponseEntity<Integer> re = new ResponseEntity<Integer>(associateSurveySessionId,
+				associateSurveySessionId > 0 ? HttpStatus.CREATED : HttpStatus.BAD_REQUEST);
+
+		return re;
+
 	}
-	
+
 	/**
 	 * This method handles the endpoint for reading {@link AssociateSurveySession}
 	 * 
@@ -41,10 +64,18 @@ public class AssociateSurveySessionController {
 	 * @return ResponseEntity<AssociateSurveySession>
 	 */
 	@GetMapping("/session/{sessionId}")
-	public ResponseEntity<AssociateSurveySession> readAssociateSurveySession(@PathVariable("sessionId") int associateSurveySessionId) {
-		return null;
+	public ResponseEntity<AssociateSurveySession> readAssociateSurveySession(
+			@PathVariable("sessionId") int associateSurveySessionId) {
+
+		AssociateSurveySession associateSurveySession = associateSurveySessionService
+				.readAssociateSurveySession(associateSurveySessionId);
+		ResponseEntity<AssociateSurveySession> re = new ResponseEntity<AssociateSurveySession>(associateSurveySession,
+				associateSurveySession == null ? HttpStatus.NOT_FOUND : HttpStatus.OK);
+
+		return re;
+
 	}
-	
+
 	/**
 	 * This method handles the endpoint for updating {@link AssociateSurveySession}
 	 * 
@@ -52,7 +83,14 @@ public class AssociateSurveySessionController {
 	 * @return ResponseEntity<AssociateSurveySession>
 	 */
 	@PutMapping("/session")
-	public ResponseEntity<AssociateSurveySession> updateAssociateSurveySession(@RequestBody AssociateSurveySession associateSurveySession) {
-		return null;
+	public ResponseEntity<AssociateSurveySession> updateAssociateSurveySession(
+			@RequestBody AssociateSurveySession associateSurveySession) {
+
+		AssociateSurveySession updatedAssociateSurveySession = associateSurveySessionService
+				.updateAssociateSurveySession(associateSurveySession);
+		ResponseEntity<AssociateSurveySession> re = new ResponseEntity<AssociateSurveySession>(
+				updatedAssociateSurveySession,
+				updatedAssociateSurveySession == null ? HttpStatus.BAD_REQUEST : HttpStatus.OK);
+		return re;
 	}
 }
