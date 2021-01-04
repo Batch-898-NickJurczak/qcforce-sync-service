@@ -13,6 +13,7 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import com.revature.config.RabbitMQConfig;
 import com.revature.domain.Batch;
 import com.revature.domain.Form;
 import com.revature.models.FormResponse;
@@ -34,6 +35,9 @@ class RabbitMQImplTest {
 
 	@Mock
 	FormService formService;
+	
+	@Mock
+	RabbitMQConfig rabbitConfig;
 	
 	@InjectMocks
 	RabbitMQImpl rabbitImpl;
@@ -78,6 +82,12 @@ class RabbitMQImplTest {
 		List<Batch> bd=new ArrayList<Batch>();
 		bd.add(new Batch());
 		rabbitImpl.sendBatchData(bd);
+	}
+	
+	@Test
+	public void testSendSingularFormResponse() {
+		FormResponse formResponse = new FormResponse();
+		rabbitImpl.sendSingularFormResponse(formResponse);
 	}
 
 
