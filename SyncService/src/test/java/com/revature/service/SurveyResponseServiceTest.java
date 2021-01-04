@@ -34,7 +34,7 @@ class SurveyResponseServiceTest {
 	private AuthServiceImpl authService;
 
 	@Mock
-	private AssociateSurveySessionServiceImpl associateSurveySessionService;
+	private AssociateSurveySessionService associateSurveySessionService;
 
 	FormResponse formResponse;
 
@@ -78,7 +78,7 @@ class SurveyResponseServiceTest {
 
 		verify(repo).save(returned);
 		verify(authService).verifyJWT(token);
-		verify(authService.getClaim());
+		verify(authService).getClaim();
 		verify(associateSurveySessionService).readAssociateSurveySession((int) claims.get("surveySubId"));
 		verify(associateSurveySessionService).updateAssociateSurveySession(updatedAssociateSurveySession);
 
@@ -119,7 +119,7 @@ class SurveyResponseServiceTest {
 
 		verify(repo, never()).save(returned);
 		verify(authService).verifyJWT(token);
-		verify(authService.getClaim());
+		verify(authService).getClaim();
 		verify(associateSurveySessionService).readAssociateSurveySession((int) claims.get("surveySubId"));
 
 		assertEquals(null, returned);
@@ -144,7 +144,7 @@ class SurveyResponseServiceTest {
 
 		verify(repo, never()).save(returned);
 		verify(authService).verifyJWT(token);
-		verify(authService.getClaim());
+		verify(authService).getClaim();
 		verify(associateSurveySessionService).readAssociateSurveySession((int) claims.get("surveySubId"));
 		verify(associateSurveySessionService).updateAssociateSurveySession(updatedAssociateSurveySession);
 
