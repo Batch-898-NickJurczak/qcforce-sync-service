@@ -23,11 +23,11 @@ import com.revature.service.FormResponseService;
 
 /**
  * 
- * These are tests for the {@link SurveyResponseController}.
+ * These are tests for the {@link FormResponseController}.
  *
  */
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-class SurveyResponseControllerTest {
+class FormResponseControllerTest {
 
 	@Autowired
 	private WebTestClient webClient;

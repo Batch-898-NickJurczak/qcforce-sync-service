@@ -17,7 +17,7 @@ import com.revature.models.FormResponse;
  */
 @RestController
 @CrossOrigin
-public class SurveyResponseController {
+public class FormResponseController {
 	
 	/**
 	 * This method handles the end point for creating a {@link FormResponse} object.
