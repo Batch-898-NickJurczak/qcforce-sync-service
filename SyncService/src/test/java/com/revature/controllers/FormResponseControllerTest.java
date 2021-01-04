@@ -57,6 +57,12 @@ class FormResponseControllerTest {
 		formResponseDtoJson = om.writeValueAsString(formResponseDto);
 	}
 
+	/**
+	 * This tests that if the createFormResponse endpoint is hit with valid
+	 * parameters and the {@link FormResponseService} returns a non null
+	 * {@link FormResponse} object and a ResponseEntity<Boolean> with value true
+	 * will be returned by the controller along with a Created HttpStatus code.
+	 */
 	@Test
 	void testCreateSurveyResponse_withoutErrors() {
 		when(service.createFormResponse(Mockito.any(), Mockito.anyString())).thenReturn(formResponseDto.toPojo());
@@ -71,7 +77,13 @@ class FormResponseControllerTest {
 		}
 
 	}
-	
+
+	/**
+	 * This tests that if the createFormResponse endpoint is hit with valid
+	 * parameters but the {@link FormResponseService} returns a null
+	 * {@link FormResponse} object and a ResponseEntity<Boolean> with value false
+	 * will be returned by the controller along with a BadRequest HttpStatus code.
+	 */
 	@Test
 	void testCreateSurveyResponse_withErrors() {
 		when(service.createFormResponse(Mockito.any(), Mockito.anyString())).thenReturn(null);
@@ -87,6 +99,11 @@ class FormResponseControllerTest {
 
 	}
 
+	/**
+	 * This tests that if the createFormResponse endpoint is hit with null input the
+	 * {@link returns a ResponseEntity<Boolean> with value false will be returned by
+	 * the controller along with a BadRequest HttpStatus code BadRequest.
+	 */
 	@Test
 	void testCreateSurveyResponse_nullInput() {
 		when(service.createFormResponse(formResponseDto.toPojo(), token)).thenReturn(formResponseDto.toPojo());

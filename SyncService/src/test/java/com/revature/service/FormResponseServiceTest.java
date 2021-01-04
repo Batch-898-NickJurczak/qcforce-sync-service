@@ -19,6 +19,11 @@ import com.revature.dto.FormResponseDto;
 import com.revature.models.AssociateSurveySession;
 import com.revature.models.FormResponse;
 
+/**
+ * 
+ * These are tests for the {@link FormResponseService}.
+ *
+ */
 class FormResponseServiceTest {
 
 	@Autowired
@@ -30,7 +35,7 @@ class FormResponseServiceTest {
 
 	@Mock
 	private AssociateSurveySessionService associateSurveySessionService;
-	
+
 	@Mock
 	private RabbitMQImpl messsageService;
 
@@ -84,7 +89,7 @@ class FormResponseServiceTest {
 	/**
 	 * This tests the createFormResponse method of the
 	 * {@link FormResponseServiceImpl}. Ensures that if an invalid JWT is given,
-	 * that the method will return null, and that it will not persist the {@link FormResponse}.
+	 * that the method will return null.
 	 */
 	@Test
 	void createFormResponse_invalidJWT() {
@@ -96,11 +101,12 @@ class FormResponseServiceTest {
 		assertEquals(returned, null);
 
 	}
-	
+
 	/**
 	 * This tests the createFormResponse method of the
-	 * {@link FormResponseServiceImpl}. Ensures that if a valid JWT with an invalid Id reference to an {@link AssociateSurveySession} is given,
-	 * that the method will return null, and that it will not persist the {@link FormResponse}.
+	 * {@link FormResponseServiceImpl}. Ensures that if a valid JWT with an invalid
+	 * Id reference to an {@link AssociateSurveySession} is given, that the method
+	 * will return null.
 	 */
 	@Test
 	void createFormResponse_invalidAssociateSurveySessionId() {
@@ -117,11 +123,12 @@ class FormResponseServiceTest {
 
 		assertEquals(null, returned);
 	}
-	
+
 	/**
 	 * This tests the createFormResponse method of the
-	 * {@link FormResponseServiceImpl}. Ensures that if the updateAssociateSurveySession method of the {@link AssociateSurveySessionImpl} fails,
-	 * that the method will return null, and that it will not persist the {@link FormResponse}.
+	 * {@link FormResponseServiceImpl}. Ensures that if the
+	 * updateAssociateSurveySession method of the {@link AssociateSurveySessionImpl}
+	 * fails, that the method will return null.
 	 */
 	@Test
 	void createFormResponse_updateAssociateSurveySessionError() {
