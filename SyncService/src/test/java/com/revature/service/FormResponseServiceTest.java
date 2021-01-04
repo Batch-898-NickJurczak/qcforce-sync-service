@@ -1,7 +1,6 @@
 package com.revature.service;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.never;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -19,16 +18,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.revature.dto.FormResponseDto;
 import com.revature.models.AssociateSurveySession;
 import com.revature.models.FormResponse;
-import com.revature.repo.FormResponseRepo;
 
 class FormResponseServiceTest {
 
 	@Autowired
 	@InjectMocks
 	private FormResponseServiceImpl service;
-
-	@Mock
-	private FormResponseRepo repo;
 
 	@Mock
 	private AuthServiceImpl authService;
@@ -66,7 +61,6 @@ class FormResponseServiceTest {
 	 */
 	@Test
 	void createFormResponse_withoutError() {
-		when(repo.save(formResponse)).thenReturn(formResponse);
 		when(authService.verifyJWT(token)).thenReturn(true);
 		when(authService.getClaim()).thenReturn(claims);
 		when(associateSurveySessionService.readAssociateSurveySession((int) claims.get("surveySubId")))
@@ -76,7 +70,6 @@ class FormResponseServiceTest {
 
 		FormResponse returned = service.createFormResponse(formResponse, token);
 
-		verify(repo).save(returned);
 		verify(authService).verifyJWT(token);
 		verify(authService).getClaim();
 		verify(associateSurveySessionService).readAssociateSurveySession((int) claims.get("surveySubId"));
@@ -96,7 +89,6 @@ class FormResponseServiceTest {
 
 		FormResponse returned = service.createFormResponse(formResponse, token);
 
-		verify(repo, never()).save(returned);
 		verify(authService).verifyJWT(token);
 		assertEquals(returned, null);
 
@@ -109,7 +101,6 @@ class FormResponseServiceTest {
 	 */
 	@Test
 	void createFormResponse_invalidAssociateSurveySessionId() {
-		when(repo.save(formResponse)).thenReturn(formResponse);
 		when(authService.verifyJWT(token)).thenReturn(true);
 		when(authService.getClaim()).thenReturn(claims);
 		when(associateSurveySessionService.readAssociateSurveySession((int) claims.get("surveySubId")))
@@ -117,7 +108,6 @@ class FormResponseServiceTest {
 
 		FormResponse returned = service.createFormResponse(formResponse, token);
 
-		verify(repo, never()).save(returned);
 		verify(authService).verifyJWT(token);
 		verify(authService).getClaim();
 		verify(associateSurveySessionService).readAssociateSurveySession((int) claims.get("surveySubId"));
@@ -132,7 +122,6 @@ class FormResponseServiceTest {
 	 */
 	@Test
 	void createFormResponse_updateAssociateSurveySessionError() {
-		when(repo.save(formResponse)).thenReturn(formResponse);
 		when(authService.verifyJWT(token)).thenReturn(true);
 		when(authService.getClaim()).thenReturn(claims);
 		when(associateSurveySessionService.readAssociateSurveySession((int) claims.get("surveySubId")))
@@ -142,7 +131,6 @@ class FormResponseServiceTest {
 
 		FormResponse returned = service.createFormResponse(formResponse, token);
 
-		verify(repo, never()).save(returned);
 		verify(authService).verifyJWT(token);
 		verify(authService).getClaim();
 		verify(associateSurveySessionService).readAssociateSurveySession((int) claims.get("surveySubId"));
