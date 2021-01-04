@@ -13,8 +13,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.WebTestClient;
+import org.springframework.web.reactive.function.BodyInserters;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.revature.dto.FormResponseDto;
 import com.revature.service.FormResponseService;
 
@@ -36,6 +39,8 @@ class SurveyResponseControllerTest {
 
 	private String token;
 
+	private String formResponseDtoJson;
+
 	private List<String> questions = new ArrayList<String>();
 
 	private List<String> answers = new ArrayList<String>();
@@ -46,24 +51,39 @@ class SurveyResponseControllerTest {
 		MockitoAnnotations.initMocks(this);
 
 		formResponseDto = new FormResponseDto(1, "12:00:00", 1, questions, answers);
+
+		ObjectMapper om = new ObjectMapper();
+		formResponseDtoJson = om.writeValueAsString(formResponseDto);
 	}
 
 	@Test
 	void testCreateSurveyResponse_withoutErrors() {
 		when(service.createFormResonse(formResponseDto.toPojo(), token)).thenReturn(formResponseDto.toPojo());
-		
+
 		try {
-			this.webClient.post().uri("/survey/response/"+token).exchange().expectStatus().isBadRequest().expectHeader()
-					.valueEquals("Content-Type", "application/json").expectBody().returnResult();
+			this.webClient.post().uri("/survey/response/" + token).contentType(MediaType.APPLICATION_JSON)
+					.body(BodyInserters.fromValue(formResponseDtoJson)).exchange().expectStatus().isCreated()
+					.expectHeader().valueEquals("Content-Type", "application/json").expectBody()
+					.json(String.valueOf(true));
 		} catch (Exception e) {
 
 			fail("Exception thrown during createAssociateSurveySession_InputNull: " + e);
 		}
+
 	}
-	
+
 	@Test
 	void testCreateSurveyResponse_nullInput() {
 		when(service.createFormResonse(formResponseDto.toPojo(), token)).thenReturn(formResponseDto.toPojo());
+
+		try {
+			this.webClient.post().uri("/survey/response/" + token).contentType(MediaType.APPLICATION_JSON).exchange()
+					.expectStatus().isBadRequest().expectHeader().valueEquals("Content-Type", "application/json")
+					.expectBody().json("");
+		} catch (Exception e) {
+
+			fail("Exception thrown during createAssociateSurveySession_InputNull: " + e);
+		}
 
 	}
 
