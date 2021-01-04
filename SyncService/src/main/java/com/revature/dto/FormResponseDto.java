@@ -42,6 +42,23 @@ public class FormResponseDto implements Dto<FormResponse> {
 	}
 
 	/**
+	 * @param formResponseId
+	 * @param timestamp
+	 * @param surveyId
+	 * @param questions
+	 * @param answers
+	 */
+	public FormResponseDto(int formResponseId, String timestamp, int surveyId, List<String> questions,
+			List<String> answers) {
+		super();
+		this.formResponseId = formResponseId;
+		this.timestamp = timestamp;
+		this.surveyId = surveyId;
+		this.questions = questions;
+		this.answers = answers;
+	}
+
+	/**
 	 * Gets the form id.
 	 * @return form id.
 	 */
