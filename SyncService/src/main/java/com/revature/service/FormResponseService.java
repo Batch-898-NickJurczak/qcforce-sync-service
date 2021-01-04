@@ -4,6 +4,6 @@ import com.revature.models.FormResponse;
 
 public interface FormResponseService {
 
-	public FormResponse createFormResonse(FormResponse formResponse, String token);
+	public FormResponse createFormResponse(FormResponse formResponse, String token);
 
 }

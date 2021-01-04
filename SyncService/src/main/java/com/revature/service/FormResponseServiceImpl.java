@@ -21,7 +21,7 @@ public class FormResponseServiceImpl implements FormResponseService {
 	 * @return FormResponse
 	 */
 	@Override
-	public FormResponse createFormResonse(FormResponse formResponse, String token) {
+	public FormResponse createFormResponse(FormResponse formResponse, String token) {
 		return null;
 	}
 

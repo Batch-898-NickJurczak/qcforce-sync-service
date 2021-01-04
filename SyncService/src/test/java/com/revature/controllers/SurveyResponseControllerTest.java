@@ -58,7 +58,7 @@ class SurveyResponseControllerTest {
 
 	@Test
 	void testCreateSurveyResponse_withoutErrors() {
-		when(service.createFormResonse(formResponseDto.toPojo(), token)).thenReturn(formResponseDto.toPojo());
+		when(service.createFormResponse(formResponseDto.toPojo(), token)).thenReturn(formResponseDto.toPojo());
 
 		try {
 			this.webClient.post().uri("/survey/response/" + token).contentType(MediaType.APPLICATION_JSON)
@@ -74,7 +74,7 @@ class SurveyResponseControllerTest {
 
 	@Test
 	void testCreateSurveyResponse_nullInput() {
-		when(service.createFormResonse(formResponseDto.toPojo(), token)).thenReturn(formResponseDto.toPojo());
+		when(service.createFormResponse(formResponseDto.toPojo(), token)).thenReturn(formResponseDto.toPojo());
 
 		try {
 			this.webClient.post().uri("/survey/response/" + token).contentType(MediaType.APPLICATION_JSON).exchange()
