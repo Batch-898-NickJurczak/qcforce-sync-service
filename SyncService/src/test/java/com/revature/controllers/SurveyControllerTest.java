@@ -114,7 +114,7 @@ class SurveyControllerTest {
         ObjectMapper om = new ObjectMapper();
         surveyJson = om.writeValueAsString(new SurveyFormDto(survey));
 			
-		assSess = new AssociateSurveySession(1, 2, "22", false);
+		assSess = new AssociateSurveySession(1, 1, 2, "22", false);
 
 	}
 
