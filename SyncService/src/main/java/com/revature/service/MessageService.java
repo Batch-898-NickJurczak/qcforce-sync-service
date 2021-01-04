@@ -3,6 +3,7 @@ package com.revature.service;
 import java.util.List;
 
 import com.revature.domain.Batch;
+import com.revature.models.FormResponse;
 
 /**
  * Used to send data to messaging queues.
@@ -20,4 +21,10 @@ public interface MessageService {
 	 * @param data a list of batch data.
 	 */
 	public void sendBatchData(List<Batch> data);
+	
+	/**
+	 * Sends a singular form response to the messaging queue.
+	 * @param formResponse
+	 */
+	public void sendSingularFormResponse(FormResponse formResponse);
 }

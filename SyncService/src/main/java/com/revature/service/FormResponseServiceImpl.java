@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 
 import com.revature.models.AssociateSurveySession;
 import com.revature.models.FormResponse;
-import com.revature.repo.FormResponseRepo;
 
 /**
  * This service is used for interacting with the {@link FormResponse}, and
@@ -20,8 +19,8 @@ public class FormResponseServiceImpl implements FormResponseService {
 	private AssociateSurveySessionService associateSurveySessionService;
 
 	private AuthServiceImpl authService;
-
-	private FormResponseRepo formResponseRepo;
+	
+	private RabbitMQImpl messageService;
 
 	/**
 	 * @param associateSurveySessionService the associateSurveySessionService to set
@@ -32,11 +31,10 @@ public class FormResponseServiceImpl implements FormResponseService {
 	}
 
 	/**
-	 * @param formResponseRepo the formResponseRepo to set
+	 * @param messageService the messageService to set
 	 */
-	@Autowired
-	public void setFormResponseRepo(FormResponseRepo formResponseRepo) {
-		this.formResponseRepo = formResponseRepo;
+	public void setMessageService(RabbitMQImpl messageService) {
+		this.messageService = messageService;
 	}
 
 	/**
@@ -72,7 +70,8 @@ public class FormResponseServiceImpl implements FormResponseService {
 			if (associateSurveySessionService.updateAssociateSurveySession(associateSurveySession) == null) {
 				return null;
 			}
-			return formResponseRepo.save(formResponse);
+			messageService.sendSingularFormResponse(formResponse);
+			return formResponse;
 		}
 		return null;
 	}

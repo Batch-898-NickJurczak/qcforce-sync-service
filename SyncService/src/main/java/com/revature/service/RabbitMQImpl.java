@@ -100,4 +100,12 @@ public class RabbitMQImpl implements MessageService {
 		AppLogger.log.info("Sent batch data for " + data.size() + "batches successfully");
 	}
 
+	@Override
+	public void sendSingularFormResponse(FormResponse formResponse) {
+		rabbitTemplate.convertAndSend(rabbitMQConfig.getFormResponseExchange(),
+				rabbitMQConfig.getFormResponseRoutingKey(), formResponse);
+		
+		AppLogger.log.info("Sent form response for " + formResponse.toString());
+	}
+
 }
