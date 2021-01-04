@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -37,7 +38,7 @@ class FormResponseControllerTest {
 
 	private FormResponseDto formResponseDto;
 
-	private String token;
+	private String token = "TOKENSTRING";
 
 	private String formResponseDtoJson;
 
@@ -58,13 +59,27 @@ class FormResponseControllerTest {
 
 	@Test
 	void testCreateSurveyResponse_withoutErrors() {
-		when(service.createFormResponse(formResponseDto.toPojo(), token)).thenReturn(formResponseDto.toPojo());
+		when(service.createFormResponse(Mockito.any(), Mockito.anyString())).thenReturn(formResponseDto.toPojo());
 
 		try {
 			this.webClient.post().uri("/survey/response/" + token).contentType(MediaType.APPLICATION_JSON)
 					.body(BodyInserters.fromValue(formResponseDtoJson)).exchange().expectStatus().isCreated()
-					.expectHeader().valueEquals("Content-Type", "application/json").expectBody()
-					.json(String.valueOf(true));
+					.expectHeader().valueEquals("Content-Type", "application/json").expectBody().equals(true);
+		} catch (Exception e) {
+
+			fail("Exception thrown during createAssociateSurveySession_InputNull: " + e);
+		}
+
+	}
+	
+	@Test
+	void testCreateSurveyResponse_withErrors() {
+		when(service.createFormResponse(Mockito.any(), Mockito.anyString())).thenReturn(null);
+
+		try {
+			this.webClient.post().uri("/survey/response/" + token).contentType(MediaType.APPLICATION_JSON)
+					.body(BodyInserters.fromValue(formResponseDtoJson)).exchange().expectStatus().isBadRequest()
+					.expectHeader().valueEquals("Content-Type", "application/json").expectBody().equals(false);
 		} catch (Exception e) {
 
 			fail("Exception thrown during createAssociateSurveySession_InputNull: " + e);
@@ -79,7 +94,7 @@ class FormResponseControllerTest {
 		try {
 			this.webClient.post().uri("/survey/response/" + token).contentType(MediaType.APPLICATION_JSON).exchange()
 					.expectStatus().isBadRequest().expectHeader().valueEquals("Content-Type", "application/json")
-					.expectBody().json("");
+					.expectBody().returnResult();
 		} catch (Exception e) {
 
 			fail("Exception thrown during createAssociateSurveySession_InputNull: " + e);
