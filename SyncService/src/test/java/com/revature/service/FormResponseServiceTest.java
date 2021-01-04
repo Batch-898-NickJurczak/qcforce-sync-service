@@ -30,6 +30,9 @@ class FormResponseServiceTest {
 
 	@Mock
 	private AssociateSurveySessionService associateSurveySessionService;
+	
+	@Mock
+	private RabbitMQImpl messsageService;
 
 	FormResponse formResponse;
 

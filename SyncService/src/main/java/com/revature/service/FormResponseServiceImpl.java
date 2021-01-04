@@ -33,6 +33,7 @@ public class FormResponseServiceImpl implements FormResponseService {
 	/**
 	 * @param messageService the messageService to set
 	 */
+	@Autowired
 	public void setMessageService(RabbitMQImpl messageService) {
 		this.messageService = messageService;
 	}
