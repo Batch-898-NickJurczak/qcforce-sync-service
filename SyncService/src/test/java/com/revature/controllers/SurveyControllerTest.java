@@ -34,9 +34,11 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.revature.dto.SurveyFormDto;
+import com.revature.models.AssociateSurveySession;
 import com.revature.models.QuestionType;
 import com.revature.models.SurveyForm;
 import com.revature.models.SurveyQuestion;
+import com.revature.service.AssociateSurveySessionServiceImpl;
 import com.revature.service.AuthServiceImpl;
 import com.revature.service.SurveyService;
 
@@ -60,6 +62,9 @@ class SurveyControllerTest {
 	
 	@MockBean
 	private AuthServiceImpl auth;
+	
+	@MockBean
+	private AssociateSurveySessionServiceImpl assServ;
 
 	private SurveyQuestion surveyQuestion;
 
@@ -68,10 +73,8 @@ class SurveyControllerTest {
 	private Map<String, Object> claim = new HashMap<>();
 	
 	private ArrayList<Object> list = new ArrayList<>();
-	
-	private Flux<ArrayList<Object>> fluxList;
-	
-	
+		
+	private AssociateSurveySession assSess;
 
 	private String surveyJson;
 	
@@ -110,9 +113,8 @@ class SurveyControllerTest {
         // writing value as a Json string
         ObjectMapper om = new ObjectMapper();
         surveyJson = om.writeValueAsString(new SurveyFormDto(survey));
-		
-		
-		
+			
+		assSess = new AssociateSurveySession(1, 2, "22", false);
 
 	}
 
@@ -130,16 +132,21 @@ class SurveyControllerTest {
 	 */
 	@Test
 	void getSurveyTest_Success() throws JsonProcessingException {
+		
 		claim.put("iat", new Date(System.currentTimeMillis()));
 		claim.put("exp", new Date(System.currentTimeMillis() + (1000 * 60 *15)));
 		claim.put("surveyId", 1);
 		claim.put("batchId", "1");
-		claim.put("surveySubId", null);
+		claim.put("surveySubId", 1);
+		
 		when(auth.verifyJWT("jwt")).thenReturn(true);
+		when(assServ.readAssociateSurveySession((int)claim.get("surveySubId"))).thenReturn(assSess);
 		when(auth.getClaim()).thenReturn(claim);
 		when(service.getSurvey((int)claim.get("surveyId"))).thenReturn(survey);
+		
 		list.add("success");
 		list.add(new SurveyFormDto(survey));
+		
 		ObjectMapper im = new ObjectMapper();
         surveyListJson = im.writeValueAsString(list);
         
@@ -153,7 +160,7 @@ class SurveyControllerTest {
 			
 			
 		}catch(Exception e) {
-			fail();
+			fail("Exception occured in getSurveyTest_Success(): " +e);
 		}
 	}
 	
@@ -165,14 +172,16 @@ class SurveyControllerTest {
 	void getSurveyTest_Failure() throws JsonProcessingException {
 		claim.put("surveyId", 1);
 		claim.put("batchId", "1");
-		claim.put("surveySubId", null);
+		claim.put("surveySubId", 1);
+		
 		when(auth.verifyJWT("jwt")).thenReturn(false);
 		when(service.getSurvey((int)claim.get("surveyId"))).thenReturn(survey);
+		
 		list.add("failure");
 		list.add(null);
+		
 		ObjectMapper im = new ObjectMapper();
-        surveyListJson = im.writeValueAsString(list);
-        
+        surveyListJson = im.writeValueAsString(list); 
         
 		try {
 			this.webClient.get().uri("/survey/jwt")
@@ -182,7 +191,7 @@ class SurveyControllerTest {
 			.equals(list);
 			
 		}catch(NullPointerException e) {
-			fail();
+			fail("Exception occured in getSurveyTest_Failure(): " +e);
 			}
 		}
 		
@@ -198,13 +207,19 @@ class SurveyControllerTest {
 			claim.put("surveyId", 1);
 			claim.put("batchId", "1");
 			claim.put("surveySubId", 1);
+			
+			assSess.setTaken(true);
+			
 			when(auth.verifyJWT("jwt")).thenReturn(true);
+			when(assServ.readAssociateSurveySession((int)claim.get("surveySubId"))).thenReturn(assSess);
 			when(auth.getClaim()).thenReturn(claim);
 			when(service.getSurvey((int)claim.get("surveyId"))).thenReturn(survey);
+			
 			list.add("completed");
+			list.add(null);
+			
 			ObjectMapper im = new ObjectMapper();
 	        surveyListJson = im.writeValueAsString(list);
-	        
 	        
 			try {
 				this.webClient.get().uri("/survey/jwt")
@@ -214,7 +229,7 @@ class SurveyControllerTest {
 				.equals(list);
 				
 			}catch(Exception e) {
-				fail();
+				fail("Exception occured in getSurveyTest_Completed(): " +e);
 			}
 	}
 		
@@ -229,15 +244,18 @@ class SurveyControllerTest {
 			claim.put("exp", new Date(System.currentTimeMillis() - 1));
 			claim.put("surveyId", 1);
 			claim.put("batchId", "1");
-			claim.put("surveySubId", null);
+			claim.put("surveySubId", 1);
+			
 			when(auth.verifyJWT("jwt")).thenReturn(true);
+			when(assServ.readAssociateSurveySession((int)claim.get("surveySubId"))).thenReturn(assSess);
 			when(auth.getClaim()).thenReturn(claim);
 			when(service.getSurvey((int)claim.get("surveyId"))).thenReturn(survey);
+			
 			list.add("expired");
-			list.add(new SurveyFormDto(survey));
+			list.add(null);
+			
 			ObjectMapper im = new ObjectMapper();
 	        surveyListJson = im.writeValueAsString(list);
-	        
 	        
 			try {
 				this.webClient.get().uri("/survey/jwt")
@@ -247,7 +265,7 @@ class SurveyControllerTest {
 				.equals(list);
 				
 			}catch(Exception e) {
-				fail();
+				fail("Exception occured in getSurveyTest_Expired(): " +e);
 			}
 		}
 }
