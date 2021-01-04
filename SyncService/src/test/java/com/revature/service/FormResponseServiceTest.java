@@ -21,7 +21,7 @@ import com.revature.models.AssociateSurveySession;
 import com.revature.models.FormResponse;
 import com.revature.repo.FormResponseRepo;
 
-class SurveyResponseServiceTest {
+class FormResponseServiceTest {
 
 	@Autowired
 	@InjectMocks

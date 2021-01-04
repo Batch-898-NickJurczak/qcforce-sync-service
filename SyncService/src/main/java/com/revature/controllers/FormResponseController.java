@@ -20,7 +20,7 @@ import com.revature.service.FormResponseService;
  */
 @RestController
 @CrossOrigin
-public class SurveyResponseController {
+public class FormResponseController {
 	
 	FormResponseService formResponseService;
 	
