@@ -34,3 +34,6 @@ build/
 ### PRIVATE INFO###
 *.p12
 /Dockerfile
+
+### DS_Store ###
+*.DS_Store
