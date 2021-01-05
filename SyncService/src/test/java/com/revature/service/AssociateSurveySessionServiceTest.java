@@ -86,6 +86,24 @@ class AssociateSurveySessionServiceTest {
 	}
 
 	/**
+	 * This tests the createAssociateSurveySession method of the
+	 * {@link AssociateSurveySessionImpl}. Ensures that if valid parameters are
+	 * given, but an error was encountered while saving the
+	 * {@link AssociateSurveySession}, null is returned.
+	 */
+	@Test
+	void createAssociateSurveySession_withErrorSaving() {
+		when(repo.save(associateSurveySession)).thenReturn(null);
+
+		AssociateSurveySession returned = service.createAssociateSurveySession(associateSurveySession.getAssociateId(),
+				associateSurveySession.getSurveyId(), associateSurveySession.getBatchId());
+
+		verify(repo).save(associateSurveySession);
+
+		assertEquals(null, returned);
+	}
+
+	/**
 	 * This tests the readAssociateSurveySession method of the
 	 * {@link AssociateSurveySessionImpl}. Ensures that if valid parameters are
 	 * given, that the matching {@link AssociateSurveySession} object will be

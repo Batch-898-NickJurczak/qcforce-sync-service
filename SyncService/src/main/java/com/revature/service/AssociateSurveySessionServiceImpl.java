@@ -54,7 +54,9 @@ public class AssociateSurveySessionServiceImpl implements AssociateSurveySession
 	}
 
 	/**
-	 * Method for updating {@link AssociateSurveySession}
+	 * Method for updating {@link AssociateSurveySession}. If the updated
+	 * {@link AssociateSurveySession} has invalid fields, then an
+	 * {@link AssociateSurveyUpdateException} will be thrown.
 	 * 
 	 * @param associateSurveySession
 	 * @return {@link AssociateSurveySession}
