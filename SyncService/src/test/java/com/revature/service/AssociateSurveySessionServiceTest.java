@@ -234,4 +234,5 @@ class AssociateSurveySessionServiceTest {
 		assertThrows(AssociateSurveySessionUpdateException.class,
 				() -> service.updateAssociateSurveySession(takenSetAsTrue));
 	}
+
 }
