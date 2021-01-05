@@ -100,9 +100,4 @@ public class RabbitMQImpl implements MessageService {
 		AppLogger.log.info("Sent batch data for " + data.size() + "batches successfully");
 	}
 
-	@Override
-	public void sendSingularFormResponse(FormResponse formResponse) {
-		
-	}
-
 }
