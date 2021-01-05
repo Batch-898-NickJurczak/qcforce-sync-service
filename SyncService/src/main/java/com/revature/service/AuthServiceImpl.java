@@ -22,20 +22,21 @@ public class AuthServiceImpl {
 	/*
 	 * This string is the key required for decoding JWT
 	 * */
+	@Value("${token_secret}")
 	private static String secretKey;
 	
 	private Map<String, Object> claim;
 	
-	
 	public final int TIME_TO_EXPIRATION = 15 * 60 * 1000;
-	/*
-	 * Assigns the secretKey required to decode JWT. 
-	 * Needs to be set as environment variables.
-	 * */
-	public AuthServiceImpl(@Value("${token_secret}") String secretKey) {
-		AuthServiceImpl.secretKey = secretKey;
-	}
 	
+//	/*
+//	 * Assigns the secretKey required to decode JWT. 
+//	 * Needs to be set as environment variables.
+//	 * */
+//	public AuthServiceImpl(@Value("${token_secret}") String secretKey) {
+//		AuthServiceImpl.secretKey = secretKey;
+//	}
+
 	/*
 	 * After Decoding the jwt received from the controller, retrieves the Claims of the token to be used by the system.
 	 * @return Map Returns the {@link Map} of jwt claims.

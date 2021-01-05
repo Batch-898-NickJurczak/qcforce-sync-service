@@ -3,6 +3,7 @@ package com.revature.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,7 +26,6 @@ public class AuthController {
 		this.authService = authService;
 	}
 
-
 	public AuthController() {
 		// TODO Auto-generated constructor stub
 	}
@@ -34,10 +34,11 @@ public class AuthController {
 	 * Endpoint for generating an encrypted JWT Token. Will be used by the SurveyService Service. 
 	 */
 	@PostMapping("/auth")
-	@ResponseBody
-	public Mono<String> encryptJWT(@RequestParam int surveyId, String batchId, int surveySubId) {
+	public Mono<String> encryptJWT(@RequestParam(value = "surveyId") int surveyId, @RequestParam(value = "batchId") String batchId, @RequestParam(value = "surveySubId") int surveySubId) {
 		
 		String jwtToken = authService.createToken(surveyId, batchId, surveySubId);
+		
+		System.out.println("Hit the /auth endpoint!");
 		
 		return Mono.just(jwtToken);
 	}
