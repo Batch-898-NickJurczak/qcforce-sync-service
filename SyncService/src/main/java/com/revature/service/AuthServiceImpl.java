@@ -54,6 +54,13 @@ public class AuthServiceImpl {
 		return false;
 	}
 	
+	public String createToken(int surveyId, String batchId, int surveySubId) {
+
+		// The JWT signature algorithm we will be using to sign the token
 	
+
+		// Builds the JWT and serializes it to a compact, URL-safe string
+		return null;
+	}
 
 }
