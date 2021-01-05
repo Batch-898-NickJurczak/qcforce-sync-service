@@ -48,10 +48,14 @@ public class FormResponseServiceImpl implements FormResponseService {
 
 	/**
 	 * This method creates a {@link FormResponse}, and updates the
-	 * {@link AssociateSurveySession} that is attached to the token. If any failures
-	 * are detected in reading the token or in updating the corresponding
-	 * {@link AssociateSurveySession} entity, the {@link FormResponse} will not be
-	 * persisted.
+	 * {@link AssociateSurveySession} that is attached to the token. If the JWT is
+	 * invalid, then an InvalidJWTException will be thrown. If the surveySubId
+	 * within the token is invalid, then an EntityNotFoundException will be thrown.
+	 * If there is an error when updating the {@link AssociateSurveySession}, then
+	 * an AssociateSurveySessionUpdateException will be thrown. If the surveyId of
+	 * the {@link FormResponse} does not match that of the
+	 * {@link AssociateSurveySession}, then an InvalidSurveyIdException will be
+	 * thrown.
 	 * 
 	 * @param formResponse
 	 * @param token

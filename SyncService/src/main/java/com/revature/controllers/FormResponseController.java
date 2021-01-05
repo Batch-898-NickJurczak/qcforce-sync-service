@@ -1,6 +1,5 @@
 package com.revature.controllers;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -11,41 +10,45 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.revature.dto.FormResponseDto;
 import com.revature.models.FormResponse;
-import com.revature.service.FormResponseService;
 
 /**
  * 
- * This controller currently handles end points for the {@link FormResponse}
+ * This controller handles the creation of a {@link FormResponse} when a survey
+ * is successfully filled out by an associate on the front-end.
  *
  */
 @RestController
 @CrossOrigin
 public class FormResponseController {
 	
-	FormResponseService formResponseService;
+	public static final String SUCCESS = "Response successfully submitted";
+
+	public static final String NO_ID_FOUND = "AssociateSurveySessionId provided by JWT does not exist";
+
+	public static final String ALREADY_SUBMITTED = "AssociateSurveySession indicated by JWT was already marked as submitted";
+
+	public static final String INVALID_SURVEY_ID = "SurveyId does not match surveyId within the AssociateSurveySession indicated by JWT";
+
+	public static final String INVALID_JWT = "Could not validate JWT";
+
+	public static final String PERSIST_ERROR = "Error persisting FormResponse";
 	
-	/**
-	 * @param formResponseService the formResponseService to set
-	 */
-	@Autowired
-	public void setFormResponseService(FormResponseService formResponseService) {
-		this.formResponseService = formResponseService;
-	}
+	public static final String QUESTION_ANSWER_ERROR = "The list of answers does not match the list of questions";
 
 	/**
 	 * This method handles the end point for creating a {@link FormResponse} object.
+	 * The body of the request will contain a {@link FormResponseDto}, and a JWT
+	 * should be provided in the header. When this {@link FormResponse} object is
+	 * created, the corresponding {@link AssociateSurveySession} provided by the
+	 * JWT is updated to mark completion. If an error is encountered, an appropriate
+	 * status code and error message will be returned.
 	 * 
-	 * @param token
 	 * @param formResponseDto
-	 * @return ResponseEntity<Boolean>
+	 * @return ResponseEntity<String>
 	 */
-	@PostMapping("/survey/response/{token}")
-	public ResponseEntity<Boolean> createFormResponse(@PathVariable("token")String token, @RequestBody FormResponseDto formResponseDto ) {
-		
-		Boolean success = formResponseService.createFormResponse(formResponseDto.toPojo(), token) != null;
-		
-		ResponseEntity<Boolean> re = new ResponseEntity<Boolean>(success, success ? HttpStatus.CREATED : HttpStatus.BAD_REQUEST);
-		return re;
+	@PostMapping("/survey/response")
+	public ResponseEntity<String> createFormResponse(@RequestBody FormResponseDto formResponseDto) {
+		return null;
 	}
-	
+
 }

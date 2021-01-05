@@ -23,7 +23,7 @@ public interface MessageService {
 	public void sendBatchData(List<Batch> data);
 	
 	/**
-	 * Sends a singular form response to the messaging queue.
+	 * Sends a single form response to messaging queue.
 	 * @param formResponse
 	 */
 	public void sendSingularFormResponse(FormResponse formResponse);

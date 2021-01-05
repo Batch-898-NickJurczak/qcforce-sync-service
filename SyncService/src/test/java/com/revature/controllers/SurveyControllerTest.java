@@ -1,12 +1,13 @@
-/**
- * 
- */
 package com.revature.controllers;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.revature.dto.SurveyFormDto;
+import com.revature.models.QuestionType;
+import com.revature.models.SurveyForm;
+import com.revature.models.SurveyQuestion;
+import com.revature.service.SurveyService;
+
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -19,33 +20,34 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.web.servlet.MockMvc;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.revature.dto.SurveyDto;
-import com.revature.models.QuestionType;
-import com.revature.models.Survey;
-import com.revature.models.SurveyQuestion;
-import com.revature.service.SurveyService;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.reactive.server.WebTestClient;
 
 /**
- * @author Hannah Brett Alma Marc Yarashlee
- *
+ * Tests the {@link QuestionController} and contained methods.
+ * 
+ * @author Conner,
+ * @author Michael M,
+ * @author Michael Z,
+ * @author Prativa
  */
+@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 class SurveyControllerTest {
 
 	@Autowired
-	private MockMvc mvc;
+	private WebTestClient webClient;
 
 	@MockBean
-	private SurveyService serviceSurvey;
+	private SurveyService service;
 
 	private SurveyQuestion surveyQuestion;
+	
+	private SurveyForm surveyForm;
 
-	private Survey survey;
-
-	private String surveyJson;
+	private String surveyFormJson;
 
 	/**
 	 * @throws java.lang.Exception
@@ -68,19 +70,18 @@ class SurveyControllerTest {
 	void setUp() throws Exception {
 
 		List<String> questions = new ArrayList<String>();
+        questions.add("How are you?");
+        surveyQuestion = new SurveyQuestion(1, LocalDateTime.now(), QuestionType.SHORT_ANSWER, 1, questions);
+        
+        List<SurveyQuestion> surveyQuestions = new ArrayList<>(1);
+        surveyQuestions.add(surveyQuestion);
+        
+        surveyForm = new SurveyForm(1, "Wezley's Survey", "Wezley Singleton", 
+                LocalDateTime.now(), 1, surveyQuestions);
 
-		questions.add("How are you?");
-
-		List<SurveyQuestion> surveyQuestionList = new ArrayList<>();
-
-		surveyQuestion = new SurveyQuestion(1, LocalDateTime.now(), QuestionType.SHORT_ANSWER, 1, questions);
-
-		Survey survey = new Survey(1, 8, "Kubernetes", 30, LocalDateTime.now(), surveyQuestionList);
-
+		// writing value as a Json string
 		ObjectMapper om = new ObjectMapper();
-
-		surveyJson = om.writeValueAsString(new SurveyDto(survey));
-
+		surveyFormJson = om.writeValueAsString(new SurveyFormDto(surveyForm));
 	}
 
 	/**
@@ -90,19 +91,44 @@ class SurveyControllerTest {
 	void tearDown() throws Exception {
 	}
 
+	/**
+	 * Tests the getSurveyForm method of the {@link SurveyController} Ensures that
+	 * given a valid surveyForm id, returns the expected {@link SurveyForm}
+	 */
 	@Test
-	void getSurveyByIdTest() {
+	void getSurveyFormTest_WithoutError() {
 
-		Mockito.when(serviceSurvey.getSurvey(survey.getId())).thenReturn(null);
+		Mockito.when(service.getSurveyForm(surveyForm.getId())).thenReturn(surveyForm);
 
+		// Test actual method utilizing the webClient
 		try {
-
-			this.mvc.perform(get("/survey/" + survey.getId())).andExpect(status().isBadRequest())
-					.andExpect(content().json(""));
+			this.webClient.get().uri("/survey/" + surveyForm.getId()).accept(MediaType.APPLICATION_JSON)
+								.exchange().expectStatus().isOk()
+								.expectBody().json(surveyFormJson);
 
 		} catch (Exception e) {
-			fail("Exception thrown during  get survey by id test " + e);
+			fail("Exception thrown during getSurveyFormTest_WithoutError: " + e);
 		}
+	}
 
+	/**
+	 * Tests the getSurveyForm method of the {@link SurveyController} Ensures that
+	 * given a valid surveyForm id, if the service returns null, then the controller
+	 * returns an empty Json object as well as a NotFound status code.
+	 */
+	@Test
+	void getSurveyFormTest_SurveyNotFound() {
+
+		Mockito.when(service.getSurveyForm(surveyForm.getId())).thenReturn(null);
+
+		// Test actual method utilizing the webClient
+		try {
+			this.webClient.get().uri("/survey/" + surveyForm.getId()).accept(MediaType.APPLICATION_JSON)
+								.exchange().expectStatus().isNotFound()
+								.expectBody().json("");
+
+		} catch (Exception e) {
+			fail("Exception thrown during getSurveyFormTest_SurveyNotFound: " + e);
+		}
 	}
 }
