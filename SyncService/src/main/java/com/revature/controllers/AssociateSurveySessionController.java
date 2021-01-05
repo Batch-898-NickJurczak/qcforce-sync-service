@@ -44,7 +44,12 @@ public class AssociateSurveySessionController {
 	public ResponseEntity<AssociateSurveySession> readAssociateSurveySession(
 			@PathVariable("sessionId") int associateSurveySessionId) {
 
-		return null;
+		AssociateSurveySession associateSurveySession = associateSurveySessionService
+				.readAssociateSurveySession(associateSurveySessionId);
+		ResponseEntity<AssociateSurveySession> re = new ResponseEntity<AssociateSurveySession>(associateSurveySession,
+				associateSurveySession == null ? HttpStatus.NOT_FOUND : HttpStatus.OK);
+
+		return re;
 
 	}
 

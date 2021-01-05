@@ -37,7 +37,12 @@ public class AssociateSurveySessionServiceImpl implements AssociateSurveySession
 	@Override
 	public AssociateSurveySession createAssociateSurveySession(int associateId, int surveyId, String batchId) {
 
-		return null;
+		AssociateSurveySession existingAssociateSurveySession = repo.findByAssociateIdAndSurveyIdAndBatchId(associateId,
+				surveyId, batchId);
+		if (existingAssociateSurveySession == null) {
+			return repo.save(new AssociateSurveySession(0, associateId, surveyId, batchId, false));
+		}
+		return existingAssociateSurveySession;
 
 	}
 
@@ -50,7 +55,12 @@ public class AssociateSurveySessionServiceImpl implements AssociateSurveySession
 	@Override
 	public AssociateSurveySession readAssociateSurveySession(int associateSurveySessionId) {
 
-		return null;
+		try {
+			return repo.getOne(associateSurveySessionId);
+		} catch (EntityNotFoundException e) {
+			return null;
+		}
+    
 	}
 
 	/**
@@ -63,8 +73,14 @@ public class AssociateSurveySessionServiceImpl implements AssociateSurveySession
 	 */
 	@Override
 	public AssociateSurveySession updateAssociateSurveySession(AssociateSurveySession associateSurveySession) {
-
-		return null;
+    
+		try {
+			repo.getOne(associateSurveySession.getAssociateSurveySessionId());
+			return repo.save(associateSurveySession);
+		} catch (EntityNotFoundException e) {
+			return null;
+		}
+    
 	}
 
 }
