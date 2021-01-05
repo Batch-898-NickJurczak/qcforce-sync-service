@@ -8,6 +8,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.persistence.EntityNotFoundException;
@@ -19,11 +20,15 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
 import com.revature.dto.FormResponseDto;
 import com.revature.models.AssociateSurveySession;
 import com.revature.models.FormResponse;
+import com.revature.models.SurveyForm;
+import com.revature.models.SurveyQuestion;
 import com.revature.util.AssociateSurveySessionUpdateException;
+import com.revature.util.InvalidAnswersException;
 import com.revature.util.InvalidJWTException;
 import com.revature.util.InvalidSurveyIdException;
 
@@ -47,22 +52,45 @@ class FormResponseServiceTest {
 	@Mock
 	private RabbitMQImpl messageService;
 
-	FormResponse formResponse;
+	@Mock
+	private SurveyService surveyService;
 
-	AssociateSurveySession associateSurveySession;
+	@Mock
+	private SurveyForm survey;
 
-	AssociateSurveySession updatedAssociateSurveySession;
+	private List<SurveyQuestion> surveyQuestions;
 
-	String token;
+	private List<String> answers;
 
-	Map<String, Object> claims;
+	private FormResponse formResponse;
+
+	private AssociateSurveySession associateSurveySession;
+
+	private AssociateSurveySession updatedAssociateSurveySession;
+
+	private String token;
+
+	private Map<String, Object> claims;
 
 	@BeforeEach
 	void setUp() throws Exception {
 
 		MockitoAnnotations.initMocks(this);
+		
+		surveyQuestions = new ArrayList<SurveyQuestion>();
+		answers = new ArrayList<String>();
+		for (int i = 0; i < 5; i++) {
+			SurveyQuestion surveyQuestion = new SurveyQuestion();
+			List<String> q = new ArrayList<String>();
+			q.add("How was training?");
+			q.add("Additional Info");
+			q.add("Metadata");
+			surveyQuestion.setQuestion(q);
+			surveyQuestions.add(surveyQuestion);
+			answers.add("Yes");
+		}
 
-		formResponse = new FormResponseDto(0, "now", 1, new ArrayList<String>(), new ArrayList<String>()).toPojo();
+		formResponse = new FormResponseDto(0, "now", 1, answers).toPojo();
 		token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9."
 				+ "eyJzdXJ2ZXlJZCI6IjEiLCJzdXJ2ZVN1YklkIjoiMiIsImJhdGNoSWQiOiIyMDEwIiwiaWF0IjoxNTE2MjM5MDIyLCJleHAiOjE1MTYyMzkwMjJ9"
 				+ ".2vu-3XIYjH6nhw8yu_KQ3Vz75lG-IedsB_qv7PGdlvM";
@@ -81,6 +109,8 @@ class FormResponseServiceTest {
 	 */
 	@Test
 	void createFormResponse_withoutError() {
+		when(surveyService.getSurveyForm(formResponse.getFormId())).thenReturn(survey);
+		when(survey.getQuestions()).thenReturn(surveyQuestions);
 		when(authService.verifyJWT(token)).thenReturn(true);
 		when(authService.getClaim()).thenReturn(claims);
 		when(associateSurveySessionService.readAssociateSurveySession((int) claims.get("surveySubId")))
@@ -106,8 +136,10 @@ class FormResponseServiceTest {
 	 */
 	@Test
 	void createFormResponse_invalidJWT() {
+		when(surveyService.getSurveyForm(formResponse.getFormId())).thenReturn(survey);
+		when(survey.getQuestions()).thenReturn(surveyQuestions);
 		when(authService.verifyJWT(token)).thenReturn(false);
-		
+
 		assertThrows(InvalidJWTException.class, () -> service.createFormResponse(formResponse, token));
 
 		verify(authService).verifyJWT(token);
@@ -122,11 +154,13 @@ class FormResponseServiceTest {
 	 */
 	@Test
 	void createFormResponse_invalidAssociateSurveySessionId() {
+		when(surveyService.getSurveyForm(formResponse.getFormId())).thenReturn(survey);
+		when(survey.getQuestions()).thenReturn(surveyQuestions);
 		when(authService.verifyJWT(token)).thenReturn(true);
 		when(authService.getClaim()).thenReturn(claims);
 		when(associateSurveySessionService.readAssociateSurveySession((int) claims.get("surveySubId")))
 				.thenThrow(EntityNotFoundException.class);
-		
+
 		assertThrows(EntityNotFoundException.class, () -> service.createFormResponse(formResponse, token));
 
 		verify(authService).verifyJWT(token);
@@ -143,13 +177,15 @@ class FormResponseServiceTest {
 	 */
 	@Test
 	void createFormResponse_updateAssociateSurveySessionError() {
+		when(surveyService.getSurveyForm(formResponse.getFormId())).thenReturn(survey);
+		when(survey.getQuestions()).thenReturn(surveyQuestions);
 		when(authService.verifyJWT(token)).thenReturn(true);
 		when(authService.getClaim()).thenReturn(claims);
 		when(associateSurveySessionService.readAssociateSurveySession((int) claims.get("surveySubId")))
 				.thenReturn(associateSurveySession);
 		when(associateSurveySessionService.updateAssociateSurveySession(updatedAssociateSurveySession))
 				.thenThrow(AssociateSurveySessionUpdateException.class);
-		
+
 		assertThrows(AssociateSurveySessionUpdateException.class,
 				() -> service.createFormResponse(formResponse, token));
 
@@ -169,6 +205,8 @@ class FormResponseServiceTest {
 	 */
 	@Test
 	void createFormResponse_mismatchedSurveyIds() {
+		when(surveyService.getSurveyForm(formResponse.getFormId())).thenReturn(survey);
+		when(survey.getQuestions()).thenReturn(surveyQuestions);
 		when(authService.verifyJWT(token)).thenReturn(true);
 		when(authService.getClaim()).thenReturn(claims);
 		when(associateSurveySessionService.readAssociateSurveySession((int) claims.get("surveySubId")))
@@ -177,6 +215,30 @@ class FormResponseServiceTest {
 		formResponse.setFormId(associateSurveySession.getSurveyId() + 1);
 
 		assertThrows(InvalidSurveyIdException.class, () -> service.createFormResponse(formResponse, token));
+
+		verify(authService).verifyJWT(token);
+		verify(authService).getClaim();
+		verify(associateSurveySessionService).readAssociateSurveySession((int) claims.get("surveySubId"));
+		verify(messageService, never()).sendSingularFormResponse(Mockito.any());
+	}
+
+	/**
+	 * This tests the createFormResponse method of the
+	 * {@link FormResponseServiceImpl}. Ensures that if the list of answers provided
+	 * by the {@link FormResponse} match the questions provided by the actual
+	 * survey, if not, the method will throw an InvalidSurveyIdException.
+	 */
+	@Test
+	void createFormResponse_mismatchedAnswersAndQuestions() {
+		when(authService.verifyJWT(token)).thenReturn(true);
+		when(surveyService.getSurveyForm(formResponse.getFormId())).thenReturn(survey);
+		when(survey.getQuestions()).thenReturn(surveyQuestions);
+		when(authService.getClaim()).thenReturn(claims);
+		when(associateSurveySessionService.readAssociateSurveySession((int) claims.get("surveySubId")))
+				.thenReturn(associateSurveySession);
+		formResponse.setAnswers(new ArrayList<String>());
+
+		assertThrows(InvalidAnswersException.class, () -> service.createFormResponse(formResponse, token));
 
 		verify(authService).verifyJWT(token);
 		verify(authService).getClaim();

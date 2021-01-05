@@ -1,5 +1,6 @@
 package com.revature.controllers;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,6 +20,8 @@ import com.revature.models.FormResponse;
 @RestController
 @CrossOrigin
 public class FormResponseController {
+	
+	public static final String SUCCESS = "Response successfully submitted";
 
 	public static final String NO_ID_FOUND = "AssociateSurveySessionId provided by JWT does not exist";
 
@@ -29,6 +32,8 @@ public class FormResponseController {
 	public static final String INVALID_JWT = "Could not validate JWT";
 
 	public static final String PERSIST_ERROR = "Error persisting FormResponse";
+	
+	public static final String QUESTION_ANSWER_ERROR = "The list of answers does not match the list of questions";
 
 	/**
 	 * This method handles the end point for creating a {@link FormResponse} object.
