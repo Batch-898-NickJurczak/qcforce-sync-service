@@ -1,14 +1,19 @@
 package com.revature.service;
 
+import java.security.Key;
+import java.util.Date;
 import java.util.Map;
 
+import javax.crypto.spec.SecretKeySpec;
 import javax.xml.bind.DatatypeConverter;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.SignatureException;
 
 @Service
@@ -21,6 +26,8 @@ public class AuthServiceImpl {
 	
 	private Map<String, Object> claim;
 	
+	
+	public final int TIME_TO_EXPIRATION = 15 * 60 * 1000;
 	/*
 	 * Assigns the secretKey required to decode JWT. 
 	 * Needs to be set as environment variables.
@@ -51,16 +58,38 @@ public class AuthServiceImpl {
 	 * @return boolean Returns true if verified, stores the claims decoded into a Map object to be retrieved. Returns false otherwise.
 	 */
 	public boolean verifyJWT(String jwt) {
-		return false;
+		try {
+			Claims claims = Jwts.parser()
+	                .setSigningKey(DatatypeConverter.parseBase64Binary(secretKey))
+	                .parseClaimsJws(jwt).getBody();
+			claim = claims;
+			}catch(SignatureException e) {
+				return false;
+			}
+			return true;
 	}
 	
 	public String createToken(int surveyId, String batchId, int surveySubId) {
 
 		// The JWT signature algorithm we will be using to sign the token
-	
+		SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
+
+		long nowMillis = System.currentTimeMillis();
+		Date now = new Date(nowMillis);
+
+		// We will sign our JWT with our ApiKey secret
+		byte[] apiKeySecretBytes = DatatypeConverter.parseBase64Binary(secretKey);
+		Key signingKey = new SecretKeySpec(apiKeySecretBytes, signatureAlgorithm.getJcaName());
+
+		// Let's set the JWT Claims
+		JwtBuilder builder = Jwts.builder().setIssuedAt(now).claim("surveyId", surveyId).claim("batchId", batchId).claim("surveySubId", surveySubId)
+				.signWith(signatureAlgorithm, signingKey);
+
+		Date exp = new Date(nowMillis + TIME_TO_EXPIRATION);
+		builder.setExpiration(exp);
 
 		// Builds the JWT and serializes it to a compact, URL-safe string
-		return null;
+		return builder.compact();
 	}
 
 }
