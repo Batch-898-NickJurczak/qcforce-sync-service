@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.revature.models.FormResponse;
+import com.revature.models.SurveyQuestion;
 
 public class FormResponseDto implements Dto<FormResponse> {
 
@@ -23,139 +24,107 @@ public class FormResponseDto implements Dto<FormResponse> {
 	private int surveyId;
 
 	/**
-	 * variable of type {@link List}{@link String} that represents the questions of the response. 
-	 */
-	private List<String> questions;
-
-	/**
 	 * variable of type {@link List}{@link String} that represents the answers to the questions of the response. 
 	 */
 	private List<String> answers;
 	
 	/**
-	 * initializes the questions and answers arrays.
+	 * initializes the answers array.
 	 */
 	public FormResponseDto() {
 		super();
-		this.questions = new ArrayList<String>();
 		this.answers = new ArrayList<String>();
-	}
-
+	}	
+	
 	/**
 	 * @param formResponseId
 	 * @param timestamp
 	 * @param surveyId
-	 * @param questions
 	 * @param answers
 	 */
-	public FormResponseDto(int formResponseId, String timestamp, int surveyId, List<String> questions,
-			List<String> answers) {
+	public FormResponseDto(int formResponseId, String timestamp, int surveyId, List<String> answers) {
 		super();
 		this.formResponseId = formResponseId;
 		this.timestamp = timestamp;
 		this.surveyId = surveyId;
-		this.questions = questions;
 		this.answers = answers;
 	}
 
 	/**
-	 * Gets the form id.
-	 * @return form id.
+	 * @return the formResponseId
 	 */
 	public int getFormResponseId() {
-		return this.formResponseId;
+		return formResponseId;
 	}
 
 	/**
-	 * Sets the form id.
-	 * @param formId new form id.
+	 * @param formResponseId the formResponseId to set
 	 */
 	public void setFormResponseId(int formResponseId) {
 		this.formResponseId = formResponseId;
 	}
 
 	/**
-	 * Gets the time stamp for the form.
-	 * @return form time stamp
+	 * @return the timestamp
 	 */
 	public String getTimestamp() {
-		return this.timestamp;
+		return timestamp;
 	}
 
 	/**
-	 * Sets the form time stamp.
-	 * @param timestamp new time stamp.
+	 * @param timestamp the timestamp to set
 	 */
 	public void setTimestamp(String timestamp) {
 		this.timestamp = timestamp;
 	}
 
 	/**
-	 * Gets an {@link List}{@link String} of questions from the form.
-	 * @return {@link List}{@link String} questions.
-	 */
-	public List<String> getQuestions() {
-		return this.questions;
-	}
-
-	/** Sets the form questions.
-	 * @param questions new {@link List}{@link String} of questions.
-	 */
-	public void setQuestions(List<String> questions) {
-		this.questions = questions;
-	}
-
-	/**
-	 * Gets an list of answers to the questions from the form.
-	 * @return list of answers.
-	 */
-	public List<String> getAnswers() {
-		return this.answers;
-	}
-
-	/** Sets the form answers.
-	 * @param answers new list of answers.
-	 */
-	public void setAnswers(List<String> answers) {
-		this.answers = answers;
-	}
-
-	
-	/**
-	 * Gets the surveyId
-	 * @return surveyId
+	 * @return the surveyId
 	 */
 	public int getSurveyId() {
-		return this.surveyId;
+		return surveyId;
 	}
 
-	
 	/**
-	 * Sets surveyId 
-	 * @param formSource new form source
+	 * @param surveyId the surveyId to set
 	 */
 	public void setSurveyId(int surveyId) {
 		this.surveyId = surveyId;
 	}
 
-	@Override
-	public String toString() {
-		return "FormResponse [getFormResponseId()=" + getFormResponseId() + ", getTimestamp()=" + getTimestamp() + ", getQuestions()="
-				+ getQuestions() + ", getAnswers()=" + getAnswers() + ", getSurveyId()=" + getSurveyId() + "]";
+	/**
+	 * @return the answers
+	 */
+	public List<String> getAnswers() {
+		return answers;
 	}
-	
-	
+
+	/**
+	 * @param answers the answers to set
+	 */
+	public void setAnswers(List<String> answers) {
+		this.answers = answers;
+	}
+
 	/**
 	 * Converts current FormResponseDto instance to FormResponse instance.
 	 * @return FormResponse
 	 */
 	@Override
 	public FormResponse toPojo() {
+		
+		SurveyService surveyService = new SurveyService();
+		
 		FormResponse formResponse = new FormResponse();
 		formResponse.setFormId(this.getFormResponseId());
 		formResponse.setTimestamp(this.getTimestamp());
 		formResponse.setSourceId(String.valueOf(this.getSurveyId()));
-		formResponse.setQuestions(this.getQuestions());
+		List<SurveyQuestion> surveyQuestions = surveyService.getSurveyForm(this.surveyId).getQuestions();
+		List<String> questions = new ArrayList<String>();
+		for(SurveyQuestion surveyQuestion : surveyQuestions) {
+			questions.add(surveyQuestion.getQuestion().get(0));
+		}
+		formResponse.setQuestions(questions);
 		formResponse.setAnswers(this.getAnswers());
 		return formResponse;
 	}

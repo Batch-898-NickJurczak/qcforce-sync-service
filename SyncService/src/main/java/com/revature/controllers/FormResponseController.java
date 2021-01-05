@@ -32,18 +32,17 @@ public class FormResponseController {
 
 	/**
 	 * This method handles the end point for creating a {@link FormResponse} object.
-	 * When this object is created, the corresponding
-	 * {@link AssociateSurveyResponse} provided by the JWT is updated to mark
-	 * completion. If an error is encountered, an appropriate status code and error
-	 * message will be returned.
+	 * The body of the request will contain a {@link FormResponseDto}, and a JWT
+	 * should be provided in the header. When this {@link FormResponse} object is
+	 * created, the corresponding {@link AssociateSurveySession} provided by the
+	 * JWT is updated to mark completion. If an error is encountered, an appropriate
+	 * status code and error message will be returned.
 	 * 
-	 * @param token
 	 * @param formResponseDto
 	 * @return ResponseEntity<String>
 	 */
-	@PostMapping("/survey/response/{token}")
-	public ResponseEntity<String> createFormResponse(@PathVariable("token") String token,
-			@RequestBody FormResponseDto formResponseDto) {
+	@PostMapping("/survey/response")
+	public ResponseEntity<String> createFormResponse(@RequestBody FormResponseDto formResponseDto) {
 		return null;
 	}
 
