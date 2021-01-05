@@ -60,23 +60,27 @@ public class AssociateSurveySessionServiceImpl implements AssociateSurveySession
 		} catch (EntityNotFoundException e) {
 			return null;
 		}
+    
 	}
 
 	/**
-	 * Method for updating {@link AssociateSurveySession}
+	 * Method for updating {@link AssociateSurveySession}. If the updated
+	 * {@link AssociateSurveySession} has invalid fields, then an
+	 * {@link AssociateSurveyUpdateException} will be thrown.
 	 * 
 	 * @param associateSurveySession
 	 * @return {@link AssociateSurveySession}
 	 */
 	@Override
 	public AssociateSurveySession updateAssociateSurveySession(AssociateSurveySession associateSurveySession) {
-
+    
 		try {
 			repo.getOne(associateSurveySession.getAssociateSurveySessionId());
 			return repo.save(associateSurveySession);
 		} catch (EntityNotFoundException e) {
 			return null;
 		}
+    
 	}
 
 }

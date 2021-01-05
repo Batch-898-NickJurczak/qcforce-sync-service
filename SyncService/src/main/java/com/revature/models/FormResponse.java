@@ -67,7 +67,7 @@ public class FormResponse implements Serializable {
 
 	/**
 	 * Gets the time stamp for the form.
-	 * @return time stamp time stamp
+	 * @return form time stamp
 	 */
 	public String getTimestamp() {
 		return timestamp;

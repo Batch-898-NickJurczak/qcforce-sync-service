@@ -3,6 +3,7 @@ target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**
 !**/src/test/**
+sync-errors.html
 
 ### STS ###
 .apt_generated
@@ -33,3 +34,6 @@ build/
 ### PRIVATE INFO###
 *.p12
 /Dockerfile
+
+### DS-Store ###
+*.DS_Store

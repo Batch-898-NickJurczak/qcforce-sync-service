@@ -1,6 +1,8 @@
 package com.revature.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -11,17 +13,21 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import com.revature.models.AssociateSurveySession;
 import com.revature.repo.AssociateSurveySessionRepo;
+import com.revature.util.AssociateSurveySessionUpdateException;
 
 /**
  * 
  * These are tests for the {@link AssociateSurveySessionImpl}.
  *
  */
+@SpringBootTest
 class AssociateSurveySessionServiceTest {
 
 	@Autowired
@@ -38,7 +44,7 @@ class AssociateSurveySessionServiceTest {
 
 		MockitoAnnotations.initMocks(this);
 
-		associateSurveySession = new AssociateSurveySession(0, 1, 2, "2010", false);
+		associateSurveySession = new AssociateSurveySession(1, 1, 2, "2010", false);
 	}
 
 	/**
@@ -68,24 +74,33 @@ class AssociateSurveySessionServiceTest {
 	 */
 	@Test
 	void createAssociateSurveySession_existingObjectInDatabase() {
-		when(repo.save(associateSurveySession)).thenReturn(associateSurveySession);
-
-		AssociateSurveySession associateSurveySessionCopy = new AssociateSurveySession(0, 1, 2, "2010", false);
-
-		AssociateSurveySession returnedFirst = service.createAssociateSurveySession(
-				associateSurveySession.getAssociateId(), associateSurveySession.getSurveyId(),
-				associateSurveySession.getBatchId());
-
 		when(repo.findByAssociateIdAndSurveyIdAndBatchId(1, 2, "2010")).thenReturn(associateSurveySession);
 
-		AssociateSurveySession returnedSecond = service.createAssociateSurveySession(
-				associateSurveySessionCopy.getAssociateId(), associateSurveySessionCopy.getSurveyId(),
-				associateSurveySessionCopy.getBatchId());
+		AssociateSurveySession returned = service.createAssociateSurveySession(associateSurveySession.getAssociateId(),
+				associateSurveySession.getSurveyId(), associateSurveySession.getBatchId());
 
-		verify(repo, times(1)).save(returnedFirst);
-		verify(repo, times(2)).findByAssociateIdAndSurveyIdAndBatchId(1, 2, "2010");
+		verify(repo, times(1)).findByAssociateIdAndSurveyIdAndBatchId(1, 2, "2010");
+		verify(repo, never()).save(Mockito.any());
 
-		assertEquals(returnedFirst, returnedSecond);
+		assertEquals(returned, associateSurveySession);
+	}
+
+	/**
+	 * This tests the createAssociateSurveySession method of the
+	 * {@link AssociateSurveySessionImpl}. Ensures that if valid parameters are
+	 * given, but an error was encountered while saving the
+	 * {@link AssociateSurveySession}, null is returned.
+	 */
+	@Test
+	void createAssociateSurveySession_withErrorSaving() {
+		when(repo.save(associateSurveySession)).thenReturn(null);
+
+		AssociateSurveySession returned = service.createAssociateSurveySession(associateSurveySession.getAssociateId(),
+				associateSurveySession.getSurveyId(), associateSurveySession.getBatchId());
+
+		verify(repo).save(associateSurveySession);
+
+		assertEquals(null, returned);
 	}
 
 	/**
@@ -151,7 +166,7 @@ class AssociateSurveySessionServiceTest {
 	 * be returned.
 	 */
 	@Test
-	void upateAssociateSurveySession_notFound() {
+	void updateAssociateSurveySession_notFound() {
 		when(repo.getOne(associateSurveySession.getAssociateSurveySessionId()))
 				.thenThrow(EntityNotFoundException.class);
 
@@ -160,5 +175,63 @@ class AssociateSurveySessionServiceTest {
 		verify(repo).getOne(associateSurveySession.getAssociateSurveySessionId());
 
 		assertEquals(null, returned);
+	}
+
+	/**
+	 * This tests the updateAssociateSurveySession method of the
+	 * {@link AssociateSurveySessionImpl}. Ensures that if other fields besides the
+	 * taken field of the {@link AssociateSurveySession} object are updated, then an
+	 * AssociateSurveySessionUpdateException is thrown.
+	 */
+	@Test
+	void updateAssociateSurveySession_modifiedReadOnlyFields() {
+		when(repo.getOne(associateSurveySession.getAssociateSurveySessionId())).thenReturn(associateSurveySession);
+
+		AssociateSurveySession modifiedReadOnly = new AssociateSurveySession(
+				associateSurveySession.getAssociateSurveySessionId(), 2, 3, "2011", true);
+
+		verify(repo).getOne(associateSurveySession.getAssociateSurveySessionId());
+		verify(repo, never()).save(Mockito.any());
+
+		assertThrows(AssociateSurveySessionUpdateException.class,
+				() -> service.updateAssociateSurveySession(modifiedReadOnly));
+	}
+
+	/**
+	 * This tests the updateAssociateSurveySession method of the
+	 * {@link AssociateSurveySessionImpl}. Ensures that if the taken field of an
+	 * {@link AssociateSurveySession} object is set to false, then an
+	 * AssociateSurveySessionUpdateException is thrown.
+	 */
+	@Test
+	void updateAssociateSurveySession_takenSetAsFalse() {
+		when(repo.getOne(associateSurveySession.getAssociateSurveySessionId())).thenReturn(associateSurveySession);
+
+		verify(repo).getOne(associateSurveySession.getAssociateSurveySessionId());
+		verify(repo, never()).save(Mockito.any());
+
+		assertThrows(AssociateSurveySessionUpdateException.class,
+				() -> service.updateAssociateSurveySession(associateSurveySession));
+	}
+
+	/**
+	 * This tests the updateAssociateSurveySession method of the
+	 * {@link AssociateSurveySessionImpl}. Ensures that if the taken field of the
+	 * persisted {@link AssociateSurveySession} object is already set to true, then
+	 * an AssociateSurveySessionUpdateException is thrown.
+	 */
+	@Test
+	void updateAssociateSurveySession_takenAlreadySetAsTrue() {
+		AssociateSurveySession takenSetAsTrue = new AssociateSurveySession(
+				associateSurveySession.getAssociateSurveySessionId(), associateSurveySession.getAssociateId(),
+				associateSurveySession.getSurveyId(), associateSurveySession.getBatchId(), true);
+
+		when(repo.getOne(takenSetAsTrue.getAssociateSurveySessionId())).thenReturn(takenSetAsTrue);
+
+		verify(repo).getOne(takenSetAsTrue.getAssociateSurveySessionId());
+		verify(repo, never()).save(Mockito.any());
+
+		assertThrows(AssociateSurveySessionUpdateException.class,
+				() -> service.updateAssociateSurveySession(takenSetAsTrue));
 	}
 }
