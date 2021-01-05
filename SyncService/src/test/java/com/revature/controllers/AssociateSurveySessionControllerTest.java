@@ -95,8 +95,8 @@ public class AssociateSurveySessionControllerTest {
 	@Test
 	void readAssociateSurveySession_nullInput() {
 		try {
-			this.webClient.get().uri("/session/")
-					.accept(MediaType.APPLICATION_JSON).exchange().expectStatus().isNotFound().expectBody().json("");
+			this.webClient.get().uri("/session/").accept(MediaType.APPLICATION_JSON).exchange().expectStatus()
+					.isNotFound().expectBody().returnResult();
 
 		} catch (Exception e) {
 			fail("Exception thrown during readAssociateSurveySession_nullInput: " + e);

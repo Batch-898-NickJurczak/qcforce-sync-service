@@ -56,11 +56,15 @@ class AssociateSurveySessionServiceTest {
 	@Test
 	void createAssociateSurveySession_withoutError() {
 		when(repo.save(associateSurveySession)).thenReturn(associateSurveySession);
+		when(repo.findByAssociateIdAndSurveyIdAndBatchId(associateSurveySession.getAssociateId(),
+				associateSurveySession.getSurveyId(), associateSurveySession.getBatchId())).thenReturn(null);
 
 		AssociateSurveySession returned = service.createAssociateSurveySession(associateSurveySession.getAssociateId(),
 				associateSurveySession.getSurveyId(), associateSurveySession.getBatchId());
 
-		verify(repo).save(returned);
+		verify(repo).save(associateSurveySession);
+		verify(repo).findByAssociateIdAndSurveyIdAndBatchId(associateSurveySession.getAssociateId(),
+				associateSurveySession.getSurveyId(), associateSurveySession.getBatchId());
 
 		assertEquals(associateSurveySession, returned);
 	}
@@ -148,15 +152,19 @@ class AssociateSurveySessionServiceTest {
 	 */
 	@Test
 	void updateAssociateSurveySession_withoutError() {
-		when(repo.save(associateSurveySession)).thenReturn(associateSurveySession);
-		when(repo.getOne(associateSurveySession.getAssociateSurveySessionId())).thenReturn(associateSurveySession);
+		AssociateSurveySession trueTaken = new AssociateSurveySession(
+				associateSurveySession.getAssociateSurveySessionId(), associateSurveySession.getAssociateId(),
+				associateSurveySession.getSurveyId(), associateSurveySession.getBatchId(), true);
 
-		AssociateSurveySession returned = service.updateAssociateSurveySession(associateSurveySession);
+		when(repo.getOne(associateSurveySession.getAssociateSurveySessionId())).thenReturn(associateSurveySession);
+		when(repo.save(trueTaken)).thenReturn(trueTaken);
+
+		AssociateSurveySession returned = service.updateAssociateSurveySession(trueTaken);
 
 		verify(repo).getOne(associateSurveySession.getAssociateSurveySessionId());
-		verify(repo).save(associateSurveySession);
+		verify(repo).save(trueTaken);
 
-		assertEquals(returned, associateSurveySession);
+		assertEquals(returned, trueTaken);
 	}
 
 	/**
@@ -190,11 +198,11 @@ class AssociateSurveySessionServiceTest {
 		AssociateSurveySession modifiedReadOnly = new AssociateSurveySession(
 				associateSurveySession.getAssociateSurveySessionId(), 2, 3, "2011", true);
 
-		verify(repo).getOne(associateSurveySession.getAssociateSurveySessionId());
-		verify(repo, never()).save(Mockito.any());
-
 		assertThrows(AssociateSurveySessionUpdateException.class,
 				() -> service.updateAssociateSurveySession(modifiedReadOnly));
+
+		verify(repo).getOne(associateSurveySession.getAssociateSurveySessionId());
+		verify(repo, never()).save(Mockito.any());
 	}
 
 	/**
@@ -207,11 +215,11 @@ class AssociateSurveySessionServiceTest {
 	void updateAssociateSurveySession_takenSetAsFalse() {
 		when(repo.getOne(associateSurveySession.getAssociateSurveySessionId())).thenReturn(associateSurveySession);
 
-		verify(repo).getOne(associateSurveySession.getAssociateSurveySessionId());
-		verify(repo, never()).save(Mockito.any());
-
 		assertThrows(AssociateSurveySessionUpdateException.class,
 				() -> service.updateAssociateSurveySession(associateSurveySession));
+
+		verify(repo).getOne(associateSurveySession.getAssociateSurveySessionId());
+		verify(repo, never()).save(Mockito.any());
 	}
 
 	/**
@@ -228,10 +236,11 @@ class AssociateSurveySessionServiceTest {
 
 		when(repo.getOne(takenSetAsTrue.getAssociateSurveySessionId())).thenReturn(takenSetAsTrue);
 
-		verify(repo).getOne(takenSetAsTrue.getAssociateSurveySessionId());
-		verify(repo, never()).save(Mockito.any());
-
 		assertThrows(AssociateSurveySessionUpdateException.class,
 				() -> service.updateAssociateSurveySession(takenSetAsTrue));
+
+		verify(repo).getOne(takenSetAsTrue.getAssociateSurveySessionId());
+		verify(repo, never()).save(Mockito.any());
 	}
+
 }
