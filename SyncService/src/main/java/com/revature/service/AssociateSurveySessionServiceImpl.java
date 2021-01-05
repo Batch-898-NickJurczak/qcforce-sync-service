@@ -1,7 +1,5 @@
 package com.revature.service;
 
-import javax.persistence.EntityNotFoundException;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,7 +25,11 @@ public class AssociateSurveySessionServiceImpl implements AssociateSurveySession
 	}
 
 	/**
-	 * Method for creating {@link AssociateSurveySession}
+	 * Method for creating {@link AssociateSurveySession}, and should only be called
+	 * when creating a JWT. If there is already and existing
+	 * {@link AssociateSurveySession} with the same fields as the parameters, then
+	 * that object will be returned. If there is an issue persisting a new
+	 * {@link AssociateSurveySession}, then null will be returned.
 	 * 
 	 * @param associateId
 	 * @param surveyId
@@ -37,17 +39,14 @@ public class AssociateSurveySessionServiceImpl implements AssociateSurveySession
 	@Override
 	public AssociateSurveySession createAssociateSurveySession(int associateId, int surveyId, String batchId) {
 
-		AssociateSurveySession existingAssociateSurveySession = repo.findByAssociateIdAndSurveyIdAndBatchId(associateId,
-				surveyId, batchId);
-		if (existingAssociateSurveySession == null) {
-			return repo.save(new AssociateSurveySession(0, associateId, surveyId, batchId, false));
-		}
-		return existingAssociateSurveySession;
+		return null;
 
 	}
 
 	/**
-	 * Method for reading {@link AssociateSurveySession}
+	 * Method for reading {@link AssociateSurveySession}. If the
+	 * {@link AssociateSurveySession} does not exist in the database, null will be
+	 * returned.
 	 * 
 	 * @param associateSurveySessionId
 	 * @return {@link AssociateSurveySession}
@@ -55,16 +54,12 @@ public class AssociateSurveySessionServiceImpl implements AssociateSurveySession
 	@Override
 	public AssociateSurveySession readAssociateSurveySession(int associateSurveySessionId) {
 
-		try {
-			return repo.getOne(associateSurveySessionId);
-		} catch (EntityNotFoundException e) {
-			return null;
-		}
-    
+		return null;
 	}
 
 	/**
-	 * Method for updating {@link AssociateSurveySession}. If the updated
+	 * Method for updating {@link AssociateSurveySession}, and should only be called
+	 * when receiving a survey submission from the front-end. If the updated
 	 * {@link AssociateSurveySession} has invalid fields, then an
 	 * {@link AssociateSurveyUpdateException} will be thrown.
 	 * 
@@ -73,14 +68,8 @@ public class AssociateSurveySessionServiceImpl implements AssociateSurveySession
 	 */
 	@Override
 	public AssociateSurveySession updateAssociateSurveySession(AssociateSurveySession associateSurveySession) {
-    
-		try {
-			repo.getOne(associateSurveySession.getAssociateSurveySessionId());
-			return repo.save(associateSurveySession);
-		} catch (EntityNotFoundException e) {
-			return null;
-		}
-    
+
+		return null;
 	}
 
 }
