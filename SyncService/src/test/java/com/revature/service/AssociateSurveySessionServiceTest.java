@@ -13,6 +13,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import com.revature.models.AssociateSurveySession;
 import com.revature.repo.AssociateSurveySessionRepo;
@@ -22,6 +23,7 @@ import com.revature.repo.AssociateSurveySessionRepo;
  * These are tests for the {@link AssociateSurveySessionImpl}.
  *
  */
+@SpringBootTest
 class AssociateSurveySessionServiceTest {
 
 	@Autowired
