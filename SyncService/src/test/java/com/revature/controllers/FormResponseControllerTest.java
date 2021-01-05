@@ -200,7 +200,8 @@ class FormResponseControllerTest {
 		try {
 			this.webClient.post().uri("/survey/response").header(HEADER_KEY, HEADER_VALUE)
 					.contentType(MediaType.APPLICATION_JSON).body(BodyInserters.fromValue(formResponseDtoJson))
-					.exchange().expectStatus().isUnauthorized().expectBody().equals(FormResponseController.INVALID_JWT);
+					.exchange().expectStatus().isUnauthorized().expectBody()
+					.equals(FormResponseController.INVALID_JWT);
 		} catch (Exception e) {
 
 			fail("Exception thrown during createAssociateSurveySession_InputNull: " + e);
