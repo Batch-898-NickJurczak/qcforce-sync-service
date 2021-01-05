@@ -68,7 +68,9 @@ public class QuestionServiceImpl implements QuestionService {
 		}
 		
 		return returned;
-	 * Retrieves a list of {@link SurveyQuestion} objects.
+	}
+	
+	 /** Retrieves a list of {@link SurveyQuestion} objects.
 	 * @return A list of {@link SurveyQuestion}.
 	 */
 	@Override

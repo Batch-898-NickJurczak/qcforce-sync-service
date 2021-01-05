@@ -49,20 +49,6 @@ public class QuestionController {
 		this.questionService = questionService;
 	}
 
-	/**
-     * The service object this controller needs to interact with.
-     */
-    private QuestionService questionService;
-
-    /**
-     * Set the {@link QuestionService} contained within this object. Normally the
-     * Spring framework will set this through Autowiring.
-     */
-    @Autowired
-    public void setQuestionService(QuestionService questionService) {
-
-        this.questionService = questionService;
-    }
 	
 	/**
 	 * Retrieve a {@link SurveyQuestion} that matches the given id.
