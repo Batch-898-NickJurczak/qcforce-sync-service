@@ -67,8 +67,11 @@ public class SurveyController {
 	 * 
 	 * @return Flux<Object>
 	 */
-	@GetMapping("/survey/{token}")
-	public Flux<Object> getSurveyByToken(@PathVariable("token") String token, ServerHttpResponse response) {
+	@GetMapping("survey-token")
+	public Flux<Object> getSurveyByToken(@RequestHeader(value = "Authorization") String bearerToken, ServerHttpResponse response) {
+		
+		String[] splitBearer = bearerToken.split("\\s");
+		String token = splitBearer[1];
 		
 		ArrayList<Object> fluxList = new ArrayList<Object>();
 		Date date = new Date(System.currentTimeMillis());
