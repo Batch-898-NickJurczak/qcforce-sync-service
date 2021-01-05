@@ -2,16 +2,20 @@ package com.revature.controllers;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -22,7 +26,6 @@ import com.revature.dto.SurveyFormDto;
 import com.revature.models.AssociateSurveySession;
 import com.revature.models.SurveyForm;
 
-import antlr.collections.List;
 import io.jsonwebtoken.Claims;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -65,10 +68,9 @@ public class SurveyController {
 	 * @return Flux<Object>
 	 */
 	@GetMapping("/survey/{token}")
-	@ResponseStatus(code = HttpStatus.OK)
-	public Flux<Object> getSurveyByToken(@PathVariable("token") String token) {
+	public Flux<Object> getSurveyByToken(@PathVariable("token") String token, ServerHttpResponse response) {
 		
-		ArrayList<Object> response = new ArrayList<Object>();
+		ArrayList<Object> fluxList = new ArrayList<Object>();
 		Date date = new Date(System.currentTimeMillis());
 		
 		if (authService.verifyJWT(token)) {
@@ -79,23 +81,31 @@ public class SurveyController {
 			
 			if (date.compareTo((Date) claim.get("exp")) == 1) {
 				
-				response.add("expired");
+				fluxList.add("expired");
+				response.setStatusCode(HttpStatus.BAD_REQUEST);
 				
 			} else if (associateSurveySess.isTaken()) {
 				
-				response.add("completed");
+				fluxList.add("completed");
+				response.setStatusCode(HttpStatus.IM_USED);
 				
 			} else {
 				
-				response.add("success");
+				fluxList.add("success");
 				SurveyForm survey = (surveyService.getSurvey((int) claim.get("surveyId")));
-				response.add(new SurveyFormDto(survey));
+				fluxList.add(new SurveyFormDto(survey));
+				response.setStatusCode(HttpStatus.OK);
 			}
 
 		} else {
-			response.add("failure");
+			
+			fluxList.add("failure");
+			response.setStatusCode(HttpStatus.UNAUTHORIZED);
 		}
-		Flux<Object> data = Flux.fromIterable(response);
+		
+		Flux<Object> data = Flux.fromIterable(fluxList);
+		
 		return data;
 	}
+	
 }
