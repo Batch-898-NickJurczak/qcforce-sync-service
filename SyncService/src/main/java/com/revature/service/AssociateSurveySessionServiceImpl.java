@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.revature.models.AssociateSurveySession;
 import com.revature.repo.AssociateSurveySessionRepo;
+import com.revature.util.AssociateSurveySessionUpdateException;
 
 /**
  * 
@@ -27,7 +28,11 @@ public class AssociateSurveySessionServiceImpl implements AssociateSurveySession
 	}
 
 	/**
-	 * Method for creating {@link AssociateSurveySession}
+	 * Method for creating {@link AssociateSurveySession}, and should only be called
+	 * when creating a JWT. If there is already and existing
+	 * {@link AssociateSurveySession} with the same fields as the parameters, then
+	 * that object will be returned. If there is an issue persisting a new
+	 * {@link AssociateSurveySession}, then null will be returned.
 	 * 
 	 * @param associateId
 	 * @param surveyId
@@ -40,14 +45,16 @@ public class AssociateSurveySessionServiceImpl implements AssociateSurveySession
 		AssociateSurveySession existingAssociateSurveySession = repo.findByAssociateIdAndSurveyIdAndBatchId(associateId,
 				surveyId, batchId);
 		if (existingAssociateSurveySession == null) {
-			return repo.save(new AssociateSurveySession(0, associateId, surveyId, batchId, false));
+			return repo.save(new AssociateSurveySession(1, associateId, surveyId, batchId, false));
 		}
 		return existingAssociateSurveySession;
 
 	}
 
 	/**
-	 * Method for reading {@link AssociateSurveySession}
+	 * Method for reading {@link AssociateSurveySession}. If the
+	 * {@link AssociateSurveySession} does not exist in the database, null will be
+	 * returned.
 	 * 
 	 * @param associateSurveySessionId
 	 * @return {@link AssociateSurveySession}
@@ -60,27 +67,43 @@ public class AssociateSurveySessionServiceImpl implements AssociateSurveySession
 		} catch (EntityNotFoundException e) {
 			return null;
 		}
-    
+
 	}
 
 	/**
-	 * Method for updating {@link AssociateSurveySession}. If the updated
+	 * Method for updating {@link AssociateSurveySession}, and should only be called
+	 * when receiving a survey submission from the front-end. If the updated
 	 * {@link AssociateSurveySession} has invalid fields, then an
 	 * {@link AssociateSurveyUpdateException} will be thrown.
 	 * 
 	 * @param associateSurveySession
 	 * @return {@link AssociateSurveySession}
+	 * @throws {@link AssociateSurveySessionUpdateException}
 	 */
 	@Override
 	public AssociateSurveySession updateAssociateSurveySession(AssociateSurveySession associateSurveySession) {
-    
+
 		try {
-			repo.getOne(associateSurveySession.getAssociateSurveySessionId());
+			AssociateSurveySession existingAssociateSurveySession = repo
+					.getOne(associateSurveySession.getAssociateSurveySessionId());
+			if (existingAssociateSurveySession.getAssociateId() != associateSurveySession.getAssociateId()
+					|| existingAssociateSurveySession.getSurveyId() != associateSurveySession.getSurveyId()
+					|| !existingAssociateSurveySession.getBatchId().equals(associateSurveySession.getBatchId())) {
+				throw new AssociateSurveySessionUpdateException(
+						"Read only fields modified");
+			} else if (existingAssociateSurveySession.isTaken()) {
+				throw new AssociateSurveySessionUpdateException(
+						"exisiting AssociateSurveySession already marked as complete");
+			} else if (!associateSurveySession.isTaken()) {
+				throw new AssociateSurveySessionUpdateException(
+						"Attempting to update non completed AssociateSurveySession");
+			}
+
 			return repo.save(associateSurveySession);
 		} catch (EntityNotFoundException e) {
 			return null;
 		}
-    
+
 	}
 
 }
