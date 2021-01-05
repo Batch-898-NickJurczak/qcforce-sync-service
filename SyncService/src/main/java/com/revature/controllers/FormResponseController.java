@@ -19,22 +19,23 @@ import com.revature.models.FormResponse;
 @RestController
 @CrossOrigin
 public class FormResponseController {
-	
+
 	public static final String NO_ID_FOUND = "AssociateSurveySessionId provided by JWT does not exist";
-	
+
 	public static final String ALREADY_SUBMITTED = "AssociateSurveySession indicated by JWT was already marked as submitted";
-	
+
 	public static final String INVALID_SURVEY_ID = "SurveyId does not match surveyId within the AssociateSurveySession indicated by JWT";
-	
+
 	public static final String INVALID_JWT = "Could not validate JWT";
-	
+
 	public static final String PERSIST_ERROR = "Error persisting FormResponse";
 
 	/**
 	 * This method handles the end point for creating a {@link FormResponse} object.
 	 * When this object is created, the corresponding
 	 * {@link AssociateSurveyResponse} provided by the JWT is updated to mark
-	 * completion. 
+	 * completion. If an error is encountered, an appropriate status code and error
+	 * message will be returned.
 	 * 
 	 * @param token
 	 * @param formResponseDto

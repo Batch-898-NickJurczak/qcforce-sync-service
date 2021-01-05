@@ -1,6 +1,8 @@
 package com.revature.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -8,16 +10,22 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.persistence.EntityNotFoundException;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.revature.dto.FormResponseDto;
 import com.revature.models.AssociateSurveySession;
 import com.revature.models.FormResponse;
+import com.revature.util.AssociateSurveySessionUpdateException;
+import com.revature.util.InvalidJWTException;
+import com.revature.util.InvalidSurveyIdException;
 
 /**
  * 
@@ -37,7 +45,7 @@ class FormResponseServiceTest {
 	private AssociateSurveySessionService associateSurveySessionService;
 
 	@Mock
-	private RabbitMQImpl messsageService;
+	private RabbitMQImpl messageService;
 
 	FormResponse formResponse;
 
@@ -46,6 +54,7 @@ class FormResponseServiceTest {
 	AssociateSurveySession updatedAssociateSurveySession;
 
 	String token;
+
 	Map<String, Object> claims;
 
 	@BeforeEach
@@ -54,7 +63,10 @@ class FormResponseServiceTest {
 		MockitoAnnotations.initMocks(this);
 
 		formResponse = new FormResponseDto(0, "now", 1, new ArrayList<String>(), new ArrayList<String>()).toPojo();
-		token = "asl;dkja;owi";
+		token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9."
+				+ "eyJzdXJ2ZXlJZCI6IjEiLCJzdXJ2ZVN1YklkIjoiMiIsImJhdGNoSWQiOiIyMDEwIiwiaWF0IjoxNTE2MjM5MDIyLCJleHAiOjE1MTYyMzkwMjJ9"
+				+ ".2vu-3XIYjH6nhw8yu_KQ3Vz75lG-IedsB_qv7PGdlvM";
+
 		claims = new HashMap<String, Object>();
 		claims.put("surveySubId", 1);
 
@@ -82,6 +94,7 @@ class FormResponseServiceTest {
 		verify(authService).getClaim();
 		verify(associateSurveySessionService).readAssociateSurveySession((int) claims.get("surveySubId"));
 		verify(associateSurveySessionService).updateAssociateSurveySession(updatedAssociateSurveySession);
+		verify(messageService, Mockito.times(1)).sendSingularFormResponse(returned);
 
 		assertEquals(formResponse, returned);
 	}
@@ -89,46 +102,44 @@ class FormResponseServiceTest {
 	/**
 	 * This tests the createFormResponse method of the
 	 * {@link FormResponseServiceImpl}. Ensures that if an invalid JWT is given,
-	 * that the method will return null.
+	 * that the method will throw an InvalidJWTException.
 	 */
 	@Test
 	void createFormResponse_invalidJWT() {
 		when(authService.verifyJWT(token)).thenReturn(false);
-
-		FormResponse returned = service.createFormResponse(formResponse, token);
+		
+		assertThrows(InvalidJWTException.class, () -> service.createFormResponse(formResponse, token));
 
 		verify(authService).verifyJWT(token);
-		assertEquals(returned, null);
-
+		verify(messageService, never()).sendSingularFormResponse(Mockito.any());
 	}
 
 	/**
 	 * This tests the createFormResponse method of the
 	 * {@link FormResponseServiceImpl}. Ensures that if a valid JWT with an invalid
 	 * Id reference to an {@link AssociateSurveySession} is given, that the method
-	 * will return null.
+	 * will throw an EntityNotFoundException.
 	 */
 	@Test
 	void createFormResponse_invalidAssociateSurveySessionId() {
 		when(authService.verifyJWT(token)).thenReturn(true);
 		when(authService.getClaim()).thenReturn(claims);
 		when(associateSurveySessionService.readAssociateSurveySession((int) claims.get("surveySubId")))
-				.thenReturn(null);
-
-		FormResponse returned = service.createFormResponse(formResponse, token);
+				.thenThrow(EntityNotFoundException.class);
+		
+		assertThrows(EntityNotFoundException.class, () -> service.createFormResponse(formResponse, token));
 
 		verify(authService).verifyJWT(token);
 		verify(authService).getClaim();
 		verify(associateSurveySessionService).readAssociateSurveySession((int) claims.get("surveySubId"));
-
-		assertEquals(null, returned);
+		verify(messageService, never()).sendSingularFormResponse(Mockito.any());
 	}
 
 	/**
 	 * This tests the createFormResponse method of the
 	 * {@link FormResponseServiceImpl}. Ensures that if the
 	 * updateAssociateSurveySession method of the {@link AssociateSurveySessionImpl}
-	 * fails, that the method will return null.
+	 * fails, that the method will throw an AssociateSurveySessionUpdateException.
 	 */
 	@Test
 	void createFormResponse_updateAssociateSurveySessionError() {
@@ -137,16 +148,40 @@ class FormResponseServiceTest {
 		when(associateSurveySessionService.readAssociateSurveySession((int) claims.get("surveySubId")))
 				.thenReturn(associateSurveySession);
 		when(associateSurveySessionService.updateAssociateSurveySession(updatedAssociateSurveySession))
-				.thenReturn(null);
-
-		FormResponse returned = service.createFormResponse(formResponse, token);
+				.thenThrow(AssociateSurveySessionUpdateException.class);
+		
+		assertThrows(AssociateSurveySessionUpdateException.class,
+				() -> service.createFormResponse(formResponse, token));
 
 		verify(authService).verifyJWT(token);
 		verify(authService).getClaim();
 		verify(associateSurveySessionService).readAssociateSurveySession((int) claims.get("surveySubId"));
 		verify(associateSurveySessionService).updateAssociateSurveySession(updatedAssociateSurveySession);
+		verify(messageService, never()).sendSingularFormResponse(Mockito.any());
+	}
 
-		assertEquals(null, returned);
+	/**
+	 * This tests the createFormResponse method of the
+	 * {@link FormResponseServiceImpl}. Ensures that if the surveyId of the
+	 * {@link FormResponse} is not equal to the surveyId of the
+	 * {@link AssociateSurveySession} provided by the JWT, the method will throw an
+	 * InvalidSurveyIdException.
+	 */
+	@Test
+	void createFormResponse_mismatchedSurveyIds() {
+		when(authService.verifyJWT(token)).thenReturn(true);
+		when(authService.getClaim()).thenReturn(claims);
+		when(associateSurveySessionService.readAssociateSurveySession((int) claims.get("surveySubId")))
+				.thenReturn(associateSurveySession);
+
+		formResponse.setFormId(associateSurveySession.getSurveyId() + 1);
+
+		assertThrows(InvalidSurveyIdException.class, () -> service.createFormResponse(formResponse, token));
+
+		verify(authService).verifyJWT(token);
+		verify(authService).getClaim();
+		verify(associateSurveySessionService).readAssociateSurveySession((int) claims.get("surveySubId"));
+		verify(messageService, never()).sendSingularFormResponse(Mockito.any());
 	}
 
 }
