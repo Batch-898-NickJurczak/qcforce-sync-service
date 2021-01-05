@@ -69,6 +69,8 @@ class FormResponseServiceTest {
 	private AssociateSurveySession updatedAssociateSurveySession;
 
 	private String token;
+	
+	private int surveyId; 
 
 	private Map<String, Object> claims;
 
@@ -76,6 +78,8 @@ class FormResponseServiceTest {
 	void setUp() throws Exception {
 
 		MockitoAnnotations.initMocks(this);
+		
+		surveyId = 1;
 		
 		surveyQuestions = new ArrayList<SurveyQuestion>();
 		answers = new ArrayList<String>();
@@ -90,7 +94,7 @@ class FormResponseServiceTest {
 			answers.add("Yes");
 		}
 
-		formResponse = new FormResponseDto(0, "now", 1, answers).toPojo();
+		formResponse = new FormResponseDto(0, "now", surveyId, answers).toPojo();
 		token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9."
 				+ "eyJzdXJ2ZXlJZCI6IjEiLCJzdXJ2ZVN1YklkIjoiMiIsImJhdGNoSWQiOiIyMDEwIiwiaWF0IjoxNTE2MjM5MDIyLCJleHAiOjE1MTYyMzkwMjJ9"
 				+ ".2vu-3XIYjH6nhw8yu_KQ3Vz75lG-IedsB_qv7PGdlvM";
@@ -98,8 +102,8 @@ class FormResponseServiceTest {
 		claims = new HashMap<String, Object>();
 		claims.put("surveySubId", 1);
 
-		associateSurveySession = new AssociateSurveySession(0, 1, 2, "2010", false);
-		updatedAssociateSurveySession = new AssociateSurveySession(0, 1, 2, "2010", true);
+		associateSurveySession = new AssociateSurveySession(0, 1, surveyId, "2010", false);
+		updatedAssociateSurveySession = new AssociateSurveySession(0, 1, surveyId, "2010", true);
 	}
 
 	/**
@@ -167,6 +171,8 @@ class FormResponseServiceTest {
 		verify(authService).getClaim();
 		verify(associateSurveySessionService).readAssociateSurveySession((int) claims.get("surveySubId"));
 		verify(messageService, never()).sendSingularFormResponse(Mockito.any());
+		verify(associateSurveySessionService, never()).updateAssociateSurveySession(Mockito.any());
+
 	}
 
 	/**
@@ -205,7 +211,7 @@ class FormResponseServiceTest {
 	 */
 	@Test
 	void createFormResponse_mismatchedSurveyIds() {
-		when(surveyService.getSurveyForm(formResponse.getFormId())).thenReturn(survey);
+		when(surveyService.getSurveyForm(formResponse.getFormId() + 1)).thenReturn(survey);
 		when(survey.getQuestions()).thenReturn(surveyQuestions);
 		when(authService.verifyJWT(token)).thenReturn(true);
 		when(authService.getClaim()).thenReturn(claims);
@@ -220,6 +226,7 @@ class FormResponseServiceTest {
 		verify(authService).getClaim();
 		verify(associateSurveySessionService).readAssociateSurveySession((int) claims.get("surveySubId"));
 		verify(messageService, never()).sendSingularFormResponse(Mockito.any());
+		verify(associateSurveySessionService, never()).updateAssociateSurveySession(Mockito.any());
 	}
 
 	/**
@@ -241,9 +248,10 @@ class FormResponseServiceTest {
 		assertThrows(InvalidAnswersException.class, () -> service.createFormResponse(formResponse, token));
 
 		verify(authService).verifyJWT(token);
-		verify(authService).getClaim();
-		verify(associateSurveySessionService).readAssociateSurveySession((int) claims.get("surveySubId"));
+		verify(surveyService).getSurveyForm(formResponse.getFormId());
+		verify(survey).getQuestions();
 		verify(messageService, never()).sendSingularFormResponse(Mockito.any());
+		verify(associateSurveySessionService, never()).updateAssociateSurveySession(Mockito.any());
 	}
 
 }

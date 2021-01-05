@@ -123,7 +123,7 @@ public class FormResponseDto implements Dto<FormResponse> {
 	public FormResponse toPojo() {
 
 		FormResponse formResponse = new FormResponse();
-		formResponse.setFormId(this.getFormResponseId());
+		formResponse.setFormId(this.getSurveyId());
 		formResponse.setTimestamp(this.getTimestamp());
 		formResponse.setSourceId(String.valueOf(this.getSurveyId()));
 		formResponse.setQuestions(new ArrayList<String>());
