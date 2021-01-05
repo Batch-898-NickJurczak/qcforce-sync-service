@@ -70,9 +70,11 @@ public class FormResponseController {
 	 */
 	@PostMapping("/survey/response")
 	public ResponseEntity<String> createFormResponse(@RequestBody FormResponseDto formResponseDto,
-			HttpServletRequest request) {
+			@RequestHeader(value = "Authorization") String tokenValue) {
 
-		String token = request.getHeader("Authorization").split(" ")[1];
+		String token = tokenValue.split(" ")[1];
+		System.out.println(token);
+		System.out.println(tokenValue);
 
 		try {
 			FormResponse formResponse = formResponseService.createFormResponse(formResponseDto.toPojo(), token);
