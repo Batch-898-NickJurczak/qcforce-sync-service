@@ -63,21 +63,7 @@ public class FormResponseServiceImpl implements FormResponseService {
 	 */
 	@Override
 	public FormResponse createFormResponse(FormResponse formResponse, String token) {
-		if (authService.verifyJWT(token)) {
-			Map<String, Object> claims = authService.getClaim();
-			int associateSurveySessionId = (int) claims.get("surveySubId");
-			AssociateSurveySession associateSurveySession = associateSurveySessionService
-					.readAssociateSurveySession(associateSurveySessionId);
-			if (associateSurveySession == null) {
-				return null;
-			}
-			associateSurveySession.setTaken(true);
-			if (associateSurveySessionService.updateAssociateSurveySession(associateSurveySession) == null) {
-				return null;
-			}
-			messageService.sendSingularFormResponse(formResponse);
-			return formResponse;
-		}
+		
 		return null;
 	}
 
