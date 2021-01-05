@@ -1,6 +1,7 @@
 package com.revature.service;
 
-import com.revature.dto.SurveyQuestionDto;
+import java.util.List;
+
 import com.revature.models.SurveyQuestion;
 
 /**
@@ -21,5 +22,11 @@ public interface QuestionService {
 	 */
 	public SurveyQuestion getSurveyQuestion(int id);
 	public SurveyQuestion createSurveyQuestion(SurveyQuestion surveyQuestion);
+	
+	/**
+	 * Retrieves a list of {@link SurveyQuestion} objects.
+	 * @return A list of {@link SurveyQuestion}.
+	 */
+	public List<SurveyQuestion> getAllSurveyQuestions();
 
 }

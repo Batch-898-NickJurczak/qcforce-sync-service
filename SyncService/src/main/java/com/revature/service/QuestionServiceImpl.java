@@ -1,6 +1,7 @@
 package com.revature.service;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -67,5 +68,11 @@ public class QuestionServiceImpl implements QuestionService {
 		}
 		
 		return returned;
+	 * Retrieves a list of {@link SurveyQuestion} objects.
+	 * @return A list of {@link SurveyQuestion}.
+	 */
+	@Override
+	public List<SurveyQuestion> getAllSurveyQuestions() {
+		return questionRepo.findAll();
 	}
 }
