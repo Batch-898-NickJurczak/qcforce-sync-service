@@ -1,7 +1,11 @@
 package com.revature.service;
 
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.revature.models.AssociateSurveySession;
 import com.revature.models.FormResponse;
 
 /**
@@ -11,6 +15,36 @@ import com.revature.models.FormResponse;
  */
 @Service
 public class FormResponseServiceImpl implements FormResponseService {
+
+	private AssociateSurveySessionService associateSurveySessionService;
+
+	private AuthServiceImpl authService;
+	
+	private RabbitMQImpl messageService;
+
+	/**
+	 * @param associateSurveySessionService the associateSurveySessionService to set
+	 */
+	@Autowired
+	public void setAssociateSurveySessionService(AssociateSurveySessionService associateSurveySessionService) {
+		this.associateSurveySessionService = associateSurveySessionService;
+	}
+
+	/**
+	 * @param messageService the messageService to set
+	 */
+	@Autowired
+	public void setMessageService(RabbitMQImpl messageService) {
+		this.messageService = messageService;
+	}
+
+	/**
+	 * @param authService the authService to set
+	 */
+	@Autowired
+	public void setAuthService(AuthServiceImpl authService) {
+		this.authService = authService;
+	}
 
 	/**
 	 * This method creates a {@link FormResponse}, and updates the
@@ -29,6 +63,21 @@ public class FormResponseServiceImpl implements FormResponseService {
 	 */
 	@Override
 	public FormResponse createFormResponse(FormResponse formResponse, String token) {
+		if (authService.verifyJWT(token)) {
+			Map<String, Object> claims = authService.getClaim();
+			int associateSurveySessionId = (int) claims.get("surveySubId");
+			AssociateSurveySession associateSurveySession = associateSurveySessionService
+					.readAssociateSurveySession(associateSurveySessionId);
+			if (associateSurveySession == null) {
+				return null;
+			}
+			associateSurveySession.setTaken(true);
+			if (associateSurveySessionService.updateAssociateSurveySession(associateSurveySession) == null) {
+				return null;
+			}
+			messageService.sendSingularFormResponse(formResponse);
+			return formResponse;
+		}
 		return null;
 	}
 
