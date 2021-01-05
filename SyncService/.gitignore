@@ -33,3 +33,9 @@ build/
 ### PRIVATE INFO###
 *.p12
 /Dockerfile
+
+### Jacoco Files ###
+/report
+
+### Local Error Report ###
+sync-errors.html
