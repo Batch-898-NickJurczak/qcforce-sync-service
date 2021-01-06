@@ -35,5 +35,11 @@ build/
 *.p12
 /Dockerfile
 
-### DS_Store ###
+### Jacoco Files ###
+/report
+
+### Local Error Report ###
+sync-errors.html
+
+### DS-Store ###
 *.DS_Store

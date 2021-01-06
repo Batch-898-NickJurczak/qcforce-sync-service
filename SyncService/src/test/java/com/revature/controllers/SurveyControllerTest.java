@@ -18,8 +18,8 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -37,17 +37,31 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 class SurveyControllerTest {
 
-	@Autowired
-	private WebTestClient webClient;
-
 	@MockBean
 	private SurveyService service;
+	
+	@Autowired
+	private WebTestClient webClient;
+	
+	@MockBean
+	private AuthServiceImpl auth;
+	
+	@MockBean
+	private AssociateSurveySessionServiceImpl assServ;
 
 	private SurveyQuestion surveyQuestion;
-	
-	private SurveyForm surveyForm;
 
-	private String surveyFormJson;
+	private SurveyForm survey;
+	
+	private Map<String, Object> claim = new HashMap<>();
+	
+	private ArrayList<Object> list = new ArrayList<>();
+		
+	private AssociateSurveySession assSess;
+
+	private String surveyJson;
+	
+	private String surveyListJson;
 
 	/**
 	 * @throws java.lang.Exception
@@ -70,18 +84,21 @@ class SurveyControllerTest {
 	void setUp() throws Exception {
 
 		List<String> questions = new ArrayList<String>();
-        questions.add("How are you?");
-        surveyQuestion = new SurveyQuestion(1, LocalDateTime.now(), QuestionType.SHORT_ANSWER, 1, questions);
-        
-        List<SurveyQuestion> surveyQuestions = new ArrayList<>(1);
-        surveyQuestions.add(surveyQuestion);
-        
-        surveyForm = new SurveyForm(1, "Wezley's Survey", "Wezley Singleton", 
-                LocalDateTime.now(), 1, surveyQuestions);
+    questions.add("How are you?");
+    surveyQuestion = new SurveyQuestion(1, LocalDateTime.now(), QuestionType.SHORT_ANSWER, 1, questions);
 
-		// writing value as a Json string
-		ObjectMapper om = new ObjectMapper();
-		surveyFormJson = om.writeValueAsString(new SurveyFormDto(surveyForm));
+    List<SurveyQuestion> surveyQuestions = new ArrayList<>(1);
+    surveyQuestions.add(surveyQuestion);
+
+    survey = new SurveyForm(1, "Wezley's Survey", "Wezley Singleton", 
+            LocalDateTime.now(), 1, surveyQuestions);
+
+    // writing value as a Json string
+    ObjectMapper om = new ObjectMapper();
+    surveyJson = om.writeValueAsString(new SurveyFormDto(survey));
+			
+		assSess = new AssociateSurveySession(1, 1, 2, "22", false);
+
 	}
 
 	/**
@@ -89,46 +106,145 @@ class SurveyControllerTest {
 	 */
 	@AfterEach
 	void tearDown() throws Exception {
+		claim.clear();
 	}
 
-	/**
-	 * Tests the getSurveyForm method of the {@link SurveyController} Ensures that
-	 * given a valid surveyForm id, returns the expected {@link SurveyForm}
+	/*
+	 * Tests getSurveybyToken in {@link SurveyController}
+	 * Check if the returned list of Objects contains a string of "success" along with the {@link SurveyForm} object in the list.
 	 */
 	@Test
-	void getSurveyFormTest_WithoutError() {
-
-		Mockito.when(service.getSurveyForm(surveyForm.getId())).thenReturn(surveyForm);
-
-		// Test actual method utilizing the webClient
+	void getSurveyTest_Success() throws JsonProcessingException {
+		
+		claim.put("iat", new Date(System.currentTimeMillis()));
+		claim.put("exp", new Date(System.currentTimeMillis() + (1000 * 60 *15)));
+		claim.put("surveyId", 1);
+		claim.put("batchId", "1");
+		claim.put("surveySubId", 1);
+		
+		when(auth.verifyJWT("jwt")).thenReturn(true);
+		when(assServ.readAssociateSurveySession((int)claim.get("surveySubId"))).thenReturn(assSess);
+		when(auth.getClaim()).thenReturn(claim);
+		when(service.getSurvey((int)claim.get("surveyId"))).thenReturn(survey);
+		
+		list.add("success");
+		list.add(new SurveyFormDto(survey));
+		
+		ObjectMapper im = new ObjectMapper();
+        surveyListJson = im.writeValueAsString(list);
+        
+        
 		try {
-			this.webClient.get().uri("/survey/" + surveyForm.getId()).accept(MediaType.APPLICATION_JSON)
-								.exchange().expectStatus().isOk()
-								.expectBody().json(surveyFormJson);
-
-		} catch (Exception e) {
-			fail("Exception thrown during getSurveyFormTest_WithoutError: " + e);
+			this.webClient.get().uri("/survey-token")
+			.accept(MediaType.APPLICATION_JSON)
+			.exchange()
+			.expectBody(Object.class)
+			.equals(list);
+			
+			
+		}catch(Exception e) {
+			fail("Exception occured in getSurveyTest_Success(): " +e);
 		}
 	}
-
-	/**
-	 * Tests the getSurveyForm method of the {@link SurveyController} Ensures that
-	 * given a valid surveyForm id, if the service returns null, then the controller
-	 * returns an empty Json object as well as a NotFound status code.
+	
+	/*
+	 * Tests getSurveybyToken in {@link SurveyController}
+	 * Check if the returned list of Objects contains a string of "failure" along with the null object in the list given that the user is not authenticated.
 	 */
 	@Test
-	void getSurveyFormTest_SurveyNotFound() {
-
-		Mockito.when(service.getSurveyForm(surveyForm.getId())).thenReturn(null);
-
-		// Test actual method utilizing the webClient
+	void getSurveyTest_Failure() throws JsonProcessingException {
+		claim.put("surveyId", 1);
+		claim.put("batchId", "1");
+		claim.put("surveySubId", 1);
+		
+		when(auth.verifyJWT("jwt")).thenReturn(false);
+		when(service.getSurvey((int)claim.get("surveyId"))).thenReturn(survey);
+		
+		list.add("failure");
+		list.add(null);
+		
+		ObjectMapper im = new ObjectMapper();
+        surveyListJson = im.writeValueAsString(list); 
+        
 		try {
-			this.webClient.get().uri("/survey/" + surveyForm.getId()).accept(MediaType.APPLICATION_JSON)
-								.exchange().expectStatus().isNotFound()
-								.expectBody().json("");
-
-		} catch (Exception e) {
-			fail("Exception thrown during getSurveyFormTest_SurveyNotFound: " + e);
+			this.webClient.get().uri("/survey-token")
+			.accept(MediaType.APPLICATION_JSON)
+			.exchange()
+			.expectBody(Object.class)
+			.equals(list);
+			
+		}catch(NullPointerException e) {
+			fail("Exception occured in getSurveyTest_Failure(): " +e);
+			}
 		}
+		
+	/*
+	 * Tests getSurveybyToken in {@link SurveyController}
+	 * Check if the returned list of Objects contains a string of "completed" along with the null object in the list given 
+	 * that the user has already taken the survey before.
+	 */
+		@Test
+		void getSurveyTest_Completed() throws JsonProcessingException {
+			claim.put("iat", new Date(System.currentTimeMillis()));
+			claim.put("exp", new Date(System.currentTimeMillis() + (1000 * 60 *15)));
+			claim.put("surveyId", 1);
+			claim.put("batchId", "1");
+			claim.put("surveySubId", 1);
+			
+			assSess.setTaken(true);
+			
+			when(auth.verifyJWT("jwt")).thenReturn(true);
+			when(assServ.readAssociateSurveySession((int)claim.get("surveySubId"))).thenReturn(assSess);
+			when(auth.getClaim()).thenReturn(claim);
+			when(service.getSurvey((int)claim.get("surveyId"))).thenReturn(survey);
+			
+			list.add("completed");
+			list.add(null);
+			
+			ObjectMapper im = new ObjectMapper();
+	        surveyListJson = im.writeValueAsString(list);
+	        
+			try {
+				this.webClient.get().uri("/survey-token")
+				.accept(MediaType.APPLICATION_JSON)
+				.exchange()
+				.expectBody(Object.class)
+				.equals(list);
+				
+			}catch(Exception e) {
+				fail("Exception occured in getSurveyTest_Completed(): " +e);
+			}
 	}
+	
+		@Test
+		void getSurveyTest_Expired() throws JsonProcessingException {
+			claim.put("iat", new Date(System.currentTimeMillis()));
+			claim.put("exp", new Date(System.currentTimeMillis() - 1));
+			claim.put("surveyId", 1);
+			claim.put("batchId", "1");
+			claim.put("surveySubId", 1);
+			
+			when(auth.verifyJWT("jwt")).thenReturn(true);
+			when(assServ.readAssociateSurveySession((int)claim.get("surveySubId"))).thenReturn(assSess);
+			when(auth.getClaim()).thenReturn(claim);
+			when(service.getSurvey((int)claim.get("surveyId"))).thenReturn(survey);
+			
+			list.add("expired");
+			list.add(null);
+			
+			ObjectMapper im = new ObjectMapper();
+	        surveyListJson = im.writeValueAsString(list);
+	        
+			try {
+				this.webClient.get().uri("/survey-token")
+				.accept(MediaType.APPLICATION_JSON)
+				.exchange()
+				.expectBody(Object.class)
+				.equals(list);
+				
+			}catch(Exception e) {
+				fail("Exception occured in getSurveyTest_Expired(): " +e);
+			}
+		}
+
 }

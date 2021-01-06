@@ -102,10 +102,7 @@ public class RabbitMQImpl implements MessageService {
 
 	@Override
 	public void sendSingularFormResponse(FormResponse formResponse) {
-		rabbitTemplate.convertAndSend(rabbitMQConfig.getFormResponseExchange(),
-				rabbitMQConfig.getFormResponseRoutingKey(), formResponse);
 		
-		AppLogger.log.info("Sent form response for " + formResponse.toString());
 	}
 
 }
