@@ -59,7 +59,6 @@ class RabbitMQImplTest {
 	}
 
 	@Test
-
 	public void testSendFormDataInconsistentParameters() {
 		List<FormResponse> fr = new ArrayList<FormResponse>();
 		fr.add(new FormResponse());

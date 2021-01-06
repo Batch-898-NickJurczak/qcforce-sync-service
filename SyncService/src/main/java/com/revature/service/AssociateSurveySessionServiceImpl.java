@@ -1,7 +1,5 @@
 package com.revature.service;
 
-import javax.persistence.EntityNotFoundException;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,7 +25,11 @@ public class AssociateSurveySessionServiceImpl implements AssociateSurveySession
 	}
 
 	/**
-	 * Method for creating {@link AssociateSurveySession}
+	 * Method for creating {@link AssociateSurveySession}, and should only be called
+	 * when creating a JWT. If there is already and existing
+	 * {@link AssociateSurveySession} with the same fields as the parameters, then
+	 * that object will be returned. If there is an issue persisting a new
+	 * {@link AssociateSurveySession}, then null will be returned.
 	 * 
 	 * @param associateId
 	 * @param surveyId
@@ -42,7 +44,9 @@ public class AssociateSurveySessionServiceImpl implements AssociateSurveySession
 	}
 
 	/**
-	 * Method for reading {@link AssociateSurveySession}
+	 * Method for reading {@link AssociateSurveySession}. If the
+	 * {@link AssociateSurveySession} does not exist in the database, null will be
+	 * returned.
 	 * 
 	 * @param associateSurveySessionId
 	 * @return {@link AssociateSurveySession}
@@ -54,7 +58,10 @@ public class AssociateSurveySessionServiceImpl implements AssociateSurveySession
 	}
 
 	/**
-	 * Method for updating {@link AssociateSurveySession}
+	 * Method for updating {@link AssociateSurveySession}, and should only be called
+	 * when receiving a survey submission from the front-end. If the updated
+	 * {@link AssociateSurveySession} has invalid fields, then an
+	 * {@link AssociateSurveyUpdateException} will be thrown.
 	 * 
 	 * @param associateSurveySession
 	 * @return {@link AssociateSurveySession}
