@@ -232,12 +232,7 @@ class SurveyControllerTest {
 				fail("Exception occured in getSurveyTest_Completed(): " +e);
 			}
 	}
-		
-		/*
-		 * Tests getSurveybyToken in {@link SurveyController}
-		 * Check if the returned list of Objects contains a string of "expired" along with the null object in the list given 
-		 * that the user clicked on the expired token.
-		 */
+	
 		@Test
 		void getSurveyTest_Expired() throws JsonProcessingException {
 			claim.put("iat", new Date(System.currentTimeMillis()));
