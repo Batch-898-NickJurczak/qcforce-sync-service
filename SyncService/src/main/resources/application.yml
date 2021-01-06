@@ -37,7 +37,6 @@ eureka:
     preferIpAddress: false
     instanceId: ${spring.application.name}:${vcap.application.instance_id:${spring.application.instance_id:${random.value}}}:${server.port}
 
-
 sync-service:
   rabbitMQ-config:
     formResponseQueue: ${sync_service_formResponseQueue:FormResponse-Queue}
@@ -57,5 +56,5 @@ sync-service:
   scheduler:
     fixedDelay: ${scheduler_fixedDelay:86400000}
     
-auth_service:
-    secret: ${token_secret:secret}
+  auth-service:
+    token_secret: ${token_secret}
