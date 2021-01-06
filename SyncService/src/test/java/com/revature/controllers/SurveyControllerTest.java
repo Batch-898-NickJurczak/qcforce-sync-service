@@ -152,7 +152,7 @@ class SurveyControllerTest {
         
         
 		try {
-			this.webClient.get().uri("/survey/jwt")
+			this.webClient.get().uri("/survey-token")
 			.accept(MediaType.APPLICATION_JSON)
 			.exchange()
 			.expectBody(Object.class)
@@ -184,7 +184,7 @@ class SurveyControllerTest {
         surveyListJson = im.writeValueAsString(list); 
         
 		try {
-			this.webClient.get().uri("/survey/jwt")
+			this.webClient.get().uri("/survey-token")
 			.accept(MediaType.APPLICATION_JSON)
 			.exchange()
 			.expectBody(Object.class)
@@ -222,7 +222,7 @@ class SurveyControllerTest {
 	        surveyListJson = im.writeValueAsString(list);
 	        
 			try {
-				this.webClient.get().uri("/survey/jwt")
+				this.webClient.get().uri("/survey-token")
 				.accept(MediaType.APPLICATION_JSON)
 				.exchange()
 				.expectBody(Object.class)
@@ -258,7 +258,7 @@ class SurveyControllerTest {
 	        surveyListJson = im.writeValueAsString(list);
 	        
 			try {
-				this.webClient.get().uri("/survey/jwt")
+				this.webClient.get().uri("/survey-token")
 				.accept(MediaType.APPLICATION_JSON)
 				.exchange()
 				.expectBody(Object.class)
