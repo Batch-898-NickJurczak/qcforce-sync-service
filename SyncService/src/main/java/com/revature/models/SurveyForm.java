@@ -20,7 +20,7 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 /**
  * An object representing a QC Force survey form, contains
- * {@link SurveyQuestion}s.
+ * {@link SurveyQuestion}.
  * 
  * @author Conner,
  * @author Michael M,
@@ -159,4 +159,5 @@ public class SurveyForm {
 	public void setQuestions(List<SurveyQuestion> questions) {
 		this.questions = questions;
 	}
+  
 }

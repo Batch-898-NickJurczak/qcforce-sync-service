@@ -59,6 +59,7 @@ public class AuthServiceImpl {
 	 * @return boolean Returns true if verified, stores the claims decoded into a Map object to be retrieved. Returns false otherwise.
 	 */
 	public boolean verifyJWT(String jwt) {
+
 		try {
 			Claims claims = Jwts.parser()
 	                .setSigningKey(DatatypeConverter.parseBase64Binary(secretKey))
@@ -68,9 +69,11 @@ public class AuthServiceImpl {
 				return false;
 			}
 			return true;
+
 	}
 	
 	public String createToken(int surveyId, String batchId, int surveySubId) {
+
 
 		// The JWT signature algorithm we will be using to sign the token
 		SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
@@ -91,6 +94,7 @@ public class AuthServiceImpl {
 
 		// Builds the JWT and serializes it to a compact, URL-safe string
 		return builder.compact();
+
 	}
 
 }

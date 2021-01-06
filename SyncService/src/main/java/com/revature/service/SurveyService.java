@@ -1,27 +1,21 @@
 package com.revature.service;
 
-import java.util.List;
-
-
 import com.revature.models.SurveyForm;
 
 /**
- * 
- * @author 
- * Hannah
- * Brett
- * Alma
- * Yarashlee
- *
+ * An interface for handling all the business code related to {@link SurveyForm} objects.
+ * @author Conner,
+ * @author Michael M,
+ * @author Michael Z,
+ * @author Prativa
  */
-
 public interface SurveyService {
-
+	
 	/**
-	 * Get SurveyView 
-	 * @return 
+	 * Retrieves a {@link SurveyForm} object that relates to given id.
+	 * @param id The id of the SurveyForm object.
+	 * @return {@link SurveyForm}
 	 */
-	
-	public SurveyForm getSurvey(int id);
-	
+	public SurveyForm getSurveyForm(int id);
+    
 }

@@ -1,58 +1,41 @@
-/**
- * 
- */
 package com.revature.controllers;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.revature.dto.SurveyFormDto;
+import com.revature.models.QuestionType;
+import com.revature.models.SurveyForm;
+import com.revature.models.SurveyQuestion;
+import com.revature.service.SurveyService;
+
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.revature.dto.SurveyFormDto;
-import com.revature.models.AssociateSurveySession;
-import com.revature.models.QuestionType;
-import com.revature.models.SurveyForm;
-import com.revature.models.SurveyQuestion;
-import com.revature.service.AssociateSurveySessionServiceImpl;
-import com.revature.service.AuthServiceImpl;
-import com.revature.service.SurveyService;
-
-import io.jsonwebtoken.Claims;
-import reactor.core.publisher.Flux;
-
 /**
- * @author Hannah Brett Alma Marc Yarashlee
- *
+ * Tests the {@link QuestionController} and contained methods.
+ * 
+ * @author Conner,
+ * @author Michael M,
+ * @author Michael Z,
+ * @author Prativa
  */
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 class SurveyControllerTest {
-
-
 
 	@MockBean
 	private SurveyService service;
@@ -101,18 +84,18 @@ class SurveyControllerTest {
 	void setUp() throws Exception {
 
 		List<String> questions = new ArrayList<String>();
-        questions.add("How are you?");
-        surveyQuestion = new SurveyQuestion(1, LocalDateTime.now(), QuestionType.SHORT_ANSWER, 1, questions);
+    questions.add("How are you?");
+    surveyQuestion = new SurveyQuestion(1, LocalDateTime.now(), QuestionType.SHORT_ANSWER, 1, questions);
 
-        List<SurveyQuestion> surveyQuestions = new ArrayList<>(1);
-        surveyQuestions.add(surveyQuestion);
+    List<SurveyQuestion> surveyQuestions = new ArrayList<>(1);
+    surveyQuestions.add(surveyQuestion);
 
-        survey = new SurveyForm(1, "Wezley's Survey", "Wezley Singleton", 
-                LocalDateTime.now(), 1, surveyQuestions);
+    survey = new SurveyForm(1, "Wezley's Survey", "Wezley Singleton", 
+            LocalDateTime.now(), 1, surveyQuestions);
 
-        // writing value as a Json string
-        ObjectMapper om = new ObjectMapper();
-        surveyJson = om.writeValueAsString(new SurveyFormDto(survey));
+    // writing value as a Json string
+    ObjectMapper om = new ObjectMapper();
+    surveyJson = om.writeValueAsString(new SurveyFormDto(survey));
 			
 		assSess = new AssociateSurveySession(1, 1, 2, "22", false);
 
@@ -263,4 +246,5 @@ class SurveyControllerTest {
 				fail("Exception occured in getSurveyTest_Expired(): " +e);
 			}
 		}
+
 }
