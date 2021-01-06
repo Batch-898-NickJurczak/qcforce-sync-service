@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 
 import com.revature.models.AssociateSurveySession;
 import com.revature.repo.AssociateSurveySessionRepo;
+import com.revature.util.AssociateSurveySessionUpdateException;
 
 /**
  * 
@@ -39,7 +40,12 @@ public class AssociateSurveySessionServiceImpl implements AssociateSurveySession
 	@Override
 	public AssociateSurveySession createAssociateSurveySession(int associateId, int surveyId, String batchId) {
 
-		return null;
+		AssociateSurveySession existingAssociateSurveySession = repo.findByAssociateIdAndSurveyIdAndBatchId(associateId,
+				surveyId, batchId);
+		if (existingAssociateSurveySession == null) {
+			return repo.save(new AssociateSurveySession(1, associateId, surveyId, batchId, false));
+		}
+		return existingAssociateSurveySession;
 
 	}
 
@@ -54,7 +60,12 @@ public class AssociateSurveySessionServiceImpl implements AssociateSurveySession
 	@Override
 	public AssociateSurveySession readAssociateSurveySession(int associateSurveySessionId) {
 
-		return null;
+		try {
+			return repo.getOne(associateSurveySessionId);
+		} catch (EntityNotFoundException e) {
+			return null;
+		}
+
 	}
 
 	/**
@@ -65,11 +76,32 @@ public class AssociateSurveySessionServiceImpl implements AssociateSurveySession
 	 * 
 	 * @param associateSurveySession
 	 * @return {@link AssociateSurveySession}
+	 * @throws {@link AssociateSurveySessionUpdateException}
 	 */
 	@Override
 	public AssociateSurveySession updateAssociateSurveySession(AssociateSurveySession associateSurveySession) {
 
-		return null;
+		try {
+			AssociateSurveySession existingAssociateSurveySession = repo
+					.getOne(associateSurveySession.getAssociateSurveySessionId());
+			if (existingAssociateSurveySession.getAssociateId() != associateSurveySession.getAssociateId()
+					|| existingAssociateSurveySession.getSurveyId() != associateSurveySession.getSurveyId()
+					|| !existingAssociateSurveySession.getBatchId().equals(associateSurveySession.getBatchId())) {
+				throw new AssociateSurveySessionUpdateException(
+						"Read only fields modified");
+			} else if (existingAssociateSurveySession.isTaken()) {
+				throw new AssociateSurveySessionUpdateException(
+						"exisiting AssociateSurveySession already marked as complete");
+			} else if (!associateSurveySession.isTaken()) {
+				throw new AssociateSurveySessionUpdateException(
+						"Attempting to update non completed AssociateSurveySession");
+			}
+
+			return repo.save(associateSurveySession);
+		} catch (EntityNotFoundException e) {
+			return null;
+		}
+
 	}
 
 }
