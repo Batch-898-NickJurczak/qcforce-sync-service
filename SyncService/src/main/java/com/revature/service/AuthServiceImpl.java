@@ -51,17 +51,13 @@ public class AuthServiceImpl {
 	 * @return boolean Returns true if verified, stores the claims decoded into a Map object to be retrieved. Returns false otherwise.
 	 */
 	public boolean verifyJWT(String jwt) {
-		try {
-		Claims claims = Jwts.parser()
-                .setSigningKey(DatatypeConverter.parseBase64Binary(secretKey))
-                .parseClaimsJws(jwt).getBody();
-		claim = claims;
-		}catch(SignatureException e) {
-			return false;
-		}
-		return true;
+
+		return false;
 	}
 	
-	
+	public String createToken(int surveyId, String batchId, int surveySubId) {
+
+		return null;
+	}
 
 }

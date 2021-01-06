@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.revature.repo;
 
 import org.springframework.data.jpa.repository.JpaRepository;
