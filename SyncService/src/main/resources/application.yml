@@ -55,6 +55,3 @@ sync-service:
 
   scheduler:
     fixedDelay: ${scheduler_fixedDelay:86400000}
-    
-  auth-service:
-    token_secret: ${token_secret}
