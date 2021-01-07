@@ -1,17 +1,25 @@
 package com.revature.controllers;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.revature.dto.SurveyFormDto;
+import com.revature.models.AssociateSurveySession;
 import com.revature.models.QuestionType;
 import com.revature.models.SurveyForm;
 import com.revature.models.SurveyQuestion;
+import com.revature.service.AssociateSurveySessionServiceImpl;
+import com.revature.service.AuthServiceImpl;
 import com.revature.service.SurveyService;
 
 import static org.junit.jupiter.api.Assertions.fail;
+import static org.mockito.Mockito.when;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
@@ -125,7 +133,7 @@ class SurveyControllerTest {
 		when(auth.verifyJWT("jwt")).thenReturn(true);
 		when(assServ.readAssociateSurveySession((int)claim.get("surveySubId"))).thenReturn(assSess);
 		when(auth.getClaim()).thenReturn(claim);
-		when(service.getSurvey((int)claim.get("surveyId"))).thenReturn(survey);
+		when(service.getSurveyForm((int)claim.get("surveyId"))).thenReturn(survey);
 		
 		list.add("success");
 		list.add(new SurveyFormDto(survey));
@@ -158,7 +166,7 @@ class SurveyControllerTest {
 		claim.put("surveySubId", 1);
 		
 		when(auth.verifyJWT("jwt")).thenReturn(false);
-		when(service.getSurvey((int)claim.get("surveyId"))).thenReturn(survey);
+		when(service.getSurveyForm((int)claim.get("surveyId"))).thenReturn(survey);
 		
 		list.add("failure");
 		list.add(null);
@@ -196,7 +204,7 @@ class SurveyControllerTest {
 			when(auth.verifyJWT("jwt")).thenReturn(true);
 			when(assServ.readAssociateSurveySession((int)claim.get("surveySubId"))).thenReturn(assSess);
 			when(auth.getClaim()).thenReturn(claim);
-			when(service.getSurvey((int)claim.get("surveyId"))).thenReturn(survey);
+			when(service.getSurveyForm((int)claim.get("surveyId"))).thenReturn(survey);
 			
 			list.add("completed");
 			list.add(null);
@@ -227,7 +235,7 @@ class SurveyControllerTest {
 			when(auth.verifyJWT("jwt")).thenReturn(true);
 			when(assServ.readAssociateSurveySession((int)claim.get("surveySubId"))).thenReturn(assSess);
 			when(auth.getClaim()).thenReturn(claim);
-			when(service.getSurvey((int)claim.get("surveyId"))).thenReturn(survey);
+			when(service.getSurveyForm((int)claim.get("surveyId"))).thenReturn(survey);
 			
 			list.add("expired");
 			list.add(null);

@@ -26,7 +26,7 @@ class AuthServiceImplTest {
 	
 	private String token;
 	
-	private AuthServiceImpl auth = new AuthServiceImpl("secret");
+	private AuthServiceImpl auth = new AuthServiceImpl();
 	
 	/*
 	 * Tests verifyJWT method of {@link AuthServiceImpl}
