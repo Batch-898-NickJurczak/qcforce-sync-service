@@ -65,6 +65,7 @@ public class AssociateSurveySession {
 		this.batchId = batchId;
 		this.isTaken = isTaken;
 	}
+	
 
 	/**
 	 * @return the associateSurveySessionId

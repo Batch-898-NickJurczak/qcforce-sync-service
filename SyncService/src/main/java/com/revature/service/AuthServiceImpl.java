@@ -25,6 +25,17 @@ public class AuthServiceImpl {
 	@Value("${token_secret}")
 	private static String secretKey;
 	
+	
+	
+	public static void setSecretKey(@Value("${token_secret}") String secretKey) {
+		AuthServiceImpl.secretKey = secretKey;
+	}
+	
+	public AuthServiceImpl(@Value("${token_secret}") String secretKey) {
+		AuthServiceImpl.secretKey = secretKey;
+	}
+
+
 	private Map<String, Object> claim;
 	
 	public final int TIME_TO_EXPIRATION = 15 * 60 * 1000;

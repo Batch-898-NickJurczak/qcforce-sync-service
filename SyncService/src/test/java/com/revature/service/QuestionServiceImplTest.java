@@ -102,12 +102,12 @@ class QuestionServiceImplTest {
 		
 		when(repo.getOne(surveyQuestion.getId())).thenThrow(EntityNotFoundException.class);
 		
-		SurveyQuestion returned = service.getSurveyQuestion(surveyQuestion.getId());
 		
-		verify(repo).getOne(surveyQuestion.getId());
 		
-		assertEquals(null, returned, "QuestionServiceImpl.getSurveyQuestion("+ surveyQuestion.getId() 
+		
+		assertThrows(EntityNotFoundException.class,() -> service.getSurveyQuestion(surveyQuestion.getId()), "QuestionServiceImpl.getSurveyQuestion("+ surveyQuestion.getId() 
 									+") did not return null when repo threw EntityNotFoundException in "
 									+"getSurveyQuestionTest_QuestionNotFound");	
+		verify(repo).getOne(surveyQuestion.getId());
 	}
 }

@@ -2,14 +2,17 @@ package com.revature.service;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-
+import static org.mockito.Mockito.when;
 
 import java.util.Date;
 import java.util.Map;
 
+import javax.persistence.EntityNotFoundException;
 import javax.xml.bind.DatatypeConverter;
 
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import com.revature.util.InvalidBatchIdException;
@@ -26,7 +29,14 @@ class AuthServiceImplTest {
 	
 	private String token;
 	
-	private AuthServiceImpl auth = new AuthServiceImpl();
+	private AuthServiceImpl auth = new AuthServiceImpl("secret");
+	
+	@Mock
+	private SurveyServiceImpl surveyService;
+	
+	@Mock
+	private AssociateSurveySessionService assService;
+	
 	
 	/*
 	 * Tests verifyJWT method of {@link AuthServiceImpl}
@@ -109,7 +119,7 @@ class AuthServiceImplTest {
 		Date before = new Date(System.currentTimeMillis());
 		Date beforeExp = new Date(System.currentTimeMillis() + 1000 * 60 * 14);
 		java.util.concurrent.TimeUnit.SECONDS.sleep(1);
-		String token = this.auth.createToken(surveyId, batchId, 1);
+		String token = auth.createToken(surveyId, batchId, 1);
 		java.util.concurrent.TimeUnit.SECONDS.sleep(1);
 		Date after = new Date(System.currentTimeMillis());
 		Date afterExp = new Date(System.currentTimeMillis() + 1000 * 60 * 16);
@@ -117,7 +127,7 @@ class AuthServiceImplTest {
 			Claims claims = Jwts.parser().setSigningKey(DatatypeConverter.parseBase64Binary("secret"))
 					.parseClaimsJws(token).getBody();
 			assertEquals((int) claims.get("surveyId"), surveyId);
-			assertEquals((int) claims.get("batchId"), batchId);
+			assertEquals(claims.get("batchId"), batchId);
 			assertTrue(claims.getIssuedAt().after(before));
 			assertTrue(claims.getIssuedAt().before(after));
 			assertTrue(claims.getExpiration().after(beforeExp));
@@ -134,10 +144,10 @@ class AuthServiceImplTest {
 	 */
 	@Test
 	void testCreateToken_withInvalidSurveyId() {
-
+		
 		String batchId = "2010";
 		int surveyId = -1;
-
+		when(surveyService.getSurveyForm(surveyId)).thenThrow(EntityNotFoundException.class);
 		assertThrows(InvalidSurveyIdException.class, () -> auth.createToken(surveyId, batchId, 1));
 
 	}
@@ -156,5 +166,7 @@ class AuthServiceImplTest {
 		assertThrows(InvalidBatchIdException.class, () -> auth.createToken(surveyId, batchId, 1));
 
 	}
+	
+
 
 }
