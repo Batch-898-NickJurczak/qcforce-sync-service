@@ -70,9 +70,45 @@ public class SurveyController {
 	@GetMapping("survey-token")
 	public Flux<Object> getSurveyByToken(@RequestHeader(value = "Authorization") String bearerToken, ServerHttpResponse response) {
 		
+		String[] splitBearer = bearerToken.split("\\s");
+		String token = splitBearer[1];
 		
+		ArrayList<Object> fluxList = new ArrayList<Object>();
+		Date date = new Date(System.currentTimeMillis());
 		
-		return null;
+		if (authService.verifyJWT(token)) {
+			
+			Map<String, Object> claim = authService.getClaim();
+			
+			associateSurveySess = assServ.readAssociateSurveySession(((int)claim.get("surveySubId"))) ;
+			
+			if (date.compareTo((Date) claim.get("exp")) == 1) {
+				
+				fluxList.add("expired");
+				response.setStatusCode(HttpStatus.BAD_REQUEST);
+				
+			} else if (associateSurveySess.isTaken()) {
+				
+				fluxList.add("completed");
+				response.setStatusCode(HttpStatus.IM_USED);
+				
+			} else {
+				
+				fluxList.add("success");
+				SurveyForm survey = (surveyService.getSurveyForm((int) claim.get("surveyId")));
+				fluxList.add(new SurveyFormDto(survey));
+				response.setStatusCode(HttpStatus.OK);
+			}
+
+		} else {
+			
+			fluxList.add("failure");
+			response.setStatusCode(HttpStatus.UNAUTHORIZED);
+		}
+		
+		Flux<Object> data = Flux.fromIterable(fluxList);
+		
+		return data;
 	}
 	
 }
